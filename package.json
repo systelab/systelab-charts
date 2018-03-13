@@ -1,0 +1,86 @@
+{
+  "name": "systelab-charts",
+  "version": "5.0.1",
+  "license": "MIT",
+  "keywords": [
+    "Angular",
+    "Angular-cli",
+    "NPM",
+    "Systelab"
+  ],
+  "private": false,
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "cleardown": "rimraf css html build widgets",
+    "inline-build-templates": "gulp inline-build-templates",
+    "copysass": "gulp copysass",
+    "ngc-build": "ngc -p ./tsconfig.lib.json",
+    "prepublish": "npm run cleardown && npm run inline-build-templates && npm run ngc-build && npm run copysass"
+  },
+  "files": [
+    "widgets",
+    "html",
+    "css",
+    "sass",
+    "icons"
+  ],
+  "main": "./widgets/systelab-charts.module.js",
+  "typings": "./widgets/systelab-charts.module.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/systelab/systelab-charts.git"
+  },
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "chart.js": "^2.7.2",
+    "chartjs-plugin-annotation": "^0.5.7",
+    "date-fns": "^1.29.0",
+    "popper.js": "^1.13.0"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=5.0.0"
+  },
+  "devDependencies": {
+    "@angular/animations": "^5.2.7",
+    "@angular/common": "^5.2.7",
+    "@angular/compiler": "^5.2.7",
+    "@angular/core": "^5.2.7",
+    "@angular/forms": "^5.2.7",
+    "@angular/http": "^5.2.7",
+    "@angular/platform-browser": "^5.2.7",
+    "@angular/platform-browser-dynamic": "^5.2.7",
+    "@angular/router": "^5.2.7",
+    "core-js": "^2.5.3",
+    "rxjs": "^5.5.6",
+    "zone.js": "^0.8.20",
+    "@angular/cli": "^1.7.2",
+    "@angular/compiler-cli": "^5.2.7",
+    "@angular/language-service": "^5.2.7",
+    "@types/core-js": "^0.9.42",
+    "@types/jasmine": "~2.5.53",
+    "@types/jasminewd2": "~2.0.2",
+    "@types/node": "~6.0.60",
+    "codelyzer": "~3.0.1",
+    "jasmine-core": "~2.6.2",
+    "jasmine-spec-reporter": "~4.1.0",
+    "karma": "~1.7.0",
+    "karma-chrome-launcher": "~2.1.1",
+    "karma-cli": "~1.0.1",
+    "karma-coverage-istanbul-reporter": "^1.2.1",
+    "karma-jasmine": "~1.1.0",
+    "karma-jasmine-html-reporter": "^0.2.2",
+    "rimraf": "^2.6.1",
+    "ts-node": "~3.0.4",
+    "tslint": "~5.3.2",
+    "typescript": "~2.4.2",
+    "gulp": "^3.9.1",
+    "gulp-inline-ng2-template": "^4.0.0",
+    "node-sass": "^3.1.0",
+    "gulp-sass": "^3.1.0"
+  }
+}
