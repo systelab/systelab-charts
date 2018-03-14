@@ -1,6 +1,6 @@
 {
   "name": "systelab-charts",
-  "version": "5.0.1",
+  "version": "1.0.0",
   "license": "MIT",
   "keywords": [
     "Angular",
@@ -18,16 +18,11 @@
     "e2e": "ng e2e",
     "cleardown": "rimraf css html build widgets",
     "inline-build-templates": "gulp inline-build-templates",
-    "copysass": "gulp copysass",
     "ngc-build": "ngc -p ./tsconfig.lib.json",
-    "prepublish": "npm run cleardown && npm run inline-build-templates && npm run ngc-build && npm run copysass"
+    "prepublish": "npm run cleardown && npm run inline-build-templates && npm run ngc-build"
   },
   "files": [
-    "widgets",
-    "html",
-    "css",
-    "sass",
-    "icons"
+    "widgets"
   ],
   "main": "./widgets/systelab-charts.module.js",
   "typings": "./widgets/systelab-charts.module.d.ts",
@@ -38,9 +33,7 @@
   "dependencies": {
     "bootstrap": "^4.0.0",
     "chart.js": "^2.7.2",
-    "chartjs-plugin-annotation": "^0.5.7",
-    "date-fns": "^1.29.0",
-    "popper.js": "^1.13.0"
+    "chartjs-plugin-annotation": "^0.5.7"
   },
   "peerDependencies": {
     "@angular/core": ">=5.0.0"

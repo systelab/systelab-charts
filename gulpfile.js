@@ -25,10 +25,3 @@ gulp.task('inline-build-templates', () => {
 			   .pipe(gulp.dest('./build'));
 
 });
-
-
-gulp.task('copysass', function() {
-	gulp.src([
-		'./src/app/systelab-charts/styles/sass/**/*.scss'])
-		.pipe(gulp.dest('./sass'));
-});
