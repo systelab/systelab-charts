@@ -67,6 +67,9 @@ export class ChartComponent implements AfterViewInit {
 	@Input() lineTension: number;
 	@Input() isBackgroundGrid = true;
 	@Input() typeChart: string;
+	@Input() responsive= true;
+	@Input() maintainAspectRatio= true;
+
 	public dataset: Array<any> = [];
 	public annotations: Array<any> = [];
 	public axesVisible = true;
@@ -118,7 +121,10 @@ export class ChartComponent implements AfterViewInit {
 					labels:   this.labels,
 					datasets: this.dataset
 				},
+
 				options: {
+					responsive: this.responsive,
+					maintainAspectRatio: this.maintainAspectRatio,
 					onClick:    (evt, item) => {
 						const e = item[0];
 						if (e) {
