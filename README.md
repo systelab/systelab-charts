@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/systelab/systelab-charts.svg?branch=master)](https://travis-ci.org/systelab/systelab-charts)
+
 # systelab-charts
 
 Library with charts components to speed up your Angular developments.
