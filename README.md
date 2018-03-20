@@ -1,3 +1,6 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e20387044bae4723b400f30df8c973f9)](https://app.codacy.com/app/alfonsserra/systelab-charts?utm_source=github.com&utm_medium=referral&utm_content=systelab/systelab-charts&utm_campaign=badger)
+[![Build Status](https://travis-ci.org/systelab/systelab-charts.svg?branch=master)](https://travis-ci.org/systelab/systelab-charts)
+
 # systelab-charts
 
 Library with charts components to speed up your Angular developments.
