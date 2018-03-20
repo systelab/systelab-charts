@@ -3,27 +3,50 @@ import { Chart } from 'chart.js';
 import 'chartjs-plugin-annotation';
 
 export class ChartItem {
-	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string, public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number, public chartType?: string) {
+	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string,
+		public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number, public chartType?: string,
+		public chartTooltipItem?: ChartTooltipItem) {
 	}
 }
 
 export class ChartLineAnnotation {
-	constructor(public label: ChartLabelAnnotation, public value: number, public orientation: string, public drawTime: string, public type: string, public borderDash?: Array<number>, public borderColor?: string, public borderWidth?: number) {
+	constructor(public label: ChartLabelAnnotation, public value: number, public orientation: string, public drawTime: string,
+		public type: string, public borderDash?: Array<number>, public borderColor?: string, public borderWidth?: number) {
 	}
 }
 
 export class ChartBoxAnnotation {
-	constructor(public drawTime: string, public xMin: number, public xMax: number, public yMin: number, public yMax: number, public type: string, public backgroundColor?: string, public borderColor?: string, public borderWidth?: number) {
+	constructor(public drawTime: string, public xMin: number, public xMax: number, public yMin: number, public yMax: number,
+		public type: string, public backgroundColor?: string, public borderColor?: string, public borderWidth?: number) {
 	}
 }
 
 export class ChartLabelAnnotation {
-	constructor(public text?: string, public position?: string, public backgroundColor?: string, public fontStyle?: string, public fontColor?: string) {
+	constructor(public text?: string, public position?: string, public backgroundColor?: string, public fontStyle?: string,
+		public fontColor?: string) {
+	}
+}
+
+export class ChartTooltipItem {
+	constructor(public title?: string, public label?: string, public afterLabel?: string, public valueInAfterLabel?: boolean) {
+	}
+}
+
+export class ChartTooltipSettings {
+	constructor(public backgroundColor?: string, public borderColor?: string, public borderWidth?: number, public bodyFontColor?: string,
+		public bodyFontSize?: number, public titleFontSize?: number, public titleFontColor?: string) {
+		this.bodyFontColor = '#ffffff';
+		this.borderColor = 'rgba(0,0,0,0)';
+		this.borderWidth = 0;
+		this.bodyFontSize = 12;
+		this.titleFontSize = 12;
+		this.titleFontColor = '#ffffff';
+		this.backgroundColor = 'rgba(0,0,0,0.8)';
 	}
 }
 
 @Component({
-	selector:    'systelab-chart',
+	selector: 'systelab-chart',
 	templateUrl: './chart.component.html'
 })
 export class ChartComponent implements AfterViewInit {
@@ -40,7 +63,7 @@ export class ChartComponent implements AfterViewInit {
 		[151, 187, 205],
 		[231, 233, 237],
 		[77, 83, 96]];
-	chart = [];
+	chart = Chart;
 	private _itemSelected: any;
 
 	@Input()
@@ -67,8 +90,9 @@ export class ChartComponent implements AfterViewInit {
 	@Input() lineTension: number;
 	@Input() isBackgroundGrid = true;
 	@Input() typeChart: string;
-	@Input() responsive= true;
-	@Input() maintainAspectRatio= true;
+	@Input() responsive = true;
+	@Input() maintainAspectRatio = true;
+	@Input() chartTooltipSettings: ChartTooltipSettings;
 
 	public dataset: Array<any> = [];
 	public annotations: Array<any> = [];
@@ -88,6 +112,10 @@ export class ChartComponent implements AfterViewInit {
 			if (this.isHorizontal) {
 				this.typeChart = 'horizontalBar';
 			}
+		}
+
+		if (!this.chartTooltipSettings) {
+			this.chartTooltipSettings = new ChartTooltipSettings();
 		}
 
 		/* Axes Labels */
@@ -116,64 +144,136 @@ export class ChartComponent implements AfterViewInit {
 		/* Draw the chart */
 		if (this.canvas.nativeElement) {
 			this.chart = new Chart(cx, {
-				type:    this.typeChart,
-				data:    {
-					labels:   this.labels,
+				type: this.typeChart,
+				data: {
+					labels: this.labels,
 					datasets: this.dataset
 				},
 
 				options: {
 					responsive: this.responsive,
 					maintainAspectRatio: this.maintainAspectRatio,
-					onClick:    (evt, item) => {
+					onClick: (evt, item) => {
 						const e = item[0];
 						if (e) {
 							this.itemSelected = e;
 							this.action.emit();
 						}
 					},
-					elements:   {
+					elements: {
 						line: {
 							tension: this.lineTension
 						}
 					},
-					display:    true,
-					legend:     {
+					display: true,
+					legend: {
 						display: this.legend
 					},
-					scales:     {
+					scales: {
 						yAxes: [{
-							ticks:      {
-								min:     this.yMinValue,
-								max:     this.yMaxValue,
+							ticks: {
+								min: this.yMinValue,
+								max: this.yMaxValue,
 								display: this.axesVisible
 							},
-							gridLines:  {
-								display:    this.isBackgroundGrid,
+							gridLines: {
+								display: this.isBackgroundGrid,
 								drawBorder: this.axesVisible
 							},
 							scaleLabel: {
-								display:     this.yAxisLabelVisible,
+								display: this.yAxisLabelVisible,
 								labelString: this.yLabelAxis
 							}
 						}],
 						xAxes: [{
-							ticks:      {
+							ticks: {
 								display: this.axesVisible
 							},
-							gridLines:  {
-								display:    this.isBackgroundGrid,
+							gridLines: {
+								display: this.isBackgroundGrid,
 								drawBorder: this.axesVisible
 							},
 							scaleLabel: {
-								display:     this.xAxisLabelVisible,
+								display: this.xAxisLabelVisible,
 								labelString: this.xLabelAxis
 							}
 						}]
 					},
 					annotation: {
-						events:      ['click'],
+						events: ['click'],
 						annotations: this.annotations
+					},
+					tooltips: {
+						callbacks: {
+							title: function (tooltipItem, data) {
+								const item = data.datasets[tooltipItem[0].datasetIndex];
+								if (item.chartTooltipItem) {
+									if (item.chartTooltipItem.title) {
+										return item.chartTooltipItem.title;
+									}
+								}
+							},
+							label: function (tooltipItem, data) {
+								const item = data.datasets[tooltipItem.datasetIndex];
+								let label = data.datasets[tooltipItem.datasetIndex].label;
+								if (!label) {
+									label = data.labels[tooltipItem.index];
+								}
+								const val = item.data[tooltipItem.index];
+								let rt = '';
+								if (val instanceof Object) {
+									if (val.t) {
+										rt = val.t;
+									} else {
+										rt = '(' + val.x + ',' + val.y + ')';
+									}
+								} else {
+									rt = val;
+								}
+								if (item.chartTooltipItem) {
+									if (item.chartTooltipItem.label) {
+										label = item.chartTooltipItem.label;
+									}
+									if (!item.chartTooltipItem.valueInAfterLabel) {
+										label += ': ' + rt;
+									}
+								} else {
+									label += ': ' + rt;
+								}
+								return label;
+							},
+							afterLabel: function (tooltipItem, data) {
+								const item = data.datasets[tooltipItem.datasetIndex];
+								let afterLabel = '';
+								if (item.chartTooltipItem) {
+									if (item.chartTooltipItem.afterLabel) {
+										afterLabel = item.chartTooltipItem.afterLabel;
+									}
+									if (item.chartTooltipItem.valueInAfterLabel) {
+										const val = item.data[tooltipItem.index];
+										let rt = '';
+										if (val instanceof Object) {
+											if (val.t) {
+												rt = val.t;
+											} else {
+												rt = '(' + val.x + ',' + val.y + ')';
+											}
+										} else {
+											rt = val;
+										}
+										afterLabel += ' (' + rt + ')';
+									}
+								}
+								return afterLabel;
+							}
+						},
+						backgroundColor: this.chartTooltipSettings.backgroundColor,
+						titleFontSize: this.chartTooltipSettings.titleFontSize,
+						titleFontColor: this.chartTooltipSettings.titleFontColor,
+						bodyFontColor: this.chartTooltipSettings.bodyFontColor,
+						bodyFontSize: this.chartTooltipSettings.bodyFontSize,
+						borderColor: this.chartTooltipSettings.borderColor,
+						borderWidth: this.chartTooltipSettings.borderWidth
 					}
 				}
 			});
@@ -227,9 +327,10 @@ export class ChartComponent implements AfterViewInit {
 					backgroundColors = this.data[i].backgroundColor;
 				}
 				this.dataset.push({
-					label:           this.data[i].label, data: this.data[i].data, borderColor: borderColors,
+					label: this.data[i].label, data: this.data[i].data, borderColor: borderColors,
 					backgroundColor: backgroundColors, fill: this.data[i].fill,
-					type:            this.data[i].chartType, borderWidth: this.data[i].borderWidth, showLine: this.data[i].showLine
+					type: this.data[i].chartType, borderWidth: this.data[i].borderWidth, showLine: this.data[i].showLine,
+					chartTooltipItem: this.data[i].chartTooltipItem
 				});
 			}
 		}
@@ -266,16 +367,16 @@ export class ChartComponent implements AfterViewInit {
 						}
 					}
 					this.annotations.push({
-						drawTime:       this.chartAnnotations[i].drawTime, id: 'annotation' + i, type: this.chartAnnotations[i].type,
-						mode:           this.chartAnnotations[i].orientation, scaleID: 'y-axis-0', value: this.chartAnnotations[i].value,
-						borderColor:    this.chartAnnotations[i].borderColor,
-						label:          {
+						drawTime: this.chartAnnotations[i].drawTime, id: 'annotation' + i, type: this.chartAnnotations[i].type,
+						mode: this.chartAnnotations[i].orientation, scaleID: 'y-axis-0', value: this.chartAnnotations[i].value,
+						borderColor: this.chartAnnotations[i].borderColor,
+						label: {
 							backgroundColor: this.chartAnnotations[i].label.backgroundColor,
-							position:        this.chartAnnotations[i].label.position,
-							content:         this.chartAnnotations[i].label.text,
-							fontColor:       this.chartAnnotations[i].label.fontColor,
-							enabled:         true,
-							fontStyle:       this.chartAnnotations[i].label.fontStyle
+							position: this.chartAnnotations[i].label.position,
+							content: this.chartAnnotations[i].label.text,
+							fontColor: this.chartAnnotations[i].label.fontColor,
+							enabled: true,
+							fontStyle: this.chartAnnotations[i].label.fontStyle
 						}, borderWidth: this.chartAnnotations[i].borderWidth, borderDash: this.chartAnnotations[i].borderDash
 					});
 				} else if (this.chartAnnotations[i].type === 'box') {
@@ -285,18 +386,18 @@ export class ChartComponent implements AfterViewInit {
 					}
 
 					this.annotations.push({
-						drawTime:        this.chartAnnotations[i].drawTime,
-						id:              'annotation' + i,
-						type:            this.chartAnnotations[i].type,
+						drawTime: this.chartAnnotations[i].drawTime,
+						id: 'annotation' + i,
+						type: this.chartAnnotations[i].type,
 						backgroundColor: this.chartAnnotations[i].backgroundColor,
-						borderWidth:     this.chartAnnotations[i].borderWidth,
-						borderColor:     this.chartAnnotations[i].borderColor,
-						xMin:            this.chartAnnotations[i].xMin,
-						xMax:            this.chartAnnotations[i].xMax,
-						yMin:            this.chartAnnotations[i].yMin,
-						yMax:            this.chartAnnotations[i].yMax,
-						xScaleID:        'x-axis-0',
-						yScaleID:        'y-axis-0'
+						borderWidth: this.chartAnnotations[i].borderWidth,
+						borderColor: this.chartAnnotations[i].borderColor,
+						xMin: this.chartAnnotations[i].xMin,
+						xMax: this.chartAnnotations[i].xMax,
+						yMin: this.chartAnnotations[i].yMin,
+						yMax: this.chartAnnotations[i].yMax,
+						xScaleID: 'x-axis-0',
+						yScaleID: 'y-axis-0'
 					});
 				}
 			}
@@ -308,7 +409,15 @@ export class ChartComponent implements AfterViewInit {
 			.join(',') + ')';
 	}
 
-	public doSomenthing(yValue, xValue) {
-		alert(yValue);
+	public doUpdate() {
+		let cx: CanvasRenderingContext2D;
+		if (this.canvas.nativeElement) {
+			cx = this.canvas.nativeElement.getContext('2d');
+		}
+		this.chart.destroy();
+		this.dataset = [];
+		this.setData(cx);
+		this.addAnnotations();
+		this.drawChart(cx);
 	}
 }
