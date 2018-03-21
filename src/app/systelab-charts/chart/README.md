@@ -11,7 +11,7 @@ Component to show a Chart
 ```
 
 
-This component use the **Chart.js** library, and can display in a easy way different chart types.
+This component use the **Chart.js** library, and is able to display different chart types in a easy way.
 
 Set **typeChart** with the chart type that you want to display. You can chose between the following charts types
 
@@ -23,13 +23,13 @@ Set **typeChart** with the chart type that you want to display. You can chose be
 - Radar
 - Polar Area
 
-Also you can mix different chart types, for example a Bar chart with Line chart. To define this you should define the chart type in the properties of the data that you provide to the component. (See Data properties)
+Also you can show together different chart types, for example a Bar chart with Line chart. In order to do this, you should define the chart type in the properties of the data that you provide to the component. (See Data properties)
 
-Set in **labels** the list of labels of the chart.
+Set **labels** with the list of labels of the chart.
 
 **action** is going to emit the event when you clicked in a item in the chart.
 
-**itemSelected** this is used to notify which item are you clicked.
+**itemSelected** is used to notify which item is clicked.
 
 Set **legend** to false, if you want to hide the legend of the chart (by default is defined as true).
 
@@ -47,7 +47,7 @@ Set **isBackgroundGrid** to false, if you want to hide the background grid of th
 
 Set **isHorizontal** to true, if you want that display a bar chart in horizontal view (by default is defined as false).
 
-**DATA**
+### Data
 
 Is an array with the items of the Chart. Each item has the follow structure:
 
@@ -79,7 +79,7 @@ Clarification of each attribute:
 - **backgroundColor**  color in Hexadecimal for the background.
 - **fill** set to false if you want a transparent background.
 - **showLine** set to false if you only want to display the area and not the border.
-- **isGradient** set to true if you want to use a gradient colours:
+- **isGradient** set to true if you want to use a gradient colours.
 - **borderWidth** define the width of the border.
 - **chartType** define different chart type to mix charts.
 - **ChartTooltipItem** define what you want to display in the tooltip of this raw data.
@@ -90,13 +90,13 @@ Clarification of each attribute:
 ```
 
 
-**ANNOTATIONS**
+### Annotations
 
 You can define two types of annotations, line or box type annotations.
 
-**chartAnnotations** is an array of annotations. Depend of the annotations that you want you will use the **chartBoxAnnotation** structure or **chartLineAnnotation**.
+**chartAnnotations** is an array of annotations. Depending on the annotations that you want you show, use the **chartBoxAnnotation** structure or **chartLineAnnotation**.
 
-**chartBoxAnnotation**
+#### chartBoxAnnotation
 
 ```javascript
     public drawTime: string,
@@ -112,7 +112,7 @@ You can define two types of annotations, line or box type annotations.
 
 Clarification of each attribute:
 
-- **drawTime** you can define when draw the annotation 'afterDatasetsDraw' or 'beforeDatasetsDraw'.
+- **drawTime** you can set to draw 'afterDatasetsDraw' or 'beforeDatasetsDraw'.
 - **type** in this case will be 'box'.
 - **xMin** min value in the axis X.
 - **xMax**  max value in the axis X.
@@ -123,7 +123,7 @@ Clarification of each attribute:
 - **borderColor** define the color of the box.
 
 
-**chartLineAnnotation**
+#### chartLineAnnotation
 
 ```javascript
     public label: chartLabelAnnotation,
@@ -137,7 +137,7 @@ Clarification of each attribute:
 ```
 Clarification of each attribute:
 
-- **drawTime** you can define when draw the annotation 'afterDatasetsDraw' or 'beforeDatasetsDraw'.
+- **drawTime** you can set to draw 'afterDatasetsDraw' or 'beforeDatasetsDraw'.
 - **type** in this case will be 'box'.
 - **value** is the value where the line is located.
 - **orientation**  define the orientation can be 'vertical' or horizontal.
@@ -147,14 +147,14 @@ Clarification of each attribute:
 - **label** you can define a label for the annotation, setting the text, position ('left', 'center', 'right'), backgroundColor, fontStyle and the fontColor.
 
 
-**TOOLTIPS CONFIGURATION**
+### Tooltips configuration
 
-You can configure the content of the tooltips and the style of its.
+You can configure the content of the tooltips and the style.
 
-There are general configurations and chart items tooltips configurations.
+There are some general configuration, as well as specific ones.
 
-**General Configuration**
-The chart have a public attribute names **chartTooltipSettings**, with you can configure the following styles:
+#### General Configuration
+The chart have a public attribute **chartTooltipSettings**, where you can setup the following styles:
 
 - **backgroundColor**, is the color of the background of the tooltips.
 - **titleFontSize**, is the font size of the title label in the tooltips.
@@ -164,11 +164,11 @@ The chart have a public attribute names **chartTooltipSettings**, with you can c
 - **borderColor**, is the color of the border in the tooltips.
 - **borderWidth**, is the width of the border in the tooltips.
 
-**Chart Items Tooltips Configuration**
+#### Chart Items Tooltips Configuration
 
-For each raw data added to the chart you can configure what display in the tooltips.
+For each raw data added into the chart you can setup the tooltip.
 
-The **ChartItem** structure has a **ChartTooltipItem** structure. in which you can configure the tooltips of the chart item.
+The **ChartItem** structure has a **ChartTooltipItem** structure, in which you can setup the tooltip of the chart item.
 
 ```javascript
     public title?: string,  // is the content for the title
@@ -182,15 +182,15 @@ this.dataLine.push(new ChartItem('Only Line', [13, 20, 21, 15], '', '', false, t
 		new ChartTooltipItem('title', 'label', 'afterlabel', true)));
 ```
 
-**Tooltips in the Bubble charts**
+#### Tooltips for the Bubble charts
 
-Exist the option to display the label that you want insted of the coordinates (by default defined). Set a variable **t** in the data parameter and the system will interpret as the tooltip label.
+There is the option to display the label that you want instead of the coordinates (by default defined). Set the variable **t** in the data parameter and the system will consider it as the tooltip label.
 
 
 ```javascript
 [{ x: 13, y: 13, r: 4, t: 'Tooltip label' }, { x: 1, y: 2, r: 3 }]
 ```
 
-**Update the Chart Content**
+### Update the Chart Content
 
-The chart have a public method names 'doUpdate', if you use the chart will reset with the new data.
+There is a public method 'doUpdate', to reset the chart with the new data.

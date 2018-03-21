@@ -1,9 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
 	selector:    'showcase-charts',
-	templateUrl: 'showcase-charts.component.html',
-	styleUrls:   ['showcase-charts.component.scss']
+	templateUrl: 'showcase-charts.component.html'
 })
 export class ShowcaseChartsComponent {
 }
