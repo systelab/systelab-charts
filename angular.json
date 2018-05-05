@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "systelab-components": {
+    "systelab-charts": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -51,18 +51,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "systelab-components:build"
+            "browserTarget": "systelab-charts:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "systelab-components:build:production"
+              "browserTarget": "systelab-charts:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "systelab-components:build"
+            "browserTarget": "systelab-charts:build"
           }
         },
         "test": {
@@ -99,7 +99,7 @@
         }
       }
     },
-    "systelab-components-e2e": {
+    "systelab-charts-e2e": {
       "root": "",
       "sourceRoot": "",
       "projectType": "application",
@@ -108,7 +108,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "systelab-components:serve"
+            "devServerTarget": "systelab-charts:serve"
           }
         },
         "lint": {
@@ -125,7 +125,7 @@
       }
     }
   },
-  "defaultProject": "systelab-components",
+  "defaultProject": "systelab-charts",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
