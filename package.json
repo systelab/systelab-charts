@@ -1,6 +1,6 @@
 {
   "name": "systelab-charts",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "MIT",
   "keywords": [
     "Angular",
@@ -32,8 +32,7 @@
   },
   "dependencies": {
     "chart.js": "^2.7.2",
-    "chartjs-plugin-annotation": "^0.5.7",
-    "rxjs-compat": "^6.0.0-rc.0"
+    "chartjs-plugin-annotation": "^0.5.7"
   },
   "peerDependencies": {},
   "devDependencies": {
