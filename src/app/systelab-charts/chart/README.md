@@ -45,6 +45,10 @@ Set **isBackgroundGrid** to false, if you want to hide the background grid of th
 
 **yLabelAxis** define the title of the Axis Y.
 
+**minValueForRadar** is the min value for the radar.
+
+**maxValueForRadar** is the max value for the radar.
+
 Set **isHorizontal** to true, if you want that display a bar chart in horizontal view (by default is defined as false).
 
 ### Data
