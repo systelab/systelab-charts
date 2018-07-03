@@ -85,6 +85,8 @@ export class ChartComponent implements AfterViewInit {
 	@Input() isHorizontal = false;
 	@Input() yMinValue: any;
 	@Input() yMaxValue: any;
+	@Input() xMinValue: any;
+	@Input() xMaxValue: any;
 	@Input() yLabelAxis: string;
 	@Input() xLabelAxis: string;
 	@Input() lineTension: number;
@@ -191,6 +193,8 @@ export class ChartComponent implements AfterViewInit {
 						}],
 						xAxes: [{
 							ticks: {
+								min: this.xMinValue,
+								max: this.xMaxValue,
 								display: this.axesVisible
 							},
 							gridLines: {

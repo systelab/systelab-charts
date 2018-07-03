@@ -41,6 +41,10 @@ Set **isBackgroundGrid** to false, if you want to hide the background grid of th
 
 **yMaxValue** is the max value of the axis Y.
 
+**xMinValue** is the min value of the axis X.
+
+**xMaxValue** is the max value of the axis X.
+
 **xLabelAxis** define the title of the Axis X.
 
 **yLabelAxis** define the title of the Axis Y.
