@@ -85,6 +85,8 @@ export class ChartComponent implements AfterViewInit {
 	@Input() isHorizontal = false;
 	@Input() yMinValue: any;
 	@Input() yMaxValue: any;
+	@Input() xMinValue: any;
+	@Input() xMaxValue: any;
 	@Input() yLabelAxis: string;
 	@Input() xLabelAxis: string;
 	@Input() lineTension: number;
@@ -93,6 +95,10 @@ export class ChartComponent implements AfterViewInit {
 	@Input() responsive = true;
 	@Input() maintainAspectRatio = true;
 	@Input() chartTooltipSettings: ChartTooltipSettings;
+
+	@Input() minValueForRadar: number;
+	@Input() maxValueForRadar: number;
+
 
 	public dataset: Array<any> = [];
 	public annotations: Array<any> = [];
@@ -143,7 +149,7 @@ export class ChartComponent implements AfterViewInit {
 	private drawChart(cx: CanvasRenderingContext2D) {
 		/* Draw the chart */
 		if (this.canvas.nativeElement) {
-			this.chart = new Chart(cx, {
+			const definition: any = {
 				type: this.typeChart,
 				data: {
 					labels: this.labels,
@@ -187,6 +193,8 @@ export class ChartComponent implements AfterViewInit {
 						}],
 						xAxes: [{
 							ticks: {
+								min: this.xMinValue,
+								max: this.xMaxValue,
 								display: this.axesVisible
 							},
 							gridLines: {
@@ -276,7 +284,17 @@ export class ChartComponent implements AfterViewInit {
 						borderWidth: this.chartTooltipSettings.borderWidth
 					}
 				}
-			});
+			};
+
+			if (this.typeChart === 'radar') {
+				definition.options.scale = {
+					ticks: {
+						min: this.minValueForRadar,
+						max: this.maxValueForRadar
+					}
+				};
+			}
+			this.chart = new Chart(cx, definition);
 		}
 	}
 

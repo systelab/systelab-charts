@@ -32,6 +32,7 @@ export class ShowcaseChartComponent {
 	public yLabelAxis = 'Title Y';
 	public chartTooltipSettings = new ChartTooltipSettings();
 	@ViewChild('lineChart') lineChart: ChartComponent;
+
 	constructor() {
 		this.typeChart = 'line';
 		this.legend = true;
@@ -93,7 +94,7 @@ export class ShowcaseChartComponent {
 		{ x: 2, y: 3, r: 2 }, { x: 1, y: 2, r: 2 }, { x: 3, y: 2, r: 2 }], '', '', true, false, false, 2));
 	}
 
-	public doAction() {
+	public doAction(event:any) {
 		const xValue = this.labels[this.itemSelected._index];
 		const yValue = this.dataPie[0].data[this.itemSelected._index];
 		console.log(xValue);
