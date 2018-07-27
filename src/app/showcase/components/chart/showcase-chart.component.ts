@@ -21,6 +21,7 @@ export class ShowcaseChartComponent {
 	public dataLineAnnotation: Array<ChartItem> = [];
 	public dataBubbleAnnotation: Array<ChartItem> = [];
 	public chartAnnotationLineAnnotation: Array<ChartLineAnnotation> = [];
+	public chartAnnotationLineHorizontalVertical: Array<ChartLineAnnotation> = [];
 	public chartAnnotationBubbleAnnotation: Array<ChartBoxAnnotation> = [];
 	public labels: Array<string> = [];
 	public labelsLineAnnotation: Array<any> = [];
@@ -87,14 +88,29 @@ export class ShowcaseChartComponent {
 			this.labelsLineAnnotation.push(g);
 		}
 
+		this.chartAnnotationLineHorizontalVertical.push(new ChartLineAnnotation(new ChartLabelAnnotation(), 4.5,
+			'horizontal', 'beforeDatasetsDraw', 'line', [5, 15], '#287ae5', 1));
+		this.chartAnnotationLineHorizontalVertical.push(new ChartLineAnnotation(new ChartLabelAnnotation(), 9,
+			'horizontal', 'beforeDatasetsDraw', 'line', [5, 15], '#287ae5', 1));
+		this.chartAnnotationLineHorizontalVertical.push(new ChartLineAnnotation(new ChartLabelAnnotation('Label', 'left', '#287ae5'), -1,
+			'horizontal', 'beforeDatasetsDraw', 'line', [5, 15], '#287ae5', 1));
+		this.chartAnnotationLineHorizontalVertical.push(new ChartLineAnnotation(new ChartLabelAnnotation(), 6,
+			'vertical', 'beforeDatasetsDraw', 'line', [], '#42f483', 1));
+
+		/*Diagonal Annotation */
+		this.chartAnnotationLineHorizontalVertical.push(new ChartLineAnnotation(new ChartLabelAnnotation(), -5,
+		'horizontal', 'beforeDatasetsDraw', 'line', [], '#000', 1, 20));
+
 		this.chartAnnotationBubbleAnnotation.push(new ChartBoxAnnotation('beforeDatasetsDraw', 2, 10, 2, 10, 'box', '', '#cccccc'));
 		this.chartAnnotationBubbleAnnotation.push(new ChartBoxAnnotation('beforeDatasetsDraw', 0, 12, 0, 12, 'box', '', '#5ac14b'));
+
 		this.dataBubbleAnnotation.push(new ChartItem('Test 1', [{ x: 13, y: 13, r: 2 }, { x: 1, y: 2, r: 2 }, { x: 15, y: 23, r: 2 },
 		{ x: -2, y: -2, r: 2 }, { x: -10, y: 13, r: 2 }, { x: 23, y: 12, r: 2 }, { x: 4, y: 4, r: 2 }, { x: 5, y: 6, r: 2 },
 		{ x: 2, y: 3, r: 2 }, { x: 1, y: 2, r: 2 }, { x: 3, y: 2, r: 2 }], '', '', true, false, false, 2));
+
 	}
 
-	public doAction(event:any) {
+	public doAction(event: any) {
 		const xValue = this.labels[this.itemSelected._index];
 		const yValue = this.dataPie[0].data[this.itemSelected._index];
 		console.log(xValue);

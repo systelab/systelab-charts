@@ -142,6 +142,7 @@ Clarification of each attribute:
     public borderDash?:Array<number>,
     public borderColor?:string,
     public borderWidth?:string
+    public endValue?:number
 ```
 Clarification of each attribute:
 
@@ -153,6 +154,7 @@ Clarification of each attribute:
 - **borderWidth** define the width of the border.
 - **borderColor** define the color of the box.
 - **label** you can define a label for the annotation, setting the text, position ('left', 'center', 'right'), backgroundColor, fontStyle and the fontColor.
+- **endValue** you can define a end value of the line, drawing a diagonal line.
 
 
 ### Tooltips configuration

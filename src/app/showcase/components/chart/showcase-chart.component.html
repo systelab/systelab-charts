@@ -43,12 +43,18 @@
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Line Chart with Annotation (Lines)</showcase-title>
             <systelab-chart [labels]="labelsLineAnnotation" [data]="dataLineAnnotation" [legend]="legendOff" [typeChart]="'line'" [yMaxValue]="yMaxValue"
-                [yMinValue]="yMinValue" [chartAnnotations]="chartAnnotationLineAnnotation"></systelab-chart>
+                [yMinValue]="yMinValue" [chartAnnotationsLine]="chartAnnotationLineAnnotation"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Bubble Chart with Annotation (Box)</showcase-title>
             <systelab-chart [labels]="labelsLineAnnotation" [data]="dataBubbleAnnotation" [legend]="legendOff" [typeChart]="'bubble'"
-                [chartAnnotations]="chartAnnotationBubbleAnnotation"></systelab-chart>
+                [chartAnnotationsBox]="chartAnnotationBubbleAnnotation"></systelab-chart>
+        </div>
+        <div class="col-md-6  p-2">
+            <showcase-title [href]="'chart'">Bubble Chart with Annotation (Box-Lines)</showcase-title>
+            <systelab-chart [labels]="labelsLineAnnotation" [data]="dataBubbleAnnotation" [legend]="legendOff" [typeChart]="'bubble'"
+                [chartAnnotationsBox]="chartAnnotationBubbleAnnotation" [chartAnnotationsLine]="chartAnnotationLineHorizontalVertical" 
+                ></systelab-chart>
         </div>
     </div>
 </div>
