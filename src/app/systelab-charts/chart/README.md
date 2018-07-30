@@ -5,9 +5,9 @@ Component to show a Chart
 ## Using the component
 
 ```html
-   <systelab-chart [labels]="labels" [data]="data" [legend]="legend" [(itemSelected)]="itemSelected" [typeChart]="typeChart"
+   <systelab-chart [labels]="labels" [data]="data" [showLegend]="legend" [(itemSelected)]="itemSelected" [typeChart]="typeChart"
                 (action)="doAction($event)" [isBackgroundGrid]="isBackgroundGrid" [isHorizontal]="isHorizontal" [lineTension]="lineTension" 
-                [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [chartAnnotations]="chartAnnotationBubbleAnnotation" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [chartTooltipSettings]="chartTooltipSettings"></systelab-chart>
+                [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [chartBoxAnnotations]="chartBoxAnnotations" [chartLineAnnotations]="chartLineAnnotations" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [chartTooltipSettings]="chartTooltipSettings"></systelab-chart>
 ```
 
 
@@ -31,7 +31,7 @@ Set **labels** with the list of labels of the chart.
 
 **itemSelected** is used to notify which item is clicked.
 
-Set **legend** to false, if you want to hide the legend of the chart (by default is defined as true).
+Set **showLegend** to false, if you want to hide the legend of the chart (by default is defined as true).
 
 Set **isBackgroundGrid** to false, if you want to hide the background grid of the chart (by default is defined as true).
 
@@ -90,7 +90,7 @@ Clarification of each attribute:
 - **isGradient** set to true if you want to use a gradient colours.
 - **borderWidth** define the width of the border.
 - **chartType** define different chart type to mix charts.
-- **ChartTooltipItem** define what you want to display in the tooltip of this raw data.
+- **chartTooltipItem** define what you want to display in the tooltip of this raw data.
 
 ```javascript
     this.dataLineBar.push(new chartItem('Line', [13, 20, 21, 15], '', '', false, true, true, 3, 'line'));
@@ -102,7 +102,7 @@ Clarification of each attribute:
 
 You can define two types of annotations, line or box type annotations.
 
-**chartAnnotations** is an array of annotations. Depending on the annotations that you want you show, use the **chartBoxAnnotation** structure or **chartLineAnnotation**.
+**chartBoxAnnotations** and **chartLineAnnotations** are arrays of annotations. Depending on the annotations that you want you show, use the **chartBoxAnnotation** structure or **chartLineAnnotation**.
 
 #### chartBoxAnnotation
 
@@ -142,6 +142,7 @@ Clarification of each attribute:
     public borderDash?:Array<number>,
     public borderColor?:string,
     public borderWidth?:string
+    public endValue?:number
 ```
 Clarification of each attribute:
 
@@ -153,6 +154,7 @@ Clarification of each attribute:
 - **borderWidth** define the width of the border.
 - **borderColor** define the color of the box.
 - **label** you can define a label for the annotation, setting the text, position ('left', 'center', 'right'), backgroundColor, fontStyle and the fontColor.
+- **endValue** you can define a end value of the line, drawing a diagonal line.
 
 
 ### Tooltips configuration

@@ -11,7 +11,7 @@ export class ChartItem {
 
 export class ChartLineAnnotation {
 	constructor(public label: ChartLabelAnnotation, public value: number, public orientation: string, public drawTime: string,
-		public type: string, public borderDash?: Array<number>, public borderColor?: string, public borderWidth?: number) {
+		public type: string, public borderDash?: Array<number>, public borderColor?: string, public borderWidth?: number, public endValue?: number) {
 	}
 }
 
@@ -80,8 +80,9 @@ export class ChartComponent implements AfterViewInit {
 
 	@Input() labels: Array<any> = [];
 	@Input() data: Array<ChartItem> = [];
-	@Input() chartAnnotations: Array<any> = [];
-	@Input() legend = true;
+	@Input() chartLineAnnotations: Array<ChartLineAnnotation> = [];
+	@Input() chartBoxAnnotations: Array<ChartBoxAnnotation> = [];
+	@Input() showLegend = true;
 	@Input() isHorizontal = false;
 	@Input() yMinValue: any;
 	@Input() yMaxValue: any;
@@ -99,8 +100,9 @@ export class ChartComponent implements AfterViewInit {
 	@Input() minValueForRadar: number;
 	@Input() maxValueForRadar: number;
 
-
 	public dataset: Array<any> = [];
+	public boxAnnotations: Array<any> = [];
+	public lineAnnotations: Array<any> = [];
 	public annotations: Array<any> = [];
 	public axesVisible = true;
 	public yAxisLabelVisible = false;
@@ -131,7 +133,6 @@ export class ChartComponent implements AfterViewInit {
 		if (this.yLabelAxis) {
 			this.yAxisLabelVisible = true;
 		}
-
 		if (this.canvas.nativeElement) {
 			cx = this.canvas.nativeElement.getContext('2d');
 		}
@@ -141,9 +142,10 @@ export class ChartComponent implements AfterViewInit {
 		if (this.typeChart === 'pie' || this.typeChart === 'doughnut' || this.typeChart === 'polarArea' || this.typeChart === 'radar') {
 			this.axesVisible = false;
 		}
-
-		this.addAnnotations();
+		this.addLineAnnotations();
+		this.addBoxAnnotations();
 		this.drawChart(cx);
+
 	}
 
 	private drawChart(cx: CanvasRenderingContext2D) {
@@ -173,7 +175,7 @@ export class ChartComponent implements AfterViewInit {
 					},
 					display: true,
 					legend: {
-						display: this.legend
+						display: this.showLegend
 					},
 					scales: {
 						yAxes: [{
@@ -294,6 +296,7 @@ export class ChartComponent implements AfterViewInit {
 					}
 				};
 			}
+
 			this.chart = new Chart(cx, definition);
 		}
 	}
@@ -355,69 +358,93 @@ export class ChartComponent implements AfterViewInit {
 
 	}
 
-	private addAnnotations() {
-		if (this.chartAnnotations) {
+	private addLineAnnotations() {
+		if (this.chartLineAnnotations) {
 			let colorNumber = 0;
-			for (let i = 0; i < this.chartAnnotations.length; i++) {
-				colorNumber = i;
-				if (colorNumber > (this.defaultColors.length - 1)) {
-					colorNumber = 0;
-				}
-				if (!this.chartAnnotations[i].borderColor) {
-					this.chartAnnotations[i].borderColor = this.rgba(this.defaultColors[colorNumber], 1);
-				}
-				if (!this.chartAnnotations[i].borderWidth) {
-					this.chartAnnotations[i].borderWidth = 2;
-				}
-				if (this.chartAnnotations[i].type === 'line') {
-					if (this.chartAnnotations[i].label) {
-						if (!this.chartAnnotations[i].label.backgroundColor) {
-							this.chartAnnotations[i].label.backgroundColor = this.rgba(this.defaultColors[colorNumber + 1], 1);
-						}
-						if (!this.chartAnnotations[i].label.position) {
-							this.chartAnnotations[i].label.position = 'center';
-						}
-						if (!this.chartAnnotations[i].label.fontColor) {
-							this.chartAnnotations[i].label.fontColor = '#ffffff';
-						}
-						if (!this.chartAnnotations[i].label.fontStyle) {
-							this.chartAnnotations[i].label.fontStyle = 'normal';
-						}
-					}
-					this.annotations.push({
-						drawTime: this.chartAnnotations[i].drawTime, id: 'annotation' + i, type: this.chartAnnotations[i].type,
-						mode: this.chartAnnotations[i].orientation, scaleID: 'y-axis-0', value: this.chartAnnotations[i].value,
-						borderColor: this.chartAnnotations[i].borderColor,
-						label: {
-							backgroundColor: this.chartAnnotations[i].label.backgroundColor,
-							position: this.chartAnnotations[i].label.position,
-							content: this.chartAnnotations[i].label.text,
-							fontColor: this.chartAnnotations[i].label.fontColor,
-							enabled: true,
-							fontStyle: this.chartAnnotations[i].label.fontStyle
-						}, borderWidth: this.chartAnnotations[i].borderWidth, borderDash: this.chartAnnotations[i].borderDash
-					});
-				} else if (this.chartAnnotations[i].type === 'box') {
+			for (let i = 0; i < this.chartLineAnnotations.length; i++) {
 
-					if (!this.chartAnnotations[i].backgroundColor) {
-						this.chartAnnotations[i].backgroundColor = 'transparent';
-					}
-
-					this.annotations.push({
-						drawTime: this.chartAnnotations[i].drawTime,
-						id: 'annotation' + i,
-						type: this.chartAnnotations[i].type,
-						backgroundColor: this.chartAnnotations[i].backgroundColor,
-						borderWidth: this.chartAnnotations[i].borderWidth,
-						borderColor: this.chartAnnotations[i].borderColor,
-						xMin: this.chartAnnotations[i].xMin,
-						xMax: this.chartAnnotations[i].xMax,
-						yMin: this.chartAnnotations[i].yMin,
-						yMax: this.chartAnnotations[i].yMax,
-						xScaleID: 'x-axis-0',
-						yScaleID: 'y-axis-0'
-					});
+				if (!this.chartLineAnnotations[i].borderColor) {
+					this.chartLineAnnotations[i].borderColor = this.rgba(this.defaultColors[this.getColorNumber(i)], 1);
 				}
+				if (!this.chartLineAnnotations[i].borderWidth) {
+					this.chartLineAnnotations[i].borderWidth = 2;
+				}
+
+				if (this.chartLineAnnotations[i].label) {
+					if (!this.chartLineAnnotations[i].label.backgroundColor) {
+						this.chartLineAnnotations[i].label.backgroundColor = this.rgba(this.defaultColors[colorNumber + 1], 1);
+					}
+					if (!this.chartLineAnnotations[i].label.position) {
+						this.chartLineAnnotations[i].label.position = 'center';
+					}
+					if (!this.chartLineAnnotations[i].label.fontColor) {
+						this.chartLineAnnotations[i].label.fontColor = '#ffffff';
+					}
+					if (!this.chartLineAnnotations[i].label.fontStyle) {
+						this.chartLineAnnotations[i].label.fontStyle = 'normal';
+					}
+				}
+				let scaleId = 'y-axis-0';
+				if (this.chartLineAnnotations[i].orientation === 'vertical') {
+					scaleId = 'x-axis-0';
+				}
+				this.annotations.push({
+					drawTime: this.chartLineAnnotations[i].drawTime, id: 'annotation' + (this.annotations.length + 1), type: this.chartLineAnnotations[i].type,
+					mode: this.chartLineAnnotations[i].orientation, scaleID: scaleId, value: this.chartLineAnnotations[i].value,
+					borderColor: this.chartLineAnnotations[i].borderColor, endValue: this.chartLineAnnotations[i].endValue,
+					label: {
+						backgroundColor: this.chartLineAnnotations[i].label.backgroundColor,
+						position: this.chartLineAnnotations[i].label.position,
+						content: this.chartLineAnnotations[i].label.text,
+						fontColor: this.chartLineAnnotations[i].label.fontColor,
+						enabled: true,
+						fontStyle: this.chartLineAnnotations[i].label.fontStyle
+					}, borderWidth: this.chartLineAnnotations[i].borderWidth, borderDash: this.chartLineAnnotations[i].borderDash
+				});
+			}
+		}
+	}
+	private getColorNumber(i: number): number {
+		let colorNumber = i;
+		if (colorNumber > (this.defaultColors.length - 1)) {
+			colorNumber = 0;
+		}
+		return colorNumber;
+	}
+
+
+	private addBoxAnnotations() {
+		if (this.chartBoxAnnotations) {
+			let colorNumber = 0;
+			for (let i = 0; i < this.chartBoxAnnotations.length; i++) {
+				
+				if (!this.chartBoxAnnotations[i].borderColor) {
+					this.chartBoxAnnotations[i].borderColor = this.rgba(this.defaultColors[this.getColorNumber(i)], 1);
+				}
+
+				if (!this.chartBoxAnnotations[i].borderWidth) {
+					this.chartBoxAnnotations[i].borderWidth = 2;
+				}
+
+				if (!this.chartBoxAnnotations[i].backgroundColor) {
+					this.chartBoxAnnotations[i].backgroundColor = 'transparent';
+				}
+
+				this.annotations.push({
+					drawTime: this.chartBoxAnnotations[i].drawTime,
+					id: 'annotation' + (this.annotations.length + 1),
+					type: this.chartBoxAnnotations[i].type,
+					backgroundColor: this.chartBoxAnnotations[i].backgroundColor,
+					borderWidth: this.chartBoxAnnotations[i].borderWidth,
+					borderColor: this.chartBoxAnnotations[i].borderColor,
+					xMin: this.chartBoxAnnotations[i].xMin,
+					xMax: this.chartBoxAnnotations[i].xMax,
+					yMin: this.chartBoxAnnotations[i].yMin,
+					yMax: this.chartBoxAnnotations[i].yMax,
+					xScaleID: 'x-axis-0',
+					yScaleID: 'y-axis-0'
+				});
+
 			}
 		}
 	}
@@ -435,7 +462,8 @@ export class ChartComponent implements AfterViewInit {
 		this.chart.destroy();
 		this.dataset = [];
 		this.setData(cx);
-		this.addAnnotations();
+		this.addBoxAnnotations();
+		this.addLineAnnotations();
 		this.drawChart(cx);
 	}
 }
