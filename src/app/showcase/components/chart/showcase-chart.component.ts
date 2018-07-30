@@ -20,9 +20,9 @@ export class ShowcaseChartComponent {
 	public dataLineBubble: Array<ChartItem> = [];
 	public dataLineAnnotation: Array<ChartItem> = [];
 	public dataBubbleAnnotation: Array<ChartItem> = [];
-	public chartAnnotationLineAnnotation: Array<ChartLineAnnotation> = [];
-	public chartAnnotationLineHorizontalVertical: Array<ChartLineAnnotation> = [];
-	public chartAnnotationBubbleAnnotation: Array<ChartBoxAnnotation> = [];
+	public chartLineAnnotation: Array<ChartLineAnnotation> = [];
+	public chartMultipleAnnotation: Array<ChartLineAnnotation> = [];
+	public chartBubbleAnnotation: Array<ChartBoxAnnotation> = [];
 	public labels: Array<string> = [];
 	public labelsLineAnnotation: Array<any> = [];
 	public isBackgroundGrid = false;
@@ -74,35 +74,35 @@ export class ShowcaseChartComponent {
 
 		this.dataLineAnnotation.push(new ChartItem('Data Values', [2.4, 2, 1.8, 2.7, 2.5, 2.4, 2.3, 2.8, 2.3, 2.4, 2.7, 2.1, 1.9, 1.8],
 			'', '', false, true, false, 3));
-		this.chartAnnotationLineAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation(), 2.5,
+		this.chartLineAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation(), 2.5,
 			'horizontal', 'beforeDatasetsDraw', 'line', [], '#000000', 1));
-		this.chartAnnotationLineAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation('-1 SD', 'left', '#e53c29'), 1.5,
+		this.chartLineAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation('-1 SD', 'left', '#e53c29'), 1.5,
 			'horizontal', 'beforeDatasetsDraw', 'line', [5, 15], '#e53c29', 1));
-		this.chartAnnotationLineAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation('+1 SD', 'left', '#e53c29'), 3.5,
+		this.chartLineAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation('+1 SD', 'left', '#e53c29'), 3.5,
 			'horizontal', 'beforeDatasetsDraw', 'line', [5, 15], '#e53c29', 1));
-		this.chartAnnotationLineAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation('+2 SD', 'left', '#287ae5'), 4.5,
+		this.chartLineAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation('+2 SD', 'left', '#287ae5'), 4.5,
 			'horizontal', 'beforeDatasetsDraw', 'line', [5, 15], '#287ae5', 1));
-		this.chartAnnotationLineAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation('-2 SD', 'left', '#287ae5'), 0.5,
+		this.chartLineAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation('-2 SD', 'left', '#287ae5'), 0.5,
 			'horizontal', 'beforeDatasetsDraw', 'line', [5, 15], '#287ae5', 1));
 		for (let g = 1; g <= this.dataLineAnnotation[0].data.length; g++) {
 			this.labelsLineAnnotation.push(g);
 		}
 
-		this.chartAnnotationLineHorizontalVertical.push(new ChartLineAnnotation(new ChartLabelAnnotation(), 4.5,
+		this.chartMultipleAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation(), 4.5,
 			'horizontal', 'beforeDatasetsDraw', 'line', [5, 15], '#287ae5', 1));
-		this.chartAnnotationLineHorizontalVertical.push(new ChartLineAnnotation(new ChartLabelAnnotation(), 9,
+		this.chartMultipleAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation(), 9,
 			'horizontal', 'beforeDatasetsDraw', 'line', [5, 15], '#287ae5', 1));
-		this.chartAnnotationLineHorizontalVertical.push(new ChartLineAnnotation(new ChartLabelAnnotation('Label', 'left', '#287ae5'), -1,
+		this.chartMultipleAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation('Label', 'left', '#287ae5'), -1,
 			'horizontal', 'beforeDatasetsDraw', 'line', [5, 15], '#287ae5', 1));
-		this.chartAnnotationLineHorizontalVertical.push(new ChartLineAnnotation(new ChartLabelAnnotation(), 6,
+		this.chartMultipleAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation(), 6,
 			'vertical', 'beforeDatasetsDraw', 'line', [], '#42f483', 1));
 
 		/*Diagonal Annotation */
-		this.chartAnnotationLineHorizontalVertical.push(new ChartLineAnnotation(new ChartLabelAnnotation(), -5,
+		this.chartMultipleAnnotation.push(new ChartLineAnnotation(new ChartLabelAnnotation(), -5,
 		'horizontal', 'beforeDatasetsDraw', 'line', [], '#000', 1, 20));
 
-		this.chartAnnotationBubbleAnnotation.push(new ChartBoxAnnotation('beforeDatasetsDraw', 2, 10, 2, 10, 'box', '', '#cccccc'));
-		this.chartAnnotationBubbleAnnotation.push(new ChartBoxAnnotation('beforeDatasetsDraw', 0, 12, 0, 12, 'box', '', '#5ac14b'));
+		this.chartBubbleAnnotation.push(new ChartBoxAnnotation('beforeDatasetsDraw', 2, 10, 2, 10, 'box', '', '#cccccc'));
+		this.chartBubbleAnnotation.push(new ChartBoxAnnotation('beforeDatasetsDraw', 0, 12, 0, 12, 'box', '', '#5ac14b'));
 
 		this.dataBubbleAnnotation.push(new ChartItem('Test 1', [{ x: 13, y: 13, r: 2 }, { x: 1, y: 2, r: 2 }, { x: 15, y: 23, r: 2 },
 		{ x: -2, y: -2, r: 2 }, { x: -10, y: 13, r: 2 }, { x: 23, y: 12, r: 2 }, { x: 4, y: 4, r: 2 }, { x: 5, y: 6, r: 2 },
