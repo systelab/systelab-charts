@@ -5,15 +5,15 @@ Component to show a Chart
 ## Using the component
 
 ```html
-   <systelab-chart [labels]="labels" [data]="data" [showLegend]="legend" [(itemSelected)]="itemSelected" [typeChart]="typeChart"
+   <systelab-chart [labels]="labels" [data]="data" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="type"
                 (action)="doAction($event)" [isBackgroundGrid]="isBackgroundGrid" [isHorizontal]="isHorizontal" [lineTension]="lineTension" 
-                [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [chartBoxAnnotations]="chartBoxAnnotations" [chartLineAnnotations]="chartLineAnnotations" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [chartTooltipSettings]="chartTooltipSettings"></systelab-chart>
+                [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [annotations]="annotations" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings"></systelab-chart>
 ```
 
 
 This component use the **Chart.js** library, and is able to display different chart types in a easy way.
 
-Set **typeChart** with the chart type that you want to display. You can chose between the following charts types
+Set **type** with the chart type that you want to display. You can chose between the following charts types
 
 - Bar
 - Line
@@ -102,7 +102,7 @@ Clarification of each attribute:
 
 You can define two types of annotations, line or box type annotations.
 
-**chartBoxAnnotations** and **chartLineAnnotations** are arrays of annotations. Depending on the annotations that you want you show, use the **chartBoxAnnotation** structure or **chartLineAnnotation**.
+**annotations** is an array of annotations. Depending on the annotations that you want you show, use the **chartBoxAnnotation** structure or **chartLineAnnotation**.
 
 #### chartBoxAnnotation
 
@@ -164,7 +164,7 @@ You can configure the content of the tooltips and the style.
 There are some general configuration, as well as specific ones.
 
 #### General Configuration
-The chart have a public attribute **chartTooltipSettings**, where you can setup the following styles:
+The chart have a public attribute **tooltipSettings**, where you can setup the following styles:
 
 - **backgroundColor**, is the color of the background of the tooltips.
 - **titleFontSize**, is the font size of the title label in the tooltips.
