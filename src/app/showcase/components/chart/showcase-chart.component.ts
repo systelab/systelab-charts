@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { ChartComponent, ChartItem, ChartLineAnnotation, ChartBoxAnnotation, ChartLabelAnnotation, ChartTooltipItem, ChartTooltipSettings, Annotation } from '../../../systelab-charts/chart/chart.component';
+import { ChartComponent, ChartItem, ChartLineAnnotation, ChartBoxAnnotation, ChartLabelAnnotation, ChartTooltipItem, ChartTooltipSettings, Annotation, ChartRangeIndicatorSettings } from '../../../systelab-charts/chart/chart.component';
 
 @Component({
 	selector: 'showcase-chart',
@@ -32,6 +32,9 @@ export class ShowcaseChartComponent {
 	public xLabelAxis = 'Title X';
 	public yLabelAxis = 'Title Y';
 	public tooltipSettings = new ChartTooltipSettings();
+	public rangeIndicatorSettings1: ChartRangeIndicatorSettings;
+	public rangeIndicatorSettings2: ChartRangeIndicatorSettings;
+	public rangeIndicatorSettings3: ChartRangeIndicatorSettings;
 	@ViewChild('lineChart') lineChart: ChartComponent;
 
 	constructor() {
@@ -99,7 +102,7 @@ export class ShowcaseChartComponent {
 
 		/*Diagonal Annotation */
 		this.chartMultipleAnnotations.push(new ChartLineAnnotation(new ChartLabelAnnotation(), -5,
-		'horizontal', 'beforeDatasetsDraw', 'line', [], '#000', 1, 20));
+			'horizontal', 'beforeDatasetsDraw', 'line', [], '#000', 1, 20));
 		this.chartMultipleAnnotations.push(new ChartBoxAnnotation('beforeDatasetsDraw', 2, 10, 2, 10, 'box', '', '#cccccc'));
 		this.chartMultipleAnnotations.push(new ChartBoxAnnotation('beforeDatasetsDraw', 0, 12, 0, 12, 'box', '', '#5ac14b'));
 
@@ -109,6 +112,10 @@ export class ShowcaseChartComponent {
 		this.dataBubbleAnnotations.push(new ChartItem('Test 1', [{ x: 13, y: 13, r: 2 }, { x: 1, y: 2, r: 2 }, { x: 15, y: 23, r: 2 },
 		{ x: -2, y: -2, r: 2 }, { x: -10, y: 13, r: 2 }, { x: 23, y: 12, r: 2 }, { x: 4, y: 4, r: 2 }, { x: 5, y: 6, r: 2 },
 		{ x: 2, y: 3, r: 2 }, { x: 1, y: 2, r: 2 }, { x: 3, y: 2, r: 2 }], '', '', true, false, false, 2));
+
+		this.rangeIndicatorSettings1 = new ChartRangeIndicatorSettings(0, 100, 25, 45, true, [], '', '#7b7c7c', 11, '#ccc', 50);
+		this.rangeIndicatorSettings2 = new ChartRangeIndicatorSettings(-5, 10, 2.5, 3.5, true, [], '#bab7b6', '', 13, '#ccc', 50);
+		this.rangeIndicatorSettings3 = new ChartRangeIndicatorSettings(-5, 5, 2.5, 2, true, ["#cccccc", "#ffffff", "#ffffff", "#cccccc"], '#d34343', '#ccc', 11, '#8e8e8e', 50);
 
 	}
 

@@ -1,11 +1,12 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js';
 import 'chartjs-plugin-annotation';
+import { SafeHtml, DomSanitizer } from '../../../../node_modules/@angular/platform-browser';
 
 export class ChartItem {
 	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string,
-	            public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number, public chartType?: string,
-	            public chartTooltipItem?: ChartTooltipItem) {
+		public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number, public chartType?: string,
+		public chartTooltipItem?: ChartTooltipItem) {
 	}
 }
 
@@ -17,21 +18,21 @@ export class Annotation {
 
 export class ChartLineAnnotation extends Annotation {
 	constructor(public label: ChartLabelAnnotation, public value: number, public orientation: string, drawTime: string,
-	            type: string, public borderDash?: Array<number>, borderColor?: string, borderWidth?: number, public endValue?: number) {
+		type: string, public borderDash?: Array<number>, borderColor?: string, borderWidth?: number, public endValue?: number) {
 		super(drawTime, type, borderColor, borderWidth);
 	}
 }
 
 export class ChartBoxAnnotation extends Annotation {
 	constructor(drawTime: string, public xMin: number, public xMax: number, public yMin: number, public yMax: number,
-	            type: string, public backgroundColor?: string, borderColor?: string, borderWidth?: number) {
+		type: string, public backgroundColor?: string, borderColor?: string, borderWidth?: number) {
 		super(drawTime, type, borderColor, borderWidth);
 	}
 }
 
 export class ChartLabelAnnotation {
 	constructor(public text?: string, public position?: string, public backgroundColor?: string, public fontStyle?: string,
-	            public fontColor?: string) {
+		public fontColor?: string) {
 	}
 }
 
@@ -42,7 +43,7 @@ export class ChartTooltipItem {
 
 export class ChartTooltipSettings {
 	constructor(public backgroundColor?: string, public borderColor?: string, public borderWidth?: number, public bodyFontColor?: string,
-	            public bodyFontSize?: number, public titleFontSize?: number, public titleFontColor?: string) {
+		public bodyFontSize?: number, public titleFontSize?: number, public titleFontColor?: string) {
 		this.bodyFontColor = '#ffffff';
 		this.borderColor = 'rgba(0,0,0,0)';
 		this.borderWidth = 0;
@@ -53,8 +54,14 @@ export class ChartTooltipSettings {
 	}
 }
 
+export class ChartRangeIndicatorSettings {
+	constructor(public minValue: number, public maxValue: number, public intervalSize: number, public value: number, public borders?: boolean, public colors?: Array<string>, public colorIndicator?: string,
+		public borderColor?: string, public fontSize?: number, public fontColor?: string, public height?: number) {
+	}
+}
+
 @Component({
-	selector:    'systelab-chart',
+	selector: 'systelab-chart',
 	templateUrl: './chart.component.html'
 })
 export class ChartComponent implements AfterViewInit {
@@ -72,6 +79,7 @@ export class ChartComponent implements AfterViewInit {
 		[231, 233, 237],
 		[77, 83, 96]];
 	chart = Chart;
+	public svg: SafeHtml;
 	private _itemSelected: any;
 
 	@Input()
@@ -103,6 +111,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() responsive = true;
 	@Input() maintainAspectRatio = true;
 	@Input() tooltipSettings: ChartTooltipSettings;
+	@Input() rangeIndicatorSettings: ChartRangeIndicatorSettings;
 
 	@Input() minValueForRadar: number;
 	@Input() maxValueForRadar: number;
@@ -117,6 +126,8 @@ export class ChartComponent implements AfterViewInit {
 	@Output() action = new EventEmitter();
 
 	@ViewChild('canvas') canvas: ElementRef;
+
+	constructor(private sanitizer: DomSanitizer) { }
 
 	public ngAfterViewInit() {
 
@@ -139,18 +150,22 @@ export class ChartComponent implements AfterViewInit {
 		if (this.yLabelAxis) {
 			this.yAxisLabelVisible = true;
 		}
-		if (this.canvas.nativeElement) {
-			cx = this.canvas.nativeElement.getContext('2d');
+		if (this.type === 'rangeIndicator') {
+			this.drawRangeIndicatorChart();
 		}
+		else {
+			if (this.canvas.nativeElement) {
+				cx = this.canvas.nativeElement.getContext('2d');
+			}
 
-		this.setData(cx);
+			this.setData(cx);
 
-		if (this.type === 'pie' || this.type === 'doughnut' || this.type === 'polarArea' || this.type === 'radar') {
-			this.axesVisible = false;
+			if (this.type === 'pie' || this.type === 'doughnut' || this.type === 'polarArea' || this.type === 'radar') {
+				this.axesVisible = false;
+			}
+			this.addAnnotations();
+			this.drawChart(cx);
 		}
-		this.addAnnotations();
-		this.drawChart(cx);
-
 	}
 
 	private drawChart(cx: CanvasRenderingContext2D) {
@@ -159,68 +174,68 @@ export class ChartComponent implements AfterViewInit {
 			const definition: any = {
 				type: this.type,
 				data: {
-					labels:   this.labels,
+					labels: this.labels,
 					datasets: this.dataset
 				},
 
 				options: {
-					responsive:          this.responsive,
+					responsive: this.responsive,
 					maintainAspectRatio: this.maintainAspectRatio,
-					onClick:             (evt, item) => {
+					onClick: (evt, item) => {
 						const e = item[0];
 						if (e) {
 							this.itemSelected = e;
 							this.action.emit();
 						}
 					},
-					elements:            {
+					elements: {
 						line: {
 							tension: this.lineTension
 						}
 					},
-					display:             true,
-					legend:              {
+					display: true,
+					legend: {
 						display: this.showLegend
 					},
-					scales:              {
+					scales: {
 						yAxes: [{
-							ticks:      {
-								min:     this.yMinValue,
-								max:     this.yMaxValue,
+							ticks: {
+								min: this.yMinValue,
+								max: this.yMaxValue,
 								display: this.axesVisible
 							},
-							gridLines:  {
-								display:    this.isBackgroundGrid,
+							gridLines: {
+								display: this.isBackgroundGrid,
 								drawBorder: this.axesVisible
 							},
 							scaleLabel: {
-								display:     this.yAxisLabelVisible,
+								display: this.yAxisLabelVisible,
 								labelString: this.yLabelAxis
 							}
 						}],
 						xAxes: [{
-							ticks:      {
-								min:     this.xMinValue,
-								max:     this.xMaxValue,
+							ticks: {
+								min: this.xMinValue,
+								max: this.xMaxValue,
 								display: this.axesVisible
 							},
-							gridLines:  {
-								display:    this.isBackgroundGrid,
+							gridLines: {
+								display: this.isBackgroundGrid,
 								drawBorder: this.axesVisible
 							},
 							scaleLabel: {
-								display:     this.xAxisLabelVisible,
+								display: this.xAxisLabelVisible,
 								labelString: this.xLabelAxis
 							}
 						}]
 					},
-					annotation:          {
-						events:      ['click'],
+					annotation: {
+						events: ['click'],
 						annotations: this._annotations
 					},
-					tooltips:            {
-						callbacks:       {
-							title:      function(tooltipItem, data) {
+					tooltips: {
+						callbacks: {
+							title: function (tooltipItem, data) {
 								const item = data.datasets[tooltipItem[0].datasetIndex];
 								if (item.chartTooltipItem) {
 									if (item.chartTooltipItem.title) {
@@ -228,7 +243,7 @@ export class ChartComponent implements AfterViewInit {
 									}
 								}
 							},
-							label:      function(tooltipItem, data) {
+							label: function (tooltipItem, data) {
 								const item = data.datasets[tooltipItem.datasetIndex];
 								let label = data.datasets[tooltipItem.datasetIndex].label;
 								if (!label) {
@@ -257,7 +272,7 @@ export class ChartComponent implements AfterViewInit {
 								}
 								return label;
 							},
-							afterLabel: function(tooltipItem, data) {
+							afterLabel: function (tooltipItem, data) {
 								const item = data.datasets[tooltipItem.datasetIndex];
 								let afterLabel = '';
 								if (item.chartTooltipItem) {
@@ -283,12 +298,12 @@ export class ChartComponent implements AfterViewInit {
 							}
 						},
 						backgroundColor: this.tooltipSettings.backgroundColor,
-						titleFontSize:   this.tooltipSettings.titleFontSize,
-						titleFontColor:  this.tooltipSettings.titleFontColor,
-						bodyFontColor:   this.tooltipSettings.bodyFontColor,
-						bodyFontSize:    this.tooltipSettings.bodyFontSize,
-						borderColor:     this.tooltipSettings.borderColor,
-						borderWidth:     this.tooltipSettings.borderWidth
+						titleFontSize: this.tooltipSettings.titleFontSize,
+						titleFontColor: this.tooltipSettings.titleFontColor,
+						bodyFontColor: this.tooltipSettings.bodyFontColor,
+						bodyFontSize: this.tooltipSettings.bodyFontSize,
+						borderColor: this.tooltipSettings.borderColor,
+						borderWidth: this.tooltipSettings.borderWidth
 					}
 				}
 			};
@@ -353,9 +368,9 @@ export class ChartComponent implements AfterViewInit {
 					backgroundColors = this.data[i].backgroundColor;
 				}
 				this.dataset.push({
-					label:            this.data[i].label, data: this.data[i].data, borderColor: borderColors,
-					backgroundColor:  backgroundColors, fill: this.data[i].fill,
-					type:             this.data[i].chartType, borderWidth: this.data[i].borderWidth, showLine: this.data[i].showLine,
+					label: this.data[i].label, data: this.data[i].data, borderColor: borderColors,
+					backgroundColor: backgroundColors, fill: this.data[i].fill,
+					type: this.data[i].chartType, borderWidth: this.data[i].borderWidth, showLine: this.data[i].showLine,
 					chartTooltipItem: this.data[i].chartTooltipItem
 				});
 			}
@@ -405,16 +420,16 @@ export class ChartComponent implements AfterViewInit {
 			scaleId = 'x-axis-0';
 		}
 		this._annotations.push({
-			drawTime:       lineAnnotation.drawTime, id: 'annotation' + (this._annotations.length + 1), type: lineAnnotation.type,
-			mode:           lineAnnotation.orientation, scaleID: scaleId, value: lineAnnotation.value,
-			borderColor:    lineAnnotation.borderColor, endValue: lineAnnotation.endValue,
-			label:          {
+			drawTime: lineAnnotation.drawTime, id: 'annotation' + (this._annotations.length + 1), type: lineAnnotation.type,
+			mode: lineAnnotation.orientation, scaleID: scaleId, value: lineAnnotation.value,
+			borderColor: lineAnnotation.borderColor, endValue: lineAnnotation.endValue,
+			label: {
 				backgroundColor: lineAnnotation.label.backgroundColor,
-				position:        lineAnnotation.label.position,
-				content:         lineAnnotation.label.text,
-				fontColor:       lineAnnotation.label.fontColor,
-				enabled:         true,
-				fontStyle:       lineAnnotation.label.fontStyle
+				position: lineAnnotation.label.position,
+				content: lineAnnotation.label.text,
+				fontColor: lineAnnotation.label.fontColor,
+				enabled: true,
+				fontStyle: lineAnnotation.label.fontStyle
 			}, borderWidth: lineAnnotation.borderWidth, borderDash: lineAnnotation.borderDash
 		});
 	}
@@ -442,18 +457,18 @@ export class ChartComponent implements AfterViewInit {
 		}
 
 		this._annotations.push({
-			drawTime:        boxAnnotation.drawTime,
-			id:              'annotation' + (this._annotations.length + 1),
-			type:            boxAnnotation.type,
+			drawTime: boxAnnotation.drawTime,
+			id: 'annotation' + (this._annotations.length + 1),
+			type: boxAnnotation.type,
 			backgroundColor: boxAnnotation.backgroundColor,
-			borderWidth:     boxAnnotation.borderWidth,
-			borderColor:     boxAnnotation.borderColor,
-			xMin:            boxAnnotation.xMin,
-			xMax:            boxAnnotation.xMax,
-			yMin:            boxAnnotation.yMin,
-			yMax:            boxAnnotation.yMax,
-			xScaleID:        'x-axis-0',
-			yScaleID:        'y-axis-0'
+			borderWidth: boxAnnotation.borderWidth,
+			borderColor: boxAnnotation.borderColor,
+			xMin: boxAnnotation.xMin,
+			xMax: boxAnnotation.xMax,
+			yMin: boxAnnotation.yMin,
+			yMax: boxAnnotation.yMax,
+			xScaleID: 'x-axis-0',
+			yScaleID: 'y-axis-0'
 		});
 
 	}
@@ -473,5 +488,165 @@ export class ChartComponent implements AfterViewInit {
 		this.setData(cx);
 		this.addAnnotations();
 		this.drawChart(cx);
+	}
+
+	private getXPosition(value: number): number {
+		if (value < 10) {
+			return 3;
+		}
+		else if (value < 100) {
+			return 7;
+		}
+		else {
+			return 10;
+		}
+	}
+	private drawRangeIndicatorChart() {
+		if (this.rangeIndicatorSettings) {
+			let height = 50;
+			let paddingLeft = 25;
+			let value = 0;
+			let totalNegative = 0;
+			let totalPositive = 0;
+			let totalWidthNegative = 0;
+			let totalWidthPositive = 0;
+			let countGap = 0;
+			let valueLabel = 0;
+
+			if (this.rangeIndicatorSettings.height) {
+				height = this.rangeIndicatorSettings.height;
+				paddingLeft = height / 2;
+			}
+			let content = this.openSvg(height + 30);
+
+			let totalWidth = paddingLeft;
+
+			let fontSize = 12;
+			if (this.rangeIndicatorSettings.fontSize) {
+				fontSize = this.rangeIndicatorSettings.fontSize;
+			}
+			let fontColor = '#808182';
+			if (this.rangeIndicatorSettings.fontColor) {
+				fontColor = this.rangeIndicatorSettings.fontColor;
+			}
+
+			let fillIndicator = this.rgba(this.defaultColors[0], 1);
+			if (this.rangeIndicatorSettings.colorIndicator) {
+				fillIndicator = this.rangeIndicatorSettings.colorIndicator;
+			}
+
+			if (this.rangeIndicatorSettings.value) {
+				value = this.rangeIndicatorSettings.value;
+			}
+
+			if (this.rangeIndicatorSettings.minValue < 0) {
+				countGap = (this.rangeIndicatorSettings.maxValue + ((-1) * this.rangeIndicatorSettings.minValue)) / this.rangeIndicatorSettings.intervalSize;
+			}
+			else {
+				countGap = (this.rangeIndicatorSettings.maxValue - this.rangeIndicatorSettings.minValue) / this.rangeIndicatorSettings.intervalSize;
+			}
+
+			for (let i = 1; i <= countGap; i++) {
+				let value = 0;
+				if (i == 1) {
+					valueLabel = this.rangeIndicatorSettings.minValue;
+				}
+				else {
+					valueLabel = valueLabel + this.rangeIndicatorSettings.intervalSize;
+				}
+
+				if (valueLabel < 0) {
+					value = valueLabel * (-1);
+					totalNegative += value;
+					totalWidthNegative = totalWidth + height;
+				}
+				else {
+					totalPositive += value;
+					totalWidthPositive = totalWidth + height;
+				}
+
+				let fill = this.rgba(this.defaultColors[i + 1], 1);
+				if (this.rangeIndicatorSettings.colors) {
+					if (this.rangeIndicatorSettings.colors[i - 1]) {
+						fill = this.rangeIndicatorSettings.colors[i - 1];
+					}
+				}
+
+				let border = 'none';
+				if (this.rangeIndicatorSettings.borders === true) {
+					if (this.rangeIndicatorSettings.borderColor) {
+						border = this.rangeIndicatorSettings.borderColor;
+					}
+				}
+
+				let xLabel = totalWidth - this.getXPosition(value);
+				content += this.addText(content, xLabel, (height + 15), fontColor, fontSize, valueLabel);
+				content += this.addRectangle(content,height,height,totalWidth,fill,border);
+				totalWidth = totalWidth + height;
+			}
+
+			let lastValue = this.rangeIndicatorSettings.maxValue;
+			if (lastValue < 0) {
+				lastValue = lastValue * (-1);
+				totalNegative += lastValue;
+			}
+			else {
+				totalPositive += lastValue;
+			}
+			content = this.addText(content, (totalWidth - this.getXPosition(lastValue)), (height + 15), fontColor, fontSize, this.rangeIndicatorSettings.maxValue);
+
+			let point3 = 0;
+			if (totalNegative > 0) {
+				if (value < 0) {
+					point3 = Math.round(((totalNegative + value) * ((totalWidthNegative + paddingLeft))) / totalNegative) - paddingLeft;
+				}
+				else {
+					if (value === 0) {
+						point3 = totalWidthNegative;
+					}
+					else {
+						point3 = Math.round((value * ((totalWidthPositive - totalWidthNegative))) / totalPositive) + totalWidthNegative;
+					}
+				}
+			}
+			else {
+				if (value === 0) {
+					point3 = paddingLeft;
+				}
+				else {
+					point3 = Math.round((value * (totalWidth - paddingLeft)) / lastValue) + paddingLeft;
+				}
+			}
+
+			const point1 = point3 - (height / 2);
+			const point2 = point3 + (height / 2);
+			content = this.addPolygon(content, point1, point2, point3, height, fillIndicator, this.rangeIndicatorSettings.value);
+
+			this.svg = this.closeSvg(content);
+		}
+	}
+	private addRectangle(content: string, width: number, height: number, x: number, fill: string, border: string): string {
+		content += ' <rect width="' + width + '" height="' + height + '" x="' + x + '" style="fill:' + fill + ';stroke:' + border + '" />';
+		return content;
+	}
+	private addPolygon(content: string, p1: number, p2: number, p3: number, height: number, fill: string, value: number): string {
+		content += '<polygon  points="' + p1 + ',0 ' + p2 + ',0 ' + p3 + ',' + height + '" style="fill:' + fill + ';stroke:none;stroke-width:0;cursor:pointer">';
+		content += '       <title>' + value + '</title>';
+		content += '</polygon>';
+		return content;
+	}
+	private addText(content: string, x: number, y: number, fontColor: string, fontSize: number, value: number): string {
+		content += '<text x="' + x + '" y="' + y + '" fill="' + fontColor + '" style="font-size:' + fontSize + 'px;">' + value + '</text>';
+		return content;
+	}
+	private openSvg(height: number): string {
+		let content = '<svg class="w-100" style="height:' + (height + 30) + 'px">';
+		content += '<g>';
+		return content;
+	}
+	private closeSvg(content: string): SafeHtml {
+		content += ' </g>';
+		content += ' </svg>';
+		return this.sanitizer.bypassSecurityTrustHtml(content);
 	}
 }

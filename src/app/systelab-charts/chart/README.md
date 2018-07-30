@@ -22,6 +22,7 @@ Set **type** with the chart type that you want to display. You can chose between
 - Bubble
 - Radar
 - Polar Area
+- Range Indicator
 
 Also you can show together different chart types, for example a Bar chart with Line chart. In order to do this, you should define the chart type in the properties of the data that you provide to the component. (See Data properties)
 
@@ -204,3 +205,29 @@ There is the option to display the label that you want instead of the coordinate
 ### Update the Chart Content
 
 There is a public method 'doUpdate', to reset the chart with the new data.
+
+
+### Range Indicator chart setting
+
+The structure for the Range Indicator chart names **ChartRangeIndicatorSettings**.
+
+```javascript
+    public minValue: number, //start value
+    public maxValue: number, //end value
+    public intervalSize: number, //size for each gap
+    public value: number, // value for the indicator
+    public height?: number // gaps height
+    public colors?: Array<string>, // array of the colors for the gaps
+    public borders?: boolean, // display borders or not
+    public borderColor?: string, // color of the border of the gaps
+    public colorIndicator?: string, // fill color for the indicator
+    public fontSize?: number, // label font size
+    public fontColor?: string, // label color
+```
+```javascript
+    this.rangeIndicatorSettings = new ChartRangeIndicatorSettings(-5, 5, 2.5, 2, true, ["#cccccc", "#ffffff", "#ffffff", "#cccccc"], '#d34343', '#ccc', 11, '#8e8e8e', 50);
+```
+
+```html
+   <systelab-chart [rangeIndicatorSettings]="rangeIndicatorSettings" [type]="'rangeIndicator'"></systelab-chart>
+```
