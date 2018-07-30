@@ -3,57 +3,57 @@
         <div class="col-md-6  p-2">
 
             <showcase-title [href]="'chart'">Line Chart</showcase-title>
-            <systelab-chart #lineChart [labels]="labels" [data]="dataLine" [showLegend]="legend" [typeChart]="'line'" [lineTension]="'0.4'"
-                [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [chartTooltipSettings]="chartTooltipSettings"></systelab-chart>
+            <systelab-chart #lineChart [labels]="labels" [data]="dataLine" [showLegend]="legend" [type]="'line'" [lineTension]="'0.4'"
+                [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings"></systelab-chart>
             <button class="btn btn-primary btn-sm" (click)="doChange();">Random Line Chart Values</button>
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Bar Chart</showcase-title>
-            <systelab-chart [labels]="labels" [data]="dataBar" [showLegend]="legend" [typeChart]="'bar'"></systelab-chart>
+            <systelab-chart [labels]="labels" [data]="dataBar" [showLegend]="legend" [type]="'bar'"></systelab-chart>
         </div>
         <div class="col-md-6 p-2">
             <showcase-title [href]="'chart'">Horizontal Bar Chart</showcase-title>
-            <systelab-chart [labels]="labels" [data]="dataBar" [isHorizontal]="'true'" [showLegend]="legend" [typeChart]="'bar'"></systelab-chart>
+            <systelab-chart [labels]="labels" [data]="dataBar" [isHorizontal]="'true'" [showLegend]="legend" [type]="'bar'"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Radar Chart</showcase-title>
-            <systelab-chart [labels]="labels" [data]="dataRadar" [showLegend]="legend" [typeChart]="'radar'" [isBackgroundGrid]="isBackgroundGrid"></systelab-chart>
+            <systelab-chart [labels]="labels" [data]="dataRadar" [showLegend]="legend" [type]="'radar'" [isBackgroundGrid]="isBackgroundGrid"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Pie Chart</showcase-title>
-            <systelab-chart [labels]="labels" [data]="dataPie" [showLegend]="legend" [(itemSelected)]="itemSelected" [typeChart]="'pie'"
+            <systelab-chart [labels]="labels" [data]="dataPie" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="'pie'"
                 (action)="doAction($event)" [isBackgroundGrid]="isBackgroundGrid"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Doughnut Chart</showcase-title>
-            <systelab-chart [labels]="labels" [data]="dataDoughnut" [showLegend]="legendOff" [typeChart]="'doughnut'" [isBackgroundGrid]="isBackgroundGrid"></systelab-chart>
+            <systelab-chart [labels]="labels" [data]="dataDoughnut" [showLegend]="legendOff" [type]="'doughnut'" [isBackgroundGrid]="isBackgroundGrid"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Bubble Chart</showcase-title>
-            <systelab-chart [labels]="labels" [data]="dataBubble" [showLegend]="legend" [typeChart]="'bubble'"></systelab-chart>
+            <systelab-chart [labels]="labels" [data]="dataBubble" [showLegend]="legend" [type]="'bubble'"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Polar Area Chart</showcase-title>
-            <systelab-chart [labels]="labels" [data]="dataPolarArea" [showLegend]="legend" [typeChart]="'polarArea'" [isBackgroundGrid]="isBackgroundGrid"></systelab-chart>
+            <systelab-chart [labels]="labels" [data]="dataPolarArea" [showLegend]="legend" [type]="'polarArea'" [isBackgroundGrid]="isBackgroundGrid"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Mixed Line Chart and Bar Chart</showcase-title>
-            <systelab-chart [labels]="labels" [data]="dataLineBar" [showLegend]="legend" [typeChart]="'bar'" [lineTension]="'0.4'"></systelab-chart>
+            <systelab-chart [labels]="labels" [data]="dataLineBar" [showLegend]="legend" [type]="'bar'" [lineTension]="'0.4'"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Line Chart with Annotation (Lines)</showcase-title>
-            <systelab-chart [labels]="labelsLineAnnotation" [data]="dataLineAnnotation" [showLegend]="legendOff" [typeChart]="'line'" [yMaxValue]="yMaxValue"
-                [yMinValue]="yMinValue" [chartLineAnnotations]="chartLineAnnotation"></systelab-chart>
+            <systelab-chart [labels]="labelLineAnnotations" [data]="dataLineAnnotation" [showLegend]="legendOff" [type]="'line'" [yMaxValue]="yMaxValue"
+                [yMinValue]="yMinValue" [annotations]="chartLineAnnotations"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Bubble Chart with Annotation (Box)</showcase-title>
-            <systelab-chart [labels]="labelsLineAnnotation" [data]="dataBubbleAnnotation" [showLegend]="legendOff" [typeChart]="'bubble'"
-                [chartBoxAnnotations]="chartBubbleAnnotation"></systelab-chart>
+            <systelab-chart [labels]="labelLineAnnotations" [data]="dataBubbleAnnotations" [showLegend]="legendOff" [type]="'bubble'"
+                [annotations]="chartBubbleAnnotations"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Bubble Chart with Annotation (Box-Lines)</showcase-title>
-            <systelab-chart [labels]="labelsLineAnnotation" [data]="dataBubbleAnnotation" [showLegend]="legendOff" [typeChart]="'bubble'"
-                [chartBoxAnnotations]="chartBubbleAnnotation" [chartLineAnnotations]="chartMultipleAnnotation" 
+            <systelab-chart [labels]="labelLineAnnotations" [data]="dataBubbleAnnotations" [showLegend]="legendOff" [type]="'bubble'"
+                [annotations]="chartMultipleAnnotations"
                 ></systelab-chart>
         </div>
     </div>

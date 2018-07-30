@@ -4,26 +4,34 @@ import 'chartjs-plugin-annotation';
 
 export class ChartItem {
 	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string,
-		public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number, public chartType?: string,
-		public chartTooltipItem?: ChartTooltipItem) {
+	            public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number, public chartType?: string,
+	            public chartTooltipItem?: ChartTooltipItem) {
 	}
 }
 
-export class ChartLineAnnotation {
-	constructor(public label: ChartLabelAnnotation, public value: number, public orientation: string, public drawTime: string,
-		public type: string, public borderDash?: Array<number>, public borderColor?: string, public borderWidth?: number, public endValue?: number) {
+export class Annotation {
+	constructor(public drawTime: string, public type: string, public borderColor?: string, public borderWidth?: number) {
+
 	}
 }
 
-export class ChartBoxAnnotation {
-	constructor(public drawTime: string, public xMin: number, public xMax: number, public yMin: number, public yMax: number,
-		public type: string, public backgroundColor?: string, public borderColor?: string, public borderWidth?: number) {
+export class ChartLineAnnotation extends Annotation {
+	constructor(public label: ChartLabelAnnotation, public value: number, public orientation: string, drawTime: string,
+	            type: string, public borderDash?: Array<number>, borderColor?: string, borderWidth?: number, public endValue?: number) {
+		super(drawTime, type, borderColor, borderWidth);
+	}
+}
+
+export class ChartBoxAnnotation extends Annotation {
+	constructor(drawTime: string, public xMin: number, public xMax: number, public yMin: number, public yMax: number,
+	            type: string, public backgroundColor?: string, borderColor?: string, borderWidth?: number) {
+		super(drawTime, type, borderColor, borderWidth);
 	}
 }
 
 export class ChartLabelAnnotation {
 	constructor(public text?: string, public position?: string, public backgroundColor?: string, public fontStyle?: string,
-		public fontColor?: string) {
+	            public fontColor?: string) {
 	}
 }
 
@@ -34,7 +42,7 @@ export class ChartTooltipItem {
 
 export class ChartTooltipSettings {
 	constructor(public backgroundColor?: string, public borderColor?: string, public borderWidth?: number, public bodyFontColor?: string,
-		public bodyFontSize?: number, public titleFontSize?: number, public titleFontColor?: string) {
+	            public bodyFontSize?: number, public titleFontSize?: number, public titleFontColor?: string) {
 		this.bodyFontColor = '#ffffff';
 		this.borderColor = 'rgba(0,0,0,0)';
 		this.borderWidth = 0;
@@ -46,11 +54,11 @@ export class ChartTooltipSettings {
 }
 
 @Component({
-	selector: 'systelab-chart',
+	selector:    'systelab-chart',
 	templateUrl: './chart.component.html'
 })
 export class ChartComponent implements AfterViewInit {
-	public defaultColors: Array<number[]> = [
+	private defaultColors: Array<number[]> = [
 		[255, 99, 132],
 		[54, 162, 235],
 		[255, 206, 86],
@@ -80,8 +88,7 @@ export class ChartComponent implements AfterViewInit {
 
 	@Input() labels: Array<any> = [];
 	@Input() data: Array<ChartItem> = [];
-	@Input() chartLineAnnotations: Array<ChartLineAnnotation> = [];
-	@Input() chartBoxAnnotations: Array<ChartBoxAnnotation> = [];
+	@Input() annotations: Array<ChartLineAnnotation | ChartBoxAnnotation> = [];
 	@Input() showLegend = true;
 	@Input() isHorizontal = false;
 	@Input() yMinValue: any;
@@ -92,21 +99,20 @@ export class ChartComponent implements AfterViewInit {
 	@Input() xLabelAxis: string;
 	@Input() lineTension: number;
 	@Input() isBackgroundGrid = true;
-	@Input() typeChart: string;
+	@Input() type: string;
 	@Input() responsive = true;
 	@Input() maintainAspectRatio = true;
-	@Input() chartTooltipSettings: ChartTooltipSettings;
+	@Input() tooltipSettings: ChartTooltipSettings;
 
 	@Input() minValueForRadar: number;
 	@Input() maxValueForRadar: number;
 
-	public dataset: Array<any> = [];
-	public boxAnnotations: Array<any> = [];
-	public lineAnnotations: Array<any> = [];
-	public annotations: Array<any> = [];
-	public axesVisible = true;
-	public yAxisLabelVisible = false;
-	public xAxisLabelVisible = false;
+	private dataset: Array<any> = [];
+
+	private _annotations: Array<any> = [];
+	private axesVisible = true;
+	private yAxisLabelVisible = false;
+	private xAxisLabelVisible = false;
 
 	@Output() action = new EventEmitter();
 
@@ -116,14 +122,14 @@ export class ChartComponent implements AfterViewInit {
 
 		let cx: CanvasRenderingContext2D;
 
-		if (this.typeChart === 'bar') {
+		if (this.type === 'bar') {
 			if (this.isHorizontal) {
-				this.typeChart = 'horizontalBar';
+				this.type = 'horizontalBar';
 			}
 		}
 
-		if (!this.chartTooltipSettings) {
-			this.chartTooltipSettings = new ChartTooltipSettings();
+		if (!this.tooltipSettings) {
+			this.tooltipSettings = new ChartTooltipSettings();
 		}
 
 		/* Axes Labels */
@@ -139,11 +145,10 @@ export class ChartComponent implements AfterViewInit {
 
 		this.setData(cx);
 
-		if (this.typeChart === 'pie' || this.typeChart === 'doughnut' || this.typeChart === 'polarArea' || this.typeChart === 'radar') {
+		if (this.type === 'pie' || this.type === 'doughnut' || this.type === 'polarArea' || this.type === 'radar') {
 			this.axesVisible = false;
 		}
-		this.addLineAnnotations();
-		this.addBoxAnnotations();
+		this.addAnnotations();
 		this.drawChart(cx);
 
 	}
@@ -152,70 +157,70 @@ export class ChartComponent implements AfterViewInit {
 		/* Draw the chart */
 		if (this.canvas.nativeElement) {
 			const definition: any = {
-				type: this.typeChart,
+				type: this.type,
 				data: {
-					labels: this.labels,
+					labels:   this.labels,
 					datasets: this.dataset
 				},
 
 				options: {
-					responsive: this.responsive,
+					responsive:          this.responsive,
 					maintainAspectRatio: this.maintainAspectRatio,
-					onClick: (evt, item) => {
+					onClick:             (evt, item) => {
 						const e = item[0];
 						if (e) {
 							this.itemSelected = e;
 							this.action.emit();
 						}
 					},
-					elements: {
+					elements:            {
 						line: {
 							tension: this.lineTension
 						}
 					},
-					display: true,
-					legend: {
+					display:             true,
+					legend:              {
 						display: this.showLegend
 					},
-					scales: {
+					scales:              {
 						yAxes: [{
-							ticks: {
-								min: this.yMinValue,
-								max: this.yMaxValue,
+							ticks:      {
+								min:     this.yMinValue,
+								max:     this.yMaxValue,
 								display: this.axesVisible
 							},
-							gridLines: {
-								display: this.isBackgroundGrid,
+							gridLines:  {
+								display:    this.isBackgroundGrid,
 								drawBorder: this.axesVisible
 							},
 							scaleLabel: {
-								display: this.yAxisLabelVisible,
+								display:     this.yAxisLabelVisible,
 								labelString: this.yLabelAxis
 							}
 						}],
 						xAxes: [{
-							ticks: {
-								min: this.xMinValue,
-								max: this.xMaxValue,
+							ticks:      {
+								min:     this.xMinValue,
+								max:     this.xMaxValue,
 								display: this.axesVisible
 							},
-							gridLines: {
-								display: this.isBackgroundGrid,
+							gridLines:  {
+								display:    this.isBackgroundGrid,
 								drawBorder: this.axesVisible
 							},
 							scaleLabel: {
-								display: this.xAxisLabelVisible,
+								display:     this.xAxisLabelVisible,
 								labelString: this.xLabelAxis
 							}
 						}]
 					},
-					annotation: {
-						events: ['click'],
-						annotations: this.annotations
+					annotation:          {
+						events:      ['click'],
+						annotations: this._annotations
 					},
-					tooltips: {
-						callbacks: {
-							title: function (tooltipItem, data) {
+					tooltips:            {
+						callbacks:       {
+							title:      function(tooltipItem, data) {
 								const item = data.datasets[tooltipItem[0].datasetIndex];
 								if (item.chartTooltipItem) {
 									if (item.chartTooltipItem.title) {
@@ -223,7 +228,7 @@ export class ChartComponent implements AfterViewInit {
 									}
 								}
 							},
-							label: function (tooltipItem, data) {
+							label:      function(tooltipItem, data) {
 								const item = data.datasets[tooltipItem.datasetIndex];
 								let label = data.datasets[tooltipItem.datasetIndex].label;
 								if (!label) {
@@ -252,7 +257,7 @@ export class ChartComponent implements AfterViewInit {
 								}
 								return label;
 							},
-							afterLabel: function (tooltipItem, data) {
+							afterLabel: function(tooltipItem, data) {
 								const item = data.datasets[tooltipItem.datasetIndex];
 								let afterLabel = '';
 								if (item.chartTooltipItem) {
@@ -277,18 +282,18 @@ export class ChartComponent implements AfterViewInit {
 								return afterLabel;
 							}
 						},
-						backgroundColor: this.chartTooltipSettings.backgroundColor,
-						titleFontSize: this.chartTooltipSettings.titleFontSize,
-						titleFontColor: this.chartTooltipSettings.titleFontColor,
-						bodyFontColor: this.chartTooltipSettings.bodyFontColor,
-						bodyFontSize: this.chartTooltipSettings.bodyFontSize,
-						borderColor: this.chartTooltipSettings.borderColor,
-						borderWidth: this.chartTooltipSettings.borderWidth
+						backgroundColor: this.tooltipSettings.backgroundColor,
+						titleFontSize:   this.tooltipSettings.titleFontSize,
+						titleFontColor:  this.tooltipSettings.titleFontColor,
+						bodyFontColor:   this.tooltipSettings.bodyFontColor,
+						bodyFontSize:    this.tooltipSettings.bodyFontSize,
+						borderColor:     this.tooltipSettings.borderColor,
+						borderWidth:     this.tooltipSettings.borderWidth
 					}
 				}
 			};
 
-			if (this.typeChart === 'radar') {
+			if (this.type === 'radar') {
 				definition.options.scale = {
 					ticks: {
 						min: this.minValueForRadar,
@@ -317,7 +322,7 @@ export class ChartComponent implements AfterViewInit {
 					gradientStroke.addColorStop(1, this.rgba(this.defaultColors[1], 1));
 					borderColors = gradientStroke;
 					backgroundColors = gradientStroke;
-				} else if ((this.typeChart === 'pie' || this.typeChart === 'doughnut' || this.typeChart === 'polarArea') && !this.data[i].chartType) {
+				} else if ((this.type === 'pie' || this.type === 'doughnut' || this.type === 'polarArea') && !this.data[i].chartType) {
 					const backgroundColorList: Array<any> = [];
 					const borderColorList: Array<any> = [];
 					for (let j = 0; j < this.data[i].data.length; j++) {
@@ -348,9 +353,9 @@ export class ChartComponent implements AfterViewInit {
 					backgroundColors = this.data[i].backgroundColor;
 				}
 				this.dataset.push({
-					label: this.data[i].label, data: this.data[i].data, borderColor: borderColors,
-					backgroundColor: backgroundColors, fill: this.data[i].fill,
-					type: this.data[i].chartType, borderWidth: this.data[i].borderWidth, showLine: this.data[i].showLine,
+					label:            this.data[i].label, data: this.data[i].data, borderColor: borderColors,
+					backgroundColor:  backgroundColors, fill: this.data[i].fill,
+					type:             this.data[i].chartType, borderWidth: this.data[i].borderWidth, showLine: this.data[i].showLine,
 					chartTooltipItem: this.data[i].chartTooltipItem
 				});
 			}
@@ -358,52 +363,62 @@ export class ChartComponent implements AfterViewInit {
 
 	}
 
-	private addLineAnnotations() {
-		if (this.chartLineAnnotations) {
-			let colorNumber = 0;
-			for (let i = 0; i < this.chartLineAnnotations.length; i++) {
+	private addAnnotations() {
+		if (this.annotations) {
+			for (let i = 0; i < this.annotations.length; i++) {
+				if (this.annotations[i] instanceof ChartLineAnnotation) {
+					this.addLineAnnotation(<ChartLineAnnotation>this.annotations[i], this.rgba(this.defaultColors[this.getColorNumber(i)], 1), this.rgba(this.defaultColors[this.getColorNumber(i) + 1], 1));
+				}
+				if (this.annotations[i] instanceof ChartBoxAnnotation) {
+					this.addBoxAnnotation(<ChartBoxAnnotation>this.annotations[i], this.rgba(this.defaultColors[this.getColorNumber(i)], 1));
 
-				if (!this.chartLineAnnotations[i].borderColor) {
-					this.chartLineAnnotations[i].borderColor = this.rgba(this.defaultColors[this.getColorNumber(i)], 1);
 				}
-				if (!this.chartLineAnnotations[i].borderWidth) {
-					this.chartLineAnnotations[i].borderWidth = 2;
-				}
-
-				if (this.chartLineAnnotations[i].label) {
-					if (!this.chartLineAnnotations[i].label.backgroundColor) {
-						this.chartLineAnnotations[i].label.backgroundColor = this.rgba(this.defaultColors[colorNumber + 1], 1);
-					}
-					if (!this.chartLineAnnotations[i].label.position) {
-						this.chartLineAnnotations[i].label.position = 'center';
-					}
-					if (!this.chartLineAnnotations[i].label.fontColor) {
-						this.chartLineAnnotations[i].label.fontColor = '#ffffff';
-					}
-					if (!this.chartLineAnnotations[i].label.fontStyle) {
-						this.chartLineAnnotations[i].label.fontStyle = 'normal';
-					}
-				}
-				let scaleId = 'y-axis-0';
-				if (this.chartLineAnnotations[i].orientation === 'vertical') {
-					scaleId = 'x-axis-0';
-				}
-				this.annotations.push({
-					drawTime: this.chartLineAnnotations[i].drawTime, id: 'annotation' + (this.annotations.length + 1), type: this.chartLineAnnotations[i].type,
-					mode: this.chartLineAnnotations[i].orientation, scaleID: scaleId, value: this.chartLineAnnotations[i].value,
-					borderColor: this.chartLineAnnotations[i].borderColor, endValue: this.chartLineAnnotations[i].endValue,
-					label: {
-						backgroundColor: this.chartLineAnnotations[i].label.backgroundColor,
-						position: this.chartLineAnnotations[i].label.position,
-						content: this.chartLineAnnotations[i].label.text,
-						fontColor: this.chartLineAnnotations[i].label.fontColor,
-						enabled: true,
-						fontStyle: this.chartLineAnnotations[i].label.fontStyle
-					}, borderWidth: this.chartLineAnnotations[i].borderWidth, borderDash: this.chartLineAnnotations[i].borderDash
-				});
 			}
 		}
 	}
+
+	private addLineAnnotation(lineAnnotation: ChartLineAnnotation, defaultBorderColor: any, defaultBackgroundColor: any) {
+
+		if (!lineAnnotation.borderColor) {
+			lineAnnotation.borderColor = defaultBorderColor;
+		}
+		if (!lineAnnotation.borderWidth) {
+			lineAnnotation.borderWidth = 2;
+		}
+
+		if (lineAnnotation.label) {
+			if (!lineAnnotation.label.backgroundColor) {
+				lineAnnotation.label.backgroundColor = defaultBackgroundColor;
+			}
+			if (!lineAnnotation.label.position) {
+				lineAnnotation.label.position = 'center';
+			}
+			if (!lineAnnotation.label.fontColor) {
+				lineAnnotation.label.fontColor = '#ffffff';
+			}
+			if (!lineAnnotation.label.fontStyle) {
+				lineAnnotation.label.fontStyle = 'normal';
+			}
+		}
+		let scaleId = 'y-axis-0';
+		if (lineAnnotation.orientation === 'vertical') {
+			scaleId = 'x-axis-0';
+		}
+		this._annotations.push({
+			drawTime:       lineAnnotation.drawTime, id: 'annotation' + (this._annotations.length + 1), type: lineAnnotation.type,
+			mode:           lineAnnotation.orientation, scaleID: scaleId, value: lineAnnotation.value,
+			borderColor:    lineAnnotation.borderColor, endValue: lineAnnotation.endValue,
+			label:          {
+				backgroundColor: lineAnnotation.label.backgroundColor,
+				position:        lineAnnotation.label.position,
+				content:         lineAnnotation.label.text,
+				fontColor:       lineAnnotation.label.fontColor,
+				enabled:         true,
+				fontStyle:       lineAnnotation.label.fontStyle
+			}, borderWidth: lineAnnotation.borderWidth, borderDash: lineAnnotation.borderDash
+		});
+	}
+
 	private getColorNumber(i: number): number {
 		let colorNumber = i;
 		if (colorNumber > (this.defaultColors.length - 1)) {
@@ -412,41 +427,35 @@ export class ChartComponent implements AfterViewInit {
 		return colorNumber;
 	}
 
+	private addBoxAnnotation(boxAnnotation: ChartBoxAnnotation, defaultBorderColor: any) {
 
-	private addBoxAnnotations() {
-		if (this.chartBoxAnnotations) {
-			let colorNumber = 0;
-			for (let i = 0; i < this.chartBoxAnnotations.length; i++) {
-				
-				if (!this.chartBoxAnnotations[i].borderColor) {
-					this.chartBoxAnnotations[i].borderColor = this.rgba(this.defaultColors[this.getColorNumber(i)], 1);
-				}
-
-				if (!this.chartBoxAnnotations[i].borderWidth) {
-					this.chartBoxAnnotations[i].borderWidth = 2;
-				}
-
-				if (!this.chartBoxAnnotations[i].backgroundColor) {
-					this.chartBoxAnnotations[i].backgroundColor = 'transparent';
-				}
-
-				this.annotations.push({
-					drawTime: this.chartBoxAnnotations[i].drawTime,
-					id: 'annotation' + (this.annotations.length + 1),
-					type: this.chartBoxAnnotations[i].type,
-					backgroundColor: this.chartBoxAnnotations[i].backgroundColor,
-					borderWidth: this.chartBoxAnnotations[i].borderWidth,
-					borderColor: this.chartBoxAnnotations[i].borderColor,
-					xMin: this.chartBoxAnnotations[i].xMin,
-					xMax: this.chartBoxAnnotations[i].xMax,
-					yMin: this.chartBoxAnnotations[i].yMin,
-					yMax: this.chartBoxAnnotations[i].yMax,
-					xScaleID: 'x-axis-0',
-					yScaleID: 'y-axis-0'
-				});
-
-			}
+		if (!boxAnnotation.borderColor) {
+			boxAnnotation.borderColor = defaultBorderColor;
 		}
+
+		if (!boxAnnotation.borderWidth) {
+			boxAnnotation.borderWidth = 2;
+		}
+
+		if (!boxAnnotation.backgroundColor) {
+			boxAnnotation.backgroundColor = 'transparent';
+		}
+
+		this._annotations.push({
+			drawTime:        boxAnnotation.drawTime,
+			id:              'annotation' + (this._annotations.length + 1),
+			type:            boxAnnotation.type,
+			backgroundColor: boxAnnotation.backgroundColor,
+			borderWidth:     boxAnnotation.borderWidth,
+			borderColor:     boxAnnotation.borderColor,
+			xMin:            boxAnnotation.xMin,
+			xMax:            boxAnnotation.xMax,
+			yMin:            boxAnnotation.yMin,
+			yMax:            boxAnnotation.yMax,
+			xScaleID:        'x-axis-0',
+			yScaleID:        'y-axis-0'
+		});
+
 	}
 
 	public rgba(colour: Array<number>, alpha: number): string {
@@ -462,8 +471,7 @@ export class ChartComponent implements AfterViewInit {
 		this.chart.destroy();
 		this.dataset = [];
 		this.setData(cx);
-		this.addBoxAnnotations();
-		this.addLineAnnotations();
+		this.addAnnotations();
 		this.drawChart(cx);
 	}
 }
