@@ -28,8 +28,8 @@ script:
 after_success: |
   if [ -n "$GITHUB_API_KEY" ] && [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     git clone https://github.com/systelab/systelab.github.io.git
-    rm systelab.github.io/charts/*
-    cp dist/* systelab.github.io/charts
+    rm -rf systelab.github.io/charts/*
+    cp -r dist/* systelab.github.io/charts
     sed -i -e "s~base href=\"/\"~base href=\"/charts/\"~g" ./systelab.github.io/charts/index.html
     cd systelab.github.io
     git add .
