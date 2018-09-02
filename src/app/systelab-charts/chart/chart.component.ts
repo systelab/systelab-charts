@@ -103,6 +103,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() responsive = true;
 	@Input() maintainAspectRatio = true;
 	@Input() tooltipSettings: ChartTooltipSettings;
+	@Input() isStacked = false;
 
 	@Input() minValueForRadar: number;
 	@Input() maxValueForRadar: number;
@@ -184,6 +185,7 @@ export class ChartComponent implements AfterViewInit {
 					},
 					scales:              {
 						yAxes: [{
+							stacked : this.isStacked,
 							ticks:      {
 								min:     this.yMinValue,
 								max:     this.yMaxValue,
@@ -199,6 +201,7 @@ export class ChartComponent implements AfterViewInit {
 							}
 						}],
 						xAxes: [{
+							stacked : this.isStacked,
 							ticks:      {
 								min:     this.xMinValue,
 								max:     this.xMaxValue,
