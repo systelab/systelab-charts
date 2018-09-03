@@ -21,8 +21,8 @@
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Pie Chart</showcase-title>
-            <systelab-chart [labels]="labels" [data]="dataPie" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="'pie'"
-                (action)="doAction($event)" [isBackgroundGrid]="isBackgroundGrid"></systelab-chart>
+            <systelab-chart [labels]="labels" [data]="dataPie" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="'pie'" (action)="doAction($event)"
+                [isBackgroundGrid]="isBackgroundGrid"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Doughnut Chart</showcase-title>
@@ -53,8 +53,11 @@
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Bubble Chart with Annotation (Box-Lines)</showcase-title>
             <systelab-chart [labels]="labelLineAnnotations" [data]="dataBubbleAnnotations" [showLegend]="legendOff" [type]="'bubble'"
-                [annotations]="chartMultipleAnnotations"
-                ></systelab-chart>
+                [annotations]="chartMultipleAnnotations"></systelab-chart>
+        </div>
+        <div class="col-md-6  p-2">
+            <showcase-title [href]="'chart'">Stacked Bar Chart</showcase-title>
+            <systelab-chart [labels]="labels" [data]="dataBar" [isStacked]="isStacked" [showLegend]="legend" [type]="'bar'"></systelab-chart>
         </div>
     </div>
 </div>

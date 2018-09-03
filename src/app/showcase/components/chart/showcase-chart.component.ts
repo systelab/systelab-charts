@@ -32,6 +32,7 @@ export class ShowcaseChartComponent {
 	public xLabelAxis = 'Title X';
 	public yLabelAxis = 'Title Y';
 	public tooltipSettings = new ChartTooltipSettings();
+	public isStacked = true;
 	@ViewChild('lineChart') lineChart: ChartComponent;
 
 	constructor() {
@@ -99,7 +100,7 @@ export class ShowcaseChartComponent {
 
 		/*Diagonal Annotation */
 		this.chartMultipleAnnotations.push(new ChartLineAnnotation(new ChartLabelAnnotation(), -5,
-		'horizontal', 'beforeDatasetsDraw', 'line', [], '#000', 1, 20));
+			'horizontal', 'beforeDatasetsDraw', 'line', [], '#000', 1, 20));
 		this.chartMultipleAnnotations.push(new ChartBoxAnnotation('beforeDatasetsDraw', 2, 10, 2, 10, 'box', '', '#cccccc'));
 		this.chartMultipleAnnotations.push(new ChartBoxAnnotation('beforeDatasetsDraw', 0, 12, 0, 12, 'box', '', '#5ac14b'));
 

@@ -7,7 +7,7 @@ Component to show a Chart
 ```html
    <systelab-chart [labels]="labels" [data]="data" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="type"
                 (action)="doAction($event)" [isBackgroundGrid]="isBackgroundGrid" [isHorizontal]="isHorizontal" [lineTension]="lineTension" 
-                [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [annotations]="annotations" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings"></systelab-chart>
+                [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [annotations]="annotations" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings" [isStacked]="isStacked"></systelab-chart>
 ```
 
 
@@ -54,6 +54,8 @@ Set **isBackgroundGrid** to false, if you want to hide the background grid of th
 **maxValueForRadar** is the max value for the radar.
 
 Set **isHorizontal** to true, if you want that display a bar chart in horizontal view (by default is defined as false).
+
+Set **isStacked** to true, if you want that display a bar chart with stacked columns (by default is defined as false).
 
 ### Data
 
