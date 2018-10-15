@@ -23,82 +23,52 @@ Set **type** with the chart type that you want to display. You can chose between
 - Radar
 - Polar Area
 
-Also you can show together different chart types, for example a Bar chart with Line chart. In order to do this, you should define the chart type in the properties of the data that you provide to the component. (See Data properties)
+Also you can show together different chart types, for example a Bar chart with Line chart. In order to do this, you should define the chart type in the properties of the data that you provide to the component. 
 
-Set **labels** with the list of labels of the chart.
-
-**action** is going to emit the event when you clicked in a item in the chart.
-
-**itemSelected** is used to notify which item is clicked.
-
-Set **showLegend** to false, if you want to hide the legend of the chart (by default is defined as true).
-
-Set **isBackgroundGrid** to false, if you want to hide the background grid of the chart (by default is defined as true).
-
-**lineTension** is the tension of the line joining the points, min value is 0.
-
-**yMinValue** is the min value of the axis Y.
-
-**yMaxValue** is the max value of the axis Y.
-
-**xMinValue** is the min value of the axis X.
-
-**xMaxValue** is the max value of the axis X.
-
-**xLabelAxis** define the title of the Axis X.
-
-**yLabelAxis** define the title of the Axis Y.
-
-**minValueForRadar** is the min value for the radar.
-
-**maxValueForRadar** is the max value for the radar.
-
-Set **isHorizontal** to true, if you want that display a bar chart in horizontal view (by default is defined as false).
-
-Set **isStacked** to true, if you want that display a bar chart with stacked columns (by default is defined as false).
-
-### Data
-
-Is an array with the items of the Chart. Each item has the follow structure:
-
-```javascript
-    public label: string,
-    public data: Array<any>,
-    public borderColor?: string,
-    public backgroundColor?: string,
-    public fill?:boolean,
-    public showLine?:boolean,
-    public isGradient?: boolean,
-    public borderWidth?:string,
-    public chartType?: string,
-    public chartTooltipItem?: ChartTooltipItem
-
-```
-
-Here is an example:
-
+Single example:
 ```javascript
     this.dataLine.push(new chartItem('Only Line', [13, 20, 21, 15], '', '', false, true, false, 3));
 ```
 
-Clarification of each attribute:
-
-- **label** is the label name of the item.
-- **data** list of values of the item.
-- **borderColor** color in Hexadecimal for the border.
-- **backgroundColor**  color in Hexadecimal for the background.
-- **fill** set to false if you want a transparent background.
-- **showLine** set to false if you only want to display the area and not the border.
-- **isGradient** set to true if you want to use a gradient colours.
-- **borderWidth** define the width of the border.
-- **chartType** define different chart type to mix charts.
-- **chartTooltipItem** define what you want to display in the tooltip of this raw data.
-
+Multiple charts example:
 ```javascript
     this.dataLineBar.push(new chartItem('Line', [13, 20, 21, 15], '', '', false, true, true, 3, 'line'));
-	this.dataLineBar.push(new chartItem('Bar', [10, 20, 10, 15], '', '', true, true, false, 3));
 ```
 
+## Properties
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| labels | Array<string> | | list of labels of the chart |
+| **itemSelected** | any | | is used to notify which item is clicked |
+| showLegend | boolean | true | Define the visibility of the legend |
+| isBackgroundGrid | boolean | true | Define if you want a grid backgropund or not |
+| lineTension | number | 0 | Define the tension of the line |
+| yMinValue | any | 0 | Min value of the axis Y |
+| yMaxValue | any | 0 | Max value of the axis Y |
+| xMinValue | any | 0 | Min value of the axis X |
+| xMaxValue | any | 0 | Max value of the axis X |
+| xLabelAxis | string | 0 | Define the title of the Axis X |
+| yLabelAxis | string | 0 | Define the title of the Axis Y |
+| minValueForRadar | number | 0 | Min value for the radar |
+| maxValueForRadar | number | 0 | Max value for the radar |
+| isHorizontal | boolean | false | Set to true, if you want that display a bar chart in horizontal view |
+| isStacked | boolean | false | Set to true, if you want that display a bar chart with stacked columns |
+
+#### Data
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| label | string| | Label name of the item |
+| data | Array<any> | | List of values of the item |
+| borderColor | string |  | Color in Hexadecimal for the border |
+| backgroundColor | string |  | Color in Hexadecimal for the background |
+| fill | boolean | true | Set to false if you want a transparent background |
+| showLine | boolean | true | Set to false if you only want to display the area and not the border |
+| isGradient | boolean | false | Set to true if you want to use a gradient colours |
+| borderWidth | string |  | Define the width of the border |
+| chartType | string |  | Define different chart type to mix charts |
+| chartTooltipItem | ChartTooltipItem |  | Define what you want to display in the tooltip of this raw data |
 
 ### Annotations
 
@@ -107,33 +77,32 @@ You can define two types of annotations, line or box type annotations.
 **annotations** is an array of annotations. Depending on the annotations that you want you show, use the **chartBoxAnnotation** structure or **chartLineAnnotation**.
 
 #### chartBoxAnnotation
-
-```javascript
-    public drawTime: string,
-    public type: string,
-    public xMin: number,
-    public xMax: number,
-    public yMin: number,
-    public yMax: number,
-    public backgroundColor?:string,
-    public borderColor?:string,
-    public borderWidth?:string
-```
-
-Clarification of each attribute:
-
-- **drawTime** you can set to draw 'afterDatasetsDraw' or 'beforeDatasetsDraw'.
-- **type** in this case will be 'box'.
-- **xMin** min value in the axis X.
-- **xMax**  max value in the axis X.
-- **yMin** min value in the axis Y.
-- **yMax** max value in the axis Y.
-- **backgroundColor** define the color of the box area.
-- **borderWidth** define the width of the border.
-- **borderColor** define the color of the box.
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| drawTime | string| | Set to draw 'afterDatasetsDraw' or 'beforeDatasetsDraw' |
+| type | string | | In this case will be 'box' |
+| xMin | number |  | Min value in the axis X |
+| xMax | number |  | Max value in the axis X |
+| yMin | number |  | Min value in the axis Y |
+| yMax | number |  | Max value in the axis Y |
+| backgroundColor | string | | Define the color of the box area |
+| borderColor | string |  | Define the width of the border |
+| borderWidth | string |  | Define the color of the box |
 
 
 #### chartLineAnnotation
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| label | chartLabelAnnotation| | Set to draw 'afterDatasetsDraw' or 'beforeDatasetsDraw' |
+| type | string | | In this case will be 'box' |
+| xMin | number |  | Min value in the axis X |
+| xMax | number |  | Max value in the axis X |
+| yMin | number |  | Min value in the axis Y |
+| yMax | number |  | Max value in the axis Y |
+| backgroundColor | string | | Define the color of the box area |
+| borderColor | string |  | Define the width of the border |
+| borderWidth | string |  | Define the color of the box |
 
 ```javascript
     public label: chartLabelAnnotation,
@@ -203,6 +172,9 @@ There is the option to display the label that you want instead of the coordinate
 [{ x: 13, y: 13, r: 4, t: 'Tooltip label' }, { x: 1, y: 2, r: 3 }]
 ```
 
-### Update the Chart Content
+## Events
 
-There is a public method 'doUpdate', to reset the chart with the new data.
+| Name | Parameters | Description |
+| ---- |:----------:| ------------|
+| doUpdate || Reset the chart with the new data.|
+|action|Is going to emit the event when you clicked in a item in the chart|
