@@ -160,4 +160,4 @@ There is the option to display the label that you want instead of the coordinate
 | Name | Parameters | Description |
 | ---- |:----------:| ------------|
 | doUpdate || Reset the chart with the new data.|
-|action|Is going to emit the event when you clicked in a item in the chart|
+|action||Is going to emit the event when you clicked in a item in the chart|
