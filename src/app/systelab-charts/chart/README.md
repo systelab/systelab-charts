@@ -54,8 +54,9 @@ Multiple charts example:
 | maxValueForRadar | number | 0 | Max value for the radar |
 | isHorizontal | boolean | false | Set to true, if you want that display a bar chart in horizontal view |
 | isStacked | boolean | false | Set to true, if you want that display a bar chart with stacked columns |
+| data | Array<ChartItem> |  | List of data |
 
-#### Data
+#### ChartItem
 
 | Name | Type | Default | Description |
 | ---- |:----:|:-------:| ----------- |
@@ -94,69 +95,52 @@ You can define two types of annotations, line or box type annotations.
 
 | Name | Type | Default | Description |
 | ---- |:----:|:-------:| ----------- |
-| label | chartLabelAnnotation| | Set to draw 'afterDatasetsDraw' or 'beforeDatasetsDraw' |
-| type | string | | In this case will be 'box' |
-| xMin | number |  | Min value in the axis X |
-| xMax | number |  | Max value in the axis X |
-| yMin | number |  | Min value in the axis Y |
-| yMax | number |  | Max value in the axis Y |
-| backgroundColor | string | | Define the color of the box area |
-| borderColor | string |  | Define the width of the border |
-| borderWidth | string |  | Define the color of the box |
-
-```javascript
-    public label: chartLabelAnnotation,
-    public value: number,
-    public orientation: string,
-    public drawTime: string,
-    public type: string,
-    public borderDash?:Array<number>,
-    public borderColor?:string,
-    public borderWidth?:string
-    public endValue?:number
-```
-Clarification of each attribute:
-
-- **drawTime** you can set to draw 'afterDatasetsDraw' or 'beforeDatasetsDraw'.
-- **type** in this case will be 'box'.
-- **value** is the value where the line is located.
-- **orientation**  define the orientation can be 'vertical' or horizontal.
-- **borderDash** if you want a dashed line you will establish the dash properties in a number array.
-- **borderWidth** define the width of the border.
-- **borderColor** define the color of the box.
-- **label** you can define a label for the annotation, setting the text, position ('left', 'center', 'right'), backgroundColor, fontStyle and the fontColor.
-- **endValue** you can define a end value of the line, drawing a diagonal line.
+| label | chartLabelAnnotation| | chartLabelAnnotation are the properties of the tooltip label |
+| value | number | | In this case will be 'box' |
+| orientation | string |  | Define the orientation can be 'vertical' or horizontal |
+| drawTime | string |  | Set to draw 'afterDatasetsDraw' or 'beforeDatasetsDraw' |
+| type | string |  | In this case will be 'line' |
+| borderDash | Array<number> |  | If you want a dashed line you will establish the dash properties in a number array |
+| borderColor | string | | Define the color of the box |
+| borderWidth | string |  | Define the width of the border |
+| endValue | number |  | Define a end value of the line, drawing a diagonal line |
 
 
-### Tooltips configuration
+#### chartLabelAnnotation
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| text | string| | Text of the label in the tooltip |
+| position | string | | 'center', 'left' or 'right'|
+| backgroundColor | string |  | Define the color of the background |
+| fontStyle | string |  | Define the styles of the text |
+| fontColor | string |  | Define the color of the label |
+
+
+### Tooltips
 
 You can configure the content of the tooltips and the style.
 
-There are some general configuration, as well as specific ones.
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| backgroundColor | string|'rgba(0,0,0,0.8)' | Tooltip background color|
+| titleFontSize | number |12 | Title font size |
+| titleFontColor | string | '#ffffff' | Title font color |
+| bodyFontColor | string | '#ffffff' | Tooltip body font color |
+| bodyFontSize | number | 12 | Tooltip body font size |
+| borderColor | string | 'rgba(0,0,0,0)' | Tooltip border color |
+| borderWidth | number | 0 | Tooltip border width |
 
-#### General Configuration
-The chart have a public attribute **tooltipSettings**, where you can setup the following styles:
 
-- **backgroundColor**, is the color of the background of the tooltips.
-- **titleFontSize**, is the font size of the title label in the tooltips.
-- **titleFontColor**, is the color of the title label in the tooltips.
-- **bodyFontColor**, is the color of the body content in the tooltips.
-- **bodyFontSize**, is the font size of the body content in the tooltips.
-- **borderColor**, is the color of the border in the tooltips.
-- **borderWidth**, is the width of the border in the tooltips.
+#### ChartTooltipItem
 
-#### Chart Items Tooltips Configuration
 
-For each raw data added into the chart you can setup the tooltip.
-
-The **ChartItem** structure has a **ChartTooltipItem** structure, in which you can setup the tooltip of the chart item.
-
-```javascript
-    public title?: string,  // is the content for the title
-    public label?: string, // is the content for the body
-    public afterLabel?: string, // is the content that you can set after the label
-    public valueInAfterLabel?: boolean // you can decide where display the value, next the label (valueInAfterLabel set to false) or after the label (valueInAfterLabel set to true).
-```
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| title | string| | The content for the title|
+| label | number | | The content for the body |
+| afterLabel | string | | The content that you can set after the label |
+| valueInAfterLabel | boolean | true | you can decide where display the value, next the label (valueInAfterLabel set to false) or after the label (valueInAfterLabel set to true)|
 
 ```javascript
 this.dataLine.push(new ChartItem('Only Line', [13, 20, 21, 15], '', '', false, true, false, 3, '',
@@ -167,7 +151,6 @@ this.dataLine.push(new ChartItem('Only Line', [13, 20, 21, 15], '', '', false, t
 
 There is the option to display the label that you want instead of the coordinates (by default defined). Set the variable **t** in the data parameter and the system will consider it as the tooltip label.
 
-
 ```javascript
 [{ x: 13, y: 13, r: 4, t: 'Tooltip label' }, { x: 1, y: 2, r: 3 }]
 ```
@@ -177,4 +160,4 @@ There is the option to display the label that you want instead of the coordinate
 | Name | Parameters | Description |
 | ---- |:----------:| ------------|
 | doUpdate || Reset the chart with the new data.|
-|action|Is going to emit the event when you clicked in a item in the chart|
+|action||Is going to emit the event when you clicked in a item in the chart|
