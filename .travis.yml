@@ -35,11 +35,13 @@ after_success: |
     git add .
     git -c user.name='travis' -c user.email='travis' commit -m 'New deploy from Travis'
     git push -f -q https://systelab:$GITHUB_API_KEY@github.com/systelab/systelab.github.io
+    cd ..
   fi
 
 deploy:
   provider: npm
   email: aserra@werfen.com
   api_key: $NPM_TOKEN
+  skip_cleanup: true
   on:
     tags: true
