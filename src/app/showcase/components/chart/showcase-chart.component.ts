@@ -16,23 +16,23 @@ export class ShowcaseChartComponent {
 	public type: string;
 	public itemSelected: any;
 	public legend: boolean;
-	public dataLine: Array<ChartItem> = new Array<ChartItem>();
-	public dataLineMultipleAxis: Array<ChartItem> = new Array<ChartItem>();
-	public dataBar: Array<ChartItem> = new Array<ChartItem>();
-	public dataRadar: Array<ChartItem> = new Array<ChartItem>();
-	public dataPie: Array<ChartItem> = new Array<ChartItem>();
-	public dataDoughnut: Array<ChartItem> = new Array<ChartItem>();
-	public dataBubble: Array<ChartItem> = new Array<ChartItem>();
-	public dataPolarArea: Array<ChartItem> = new Array<ChartItem>();
-	public dataLineBar: Array<ChartItem> = new Array<ChartItem>();
-	public dataLineBubble: Array<ChartItem> = new Array<ChartItem>();
-	public dataLineAnnotation: Array<ChartItem> = new Array<ChartItem>();
-	public dataBubbleAnnotations: Array<ChartItem> = new Array<ChartItem>();
-	public chartLineAnnotations: Array<ChartLineAnnotation> = new Array<ChartLineAnnotation>();
-	public chartMultipleAnnotations: Array<Annotation> = new Array<Annotation>();
-	public chartBubbleAnnotations: Array<Annotation> = new Array<Annotation>();
+	public dataLine: Array<ChartItem> = [];
+	public dataLineMultipleAxis: Array<ChartItem> = [];
+	public dataBar: Array<ChartItem> = [];
+	public dataRadar: Array<ChartItem> = [];
+	public dataPie: Array<ChartItem> = [];
+	public dataDoughnut: Array<ChartItem> = [];
+	public dataBubble: Array<ChartItem> = [];
+	public dataPolarArea: Array<ChartItem> = [];
+	public dataLineBar: Array<ChartItem> = [];
+	public dataLineBubble: Array<ChartItem> = [];
+	public dataLineAnnotation: Array<ChartItem> = [];
+	public dataBubbleAnnotations: Array<ChartItem> = [];
+	public chartLineAnnotations: Array<ChartLineAnnotation> = [];
+	public chartMultipleAnnotations: Array<Annotation> = [];
+	public chartBubbleAnnotations: Array<Annotation> = [];
 	public labels: Array<string> = [];
-	public labelLineAnnotations: Array<any> = [];
+	public labelLineAnnotations: Array<number> = [];
 	public isBackgroundGrid = false;
 	public yMinValue = 0;
 	public yMaxValue = 5;
@@ -42,7 +42,7 @@ export class ShowcaseChartComponent {
 	public tooltipSettings = new ChartTooltipSettings();
 	public isStacked = true;
 
-	public multipleYAxisScales = new Array<ChartMultipleYAxisScales>();
+	public multipleYAxisScales: Array<ChartMultipleYAxisScales> = [];
 
 	private static randomIntFromInterval(min, max) {
 		return Math.floor(Math.random() * (max - min + 1) + min);
@@ -136,10 +136,10 @@ export class ShowcaseChartComponent {
 	}
 
 	public doChange() {
-		this.dataLine = new Array<ChartItem>();
+		this.dataLine = [];
 		const rnd = ShowcaseChartComponent.randomIntFromInterval(1, 4);
 		for (let h = 1; h <= rnd; h++) {
-			const dataRnd = new Array<number>();
+			const dataRnd: Array<number> = [];
 			for (let i = 1; i <= 4; i++) {
 				dataRnd.push(ShowcaseChartComponent.randomIntFromInterval(3, 35));
 			}
@@ -158,9 +158,9 @@ export class ShowcaseChartComponent {
 	}
 
 	public generateMultipleAxisExample() {
-		this.dataLineMultipleAxis = new Array<ChartItem>();
+		this.dataLineMultipleAxis = [];
 
-		this.multipleYAxisScales = new Array<ChartMultipleYAxisScales>();
+		this.multipleYAxisScales = [];
 		this.multipleYAxisScales.push(this.generateChartMultipleYAxisScales('y-axis-0', 'left', 30, 105, 5));
 		this.multipleYAxisScales.push(this.generateChartMultipleYAxisScales('y-axis-1', 'right', 0, 10, 2));
 
@@ -171,7 +171,7 @@ export class ShowcaseChartComponent {
 
 	private generateRandomData(rndNumberOfElements: number, min: number, max: number, yAxisID: string, position: string) {
 		for (let h = 1; h <= rndNumberOfElements; h++) {
-			const dataRnd = new Array<number>();
+			const dataRnd: Array<number> = [];
 			for (let i = 1; i <= 4; i++) {
 				dataRnd.push(ShowcaseChartComponent.randomIntFromInterval(min, max));
 			}
