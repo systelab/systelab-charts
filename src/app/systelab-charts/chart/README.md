@@ -56,12 +56,13 @@ Multiple charts example:
 | isHorizontal | boolean | false | Set to true, if you want that display a bar chart in horizontal view |
 | isStacked | boolean | false | Set to true, if you want that display a bar chart with stacked columns |
 | data | Array<ChartItem> |  | List of data |
+| multipleYAxisScales | Array<ChartMultipleYAxisScales> |  | List of Y axis scales |
 
 #### ChartItem
 
 | Name | Type | Default | Description |
 | ---- |:----:|:-------:| ----------- |
-| label | string| | Label name of the item |
+| label | string | | Label name of the item |
 | data | Array<any> | | List of values of the item |
 | borderColor | string |  | Color in Hexadecimal for the border |
 | backgroundColor | string |  | Color in Hexadecimal for the background |
@@ -74,6 +75,37 @@ Multiple charts example:
 | pointRadius | number | 3 | The radius of the point shape. If set to 0, the point is not rendered. |
 | yAxisID | string |  | Define the ID of the y axis to plot this dataset on. |
 
+#### ChartMultipleYAxisScales
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| id | string| | Y axis ID |
+| position | string | left | Axis position |
+| type | string |  | Chart type |
+| gridLines | GridLine |  | Display the grid lines |
+| scaleLabel | ScaleLabel | | Show an axis label |
+| ticks | Ticks | | Define the values and steps for the axis |
+
+### GridLine
+| Name | Type | Default | Description | 
+| ---- |:----:|:------: | --------- |
+| display | boolean | true | Set true if you want to see the grid lines |
+| drawBorder | boolean | true | Set true if you want to see a border around the grid| 
+
+### ScaleLabel
+| Name | Type | Default | Description | 
+| ---- |:----:|:------: | --------- |
+| display | boolean | true | Show the label |
+| labelString | string | | Set a text to be shown in the axis | 
+ 
+### Ticks
+| Name | Type | Default | Description | 
+| ---- |:----:|:------: | --------- |
+| min | number | | Min value for the axis |
+| max | number | | Max value for the axis | 
+| stepSize | number | | Set the steps between axis values | 
+| display | boolean | true | Set to false if you do not want to see the ticks on the axis | 
+ 
 ### Annotations
 
 You can define two types of annotations, line or box type annotations.
