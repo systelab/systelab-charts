@@ -42,6 +42,7 @@ Multiple charts example:
 | labels | Array<string> | | list of labels of the chart |
 | **itemSelected** | any | | is used to notify which item is clicked |
 | showLegend | boolean | true | Define the visibility of the legend |
+| legendPosition | string | 'top' | Define the position of the legend |
 | isBackgroundGrid | boolean | true | Define if you want a grid backgropund or not |
 | lineTension | number | 0 | Define the tension of the line |
 | yMinValue | any | 0 | Min value of the axis Y |
@@ -70,6 +71,8 @@ Multiple charts example:
 | borderWidth | string |  | Define the width of the border |
 | chartType | string |  | Define different chart type to mix charts |
 | chartTooltipItem | ChartTooltipItem |  | Define what you want to display in the tooltip of this raw data |
+| pointRadius | number | 3 | The radius of the point shape. If set to 0, the point is not rendered. |
+| yAxisID | string |  | Define the ID of the y axis to plot this dataset on. |
 
 ### Annotations
 
