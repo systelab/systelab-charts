@@ -29,9 +29,11 @@ export class ShowcaseChartComponent {
 	public dataLineAnnotation: Array<ChartItem> = [];
 	public dataBubbleAnnotations: Array<ChartItem> = [];
 	public chartLineAnnotations: Array<ChartLineAnnotation> = [];
+	public chartLineMultipleAxisAnnotations: Array<ChartLineAnnotation> = [];
 	public chartMultipleAnnotations: Array<Annotation> = [];
 	public chartBubbleAnnotations: Array<Annotation> = [];
 	public labels: Array<string> = [];
+	public labelsMultipleAxis: Array<number> = [];
 	public labelLineAnnotations: Array<number> = [];
 	public isBackgroundGrid = false;
 	public yMinValue = 0;
@@ -52,6 +54,7 @@ export class ShowcaseChartComponent {
 		this.type = 'line';
 		this.legend = true;
 		this.labels = ['January', 'February', 'March', 'April'];
+		this.labelsMultipleAxis = [1, 2, 3, 4];
 
 		this.tooltipSettings.backgroundColor = '#ffffff';
 		this.tooltipSettings.borderColor = '#0066ff';
@@ -164,6 +167,9 @@ export class ShowcaseChartComponent {
 		this.multipleYAxisScales.push(this.generateChartMultipleYAxisScales('y-axis-0', 'left', 30, 105, 5));
 		this.multipleYAxisScales.push(this.generateChartMultipleYAxisScales('y-axis-1', 'right', 0, 10, 2));
 
+		this.chartLineMultipleAxisAnnotations.push(new ChartLineAnnotation(new ChartLabelAnnotation('Label', 'top'), 3,
+			'vertical', 'beforeDatasetsDraw', 'line', [], '#e53c29'));
+
 		const rndData = ShowcaseChartComponent.randomIntFromInterval(1, 3);
 		this.generateRandomData(rndData, 30, 105, 'y-axis-0', 'left');
 		this.generateRandomData(rndData, 0, 10, 'y-axis-1', 'right');
@@ -184,7 +190,8 @@ export class ShowcaseChartComponent {
 		}
 	}
 
-	private generateChartMultipleYAxisScales(id: string, position: string, min: number, max: number, stepSize: number): ChartMultipleYAxisScales {
+	private generateChartMultipleYAxisScales(id: string, position: string, min: number, max: number,
+											 stepSize: number): ChartMultipleYAxisScales {
 		const defaultYAxisScales = new ChartMultipleYAxisScales();
 		defaultYAxisScales.id = id;
 		defaultYAxisScales.position = position;

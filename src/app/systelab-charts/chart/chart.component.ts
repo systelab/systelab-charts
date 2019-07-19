@@ -117,6 +117,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() yMaxValue: any;
 	@Input() xMinValue: any;
 	@Input() xMaxValue: any;
+	@Input() xAutoSkip = true;
 	@Input() yLabelAxis: string;
 	@Input() xLabelAxis: string;
 	@Input() lineTension: number;
@@ -126,7 +127,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() maintainAspectRatio = true;
 	@Input() tooltipSettings: ChartTooltipSettings;
 	@Input() isStacked = false;
-
+	@Input() animationDuration = 1000;
 	@Input() minValueForRadar: number;
 	@Input() maxValueForRadar: number;
 	@Input() multipleYAxisScales: Array<ChartMultipleYAxisScales>;
@@ -188,6 +189,9 @@ export class ChartComponent implements AfterViewInit {
 				},
 
 				options: {
+					animation:           {
+						duration: this.animationDuration
+					},
 					responsive:          this.responsive,
 					maintainAspectRatio: this.maintainAspectRatio,
 					onClick:             (evt, item) => {
@@ -228,9 +232,10 @@ export class ChartComponent implements AfterViewInit {
 						xAxes: [{
 							stacked:    this.isStacked,
 							ticks:      {
-								min:     this.xMinValue,
-								max:     this.xMaxValue,
-								display: this.axesVisible
+								min:      this.xMinValue,
+								max:      this.xMaxValue,
+								display:  this.axesVisible,
+								autoSkip: this.xAutoSkip
 							},
 							gridLines:  {
 								display:    this.isBackgroundGrid,
@@ -441,17 +446,23 @@ export class ChartComponent implements AfterViewInit {
 			scaleId = 'x-axis-0';
 		}
 		this._annotations.push({
-			drawTime:       lineAnnotation.drawTime, id: 'annotation' + (this._annotations.length + 1), type: lineAnnotation.type,
-			mode:           lineAnnotation.orientation, scaleID: scaleId, value: lineAnnotation.value,
-			borderColor:    lineAnnotation.borderColor, endValue: lineAnnotation.endValue,
-			label:          {
+			drawTime:    lineAnnotation.drawTime, id: 'annotation' + (this._annotations.length + 1),
+			type:        lineAnnotation.type,
+			mode:        lineAnnotation.orientation,
+			scaleID:     scaleId,
+			value:       lineAnnotation.value,
+			borderColor: lineAnnotation.borderColor,
+			endValue:    lineAnnotation.endValue,
+			borderWidth: lineAnnotation.borderWidth,
+			borderDash:  lineAnnotation.borderDash,
+			label:       {
 				backgroundColor: lineAnnotation.label.backgroundColor,
 				position:        lineAnnotation.label.position,
 				content:         lineAnnotation.label.text,
 				fontColor:       lineAnnotation.label.fontColor,
 				enabled:         true,
 				fontStyle:       lineAnnotation.label.fontStyle
-			}, borderWidth: lineAnnotation.borderWidth, borderDash: lineAnnotation.borderDash
+			}
 		});
 	}
 
