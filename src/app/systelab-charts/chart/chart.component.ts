@@ -4,34 +4,34 @@ import 'chartjs-plugin-annotation';
 
 export class ChartItem {
 	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string,
-	            public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number, public chartType?: string,
-	            public chartTooltipItem?: ChartTooltipItem) {
+				public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number,
+				public chartType?: string, public chartTooltipItem?: ChartTooltipItem, public pointRadius?: number, public yAxisID?: string) {
 	}
 }
 
 export class Annotation {
-	constructor(public drawTime: string, public type: string, public borderColor?: string, public borderWidth?: number) {
-
+	constructor(public drawTime: string, public type: string, public borderColor?: string, public borderWidth?: number,
+				public scaleId = 'y-axis-0') {
 	}
 }
 
 export class ChartLineAnnotation extends Annotation {
 	constructor(public label: ChartLabelAnnotation, public value: number, public orientation: string, drawTime: string,
-	            type: string, public borderDash?: Array<number>, borderColor?: string, borderWidth?: number, public endValue?: number) {
+				type: string, public borderDash?: Array<number>, borderColor?: string, borderWidth?: number, public endValue?: number) {
 		super(drawTime, type, borderColor, borderWidth);
 	}
 }
 
 export class ChartBoxAnnotation extends Annotation {
 	constructor(drawTime: string, public xMin: number, public xMax: number, public yMin: number, public yMax: number,
-	            type: string, public backgroundColor?: string, borderColor?: string, borderWidth?: number) {
+				type: string, public backgroundColor?: string, borderColor?: string, borderWidth?: number) {
 		super(drawTime, type, borderColor, borderWidth);
 	}
 }
 
 export class ChartLabelAnnotation {
 	constructor(public text?: string, public position?: string, public backgroundColor?: string, public fontStyle?: string,
-	            public fontColor?: string) {
+				public fontColor?: string) {
 	}
 }
 
@@ -42,7 +42,7 @@ export class ChartTooltipItem {
 
 export class ChartTooltipSettings {
 	constructor(public backgroundColor?: string, public borderColor?: string, public borderWidth?: number, public bodyFontColor?: string,
-	            public bodyFontSize?: number, public titleFontSize?: number, public titleFontColor?: string) {
+				public bodyFontSize?: number, public titleFontSize?: number, public titleFontColor?: string) {
 		this.bodyFontColor = '#ffffff';
 		this.borderColor = 'rgba(0,0,0,0)';
 		this.borderWidth = 0;
@@ -50,6 +50,27 @@ export class ChartTooltipSettings {
 		this.titleFontSize = 12;
 		this.titleFontColor = '#ffffff';
 		this.backgroundColor = 'rgba(0,0,0,0.8)';
+	}
+}
+
+export class ChartMultipleYAxisScales {
+	constructor(public id?: string, public type?: string, public position?: string,
+				public stacked = false,
+				public ticks?: { min: number, max: number, stepSize?: number, display?: boolean },
+				public gridLines?: { display: boolean, drawBorder: boolean },
+				public scaleLabel?: { display: boolean, labelString: string }) {
+	}
+
+	public getScaleDefinition() {
+		return {
+			id:         this.id,
+			type:       this.type,
+			position:   this.position,
+			stacked:    this.stacked,
+			ticks:      this.ticks,
+			gridLines:  this.gridLines,
+			scaleLabel: this.scaleLabel
+		};
 	}
 }
 
@@ -90,11 +111,13 @@ export class ChartComponent implements AfterViewInit {
 	@Input() data: Array<ChartItem> = [];
 	@Input() annotations: Array<ChartLineAnnotation | ChartBoxAnnotation> = [];
 	@Input() showLegend = true;
+	@Input() legendPosition = 'top';
 	@Input() isHorizontal = false;
 	@Input() yMinValue: any;
 	@Input() yMaxValue: any;
 	@Input() xMinValue: any;
 	@Input() xMaxValue: any;
+	@Input() xAutoSkip = true;
 	@Input() yLabelAxis: string;
 	@Input() xLabelAxis: string;
 	@Input() lineTension: number;
@@ -104,9 +127,10 @@ export class ChartComponent implements AfterViewInit {
 	@Input() maintainAspectRatio = true;
 	@Input() tooltipSettings: ChartTooltipSettings;
 	@Input() isStacked = false;
-
+	@Input() animationDuration = 1000;
 	@Input() minValueForRadar: number;
 	@Input() maxValueForRadar: number;
+	@Input() multipleYAxisScales: Array<ChartMultipleYAxisScales>;
 
 	private dataset: Array<any> = [];
 
@@ -165,6 +189,9 @@ export class ChartComponent implements AfterViewInit {
 				},
 
 				options: {
+					animation:           {
+						duration: this.animationDuration
+					},
 					responsive:          this.responsive,
 					maintainAspectRatio: this.maintainAspectRatio,
 					onClick:             (evt, item) => {
@@ -181,31 +208,34 @@ export class ChartComponent implements AfterViewInit {
 					},
 					display:             true,
 					legend:              {
-						display: this.showLegend
+						display:  this.showLegend,
+						position: this.legendPosition
 					},
 					scales:              {
-						yAxes: [{
-							stacked : this.isStacked,
-							ticks:      {
-								min:     this.yMinValue,
-								max:     this.yMaxValue,
-								display: this.axesVisible
-							},
-							gridLines:  {
-								display:    this.isBackgroundGrid,
-								drawBorder: this.axesVisible
-							},
-							scaleLabel: {
-								display:     this.yAxisLabelVisible,
-								labelString: this.yLabelAxis
-							}
-						}],
+						yAxes: this.multipleYAxisScales ? this.multipleYAxisScales.map(yAxis => yAxis.getScaleDefinition()) : [
+							{
+								stacked:    this.isStacked,
+								ticks:      {
+									min:     this.yMinValue,
+									max:     this.yMaxValue,
+									display: this.axesVisible
+								},
+								gridLines:  {
+									display:    this.isBackgroundGrid,
+									drawBorder: this.axesVisible
+								},
+								scaleLabel: {
+									display:     this.yAxisLabelVisible,
+									labelString: this.yLabelAxis
+								}
+							}],
 						xAxes: [{
-							stacked : this.isStacked,
+							stacked:    this.isStacked,
 							ticks:      {
-								min:     this.xMinValue,
-								max:     this.xMaxValue,
-								display: this.axesVisible
+								min:      this.xMinValue,
+								max:      this.xMaxValue,
+								display:  this.axesVisible,
+								autoSkip: this.xAutoSkip
 							},
 							gridLines:  {
 								display:    this.isBackgroundGrid,
@@ -356,9 +386,16 @@ export class ChartComponent implements AfterViewInit {
 					backgroundColors = this.data[i].backgroundColor;
 				}
 				this.dataset.push({
-					label:            this.data[i].label, data: this.data[i].data, borderColor: borderColors,
-					backgroundColor:  backgroundColors, fill: this.data[i].fill,
-					type:             this.data[i].chartType, borderWidth: this.data[i].borderWidth, showLine: this.data[i].showLine,
+					yAxisID:          this.data[i].yAxisID,
+					label:            this.data[i].label,
+					data:             this.data[i].data,
+					borderColor:      borderColors,
+					backgroundColor:  backgroundColors,
+					fill:             this.data[i].fill,
+					type:             this.data[i].chartType,
+					borderWidth:      this.data[i].borderWidth,
+					showLine:         this.data[i].showLine,
+					pointRadius:      this.data[i].pointRadius,
 					chartTooltipItem: this.data[i].chartTooltipItem
 				});
 			}
@@ -370,7 +407,8 @@ export class ChartComponent implements AfterViewInit {
 		if (this.annotations) {
 			for (let i = 0; i < this.annotations.length; i++) {
 				if (this.annotations[i] instanceof ChartLineAnnotation) {
-					this.addLineAnnotation(<ChartLineAnnotation>this.annotations[i], this.rgba(this.defaultColors[this.getColorNumber(i)], 1), this.rgba(this.defaultColors[this.getColorNumber(i) + 1], 1));
+					this.addLineAnnotation(<ChartLineAnnotation>this.annotations[i], this.rgba(this.defaultColors[this.getColorNumber(i)], 1),
+						this.rgba(this.defaultColors[this.getColorNumber(i) + 1], 1));
 				}
 				if (this.annotations[i] instanceof ChartBoxAnnotation) {
 					this.addBoxAnnotation(<ChartBoxAnnotation>this.annotations[i], this.rgba(this.defaultColors[this.getColorNumber(i)], 1));
@@ -403,22 +441,28 @@ export class ChartComponent implements AfterViewInit {
 				lineAnnotation.label.fontStyle = 'normal';
 			}
 		}
-		let scaleId = 'y-axis-0';
+		let scaleId = lineAnnotation.scaleId;
 		if (lineAnnotation.orientation === 'vertical') {
 			scaleId = 'x-axis-0';
 		}
 		this._annotations.push({
-			drawTime:       lineAnnotation.drawTime, id: 'annotation' + (this._annotations.length + 1), type: lineAnnotation.type,
-			mode:           lineAnnotation.orientation, scaleID: scaleId, value: lineAnnotation.value,
-			borderColor:    lineAnnotation.borderColor, endValue: lineAnnotation.endValue,
-			label:          {
+			drawTime:    lineAnnotation.drawTime, id: 'annotation' + (this._annotations.length + 1),
+			type:        lineAnnotation.type,
+			mode:        lineAnnotation.orientation,
+			scaleID:     scaleId,
+			value:       lineAnnotation.value,
+			borderColor: lineAnnotation.borderColor,
+			endValue:    lineAnnotation.endValue,
+			borderWidth: lineAnnotation.borderWidth,
+			borderDash:  lineAnnotation.borderDash,
+			label:       {
 				backgroundColor: lineAnnotation.label.backgroundColor,
 				position:        lineAnnotation.label.position,
 				content:         lineAnnotation.label.text,
 				fontColor:       lineAnnotation.label.fontColor,
 				enabled:         true,
 				fontStyle:       lineAnnotation.label.fontStyle
-			}, borderWidth: lineAnnotation.borderWidth, borderDash: lineAnnotation.borderDash
+			}
 		});
 	}
 
@@ -456,7 +500,7 @@ export class ChartComponent implements AfterViewInit {
 			yMin:            boxAnnotation.yMin,
 			yMax:            boxAnnotation.yMax,
 			xScaleID:        'x-axis-0',
-			yScaleID:        'y-axis-0'
+			yScaleID:        boxAnnotation.scaleId
 		});
 
 	}

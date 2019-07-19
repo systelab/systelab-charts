@@ -1,15 +1,23 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { ChartComponent, ChartItem, ChartLineAnnotation, ChartBoxAnnotation, ChartLabelAnnotation, ChartTooltipItem, ChartTooltipSettings, Annotation } from '../../../systelab-charts/chart/chart.component';
+import {
+	ChartComponent, ChartItem, ChartLineAnnotation, ChartBoxAnnotation,
+	ChartLabelAnnotation, ChartTooltipItem, ChartTooltipSettings, Annotation, ChartMultipleYAxisScales
+} from '../../../systelab-charts/chart/chart.component';
 
 @Component({
-	selector: 'showcase-chart',
+	selector:    'showcase-chart',
 	templateUrl: './showcase-chart.component.html'
 })
 export class ShowcaseChartComponent {
+
+	@ViewChild('lineChart') lineChart: ChartComponent;
+	@ViewChild('lineChartMultipleAxis') lineChartMultipleAxis: ChartComponent;
+
 	public type: string;
 	public itemSelected: any;
 	public legend: boolean;
 	public dataLine: Array<ChartItem> = [];
+	public dataLineMultipleAxis: Array<ChartItem> = [];
 	public dataBar: Array<ChartItem> = [];
 	public dataRadar: Array<ChartItem> = [];
 	public dataPie: Array<ChartItem> = [];
@@ -20,11 +28,13 @@ export class ShowcaseChartComponent {
 	public dataLineBubble: Array<ChartItem> = [];
 	public dataLineAnnotation: Array<ChartItem> = [];
 	public dataBubbleAnnotations: Array<ChartItem> = [];
-	public chartLineAnnotations: Array<Annotation> = [];
+	public chartLineAnnotations: Array<ChartLineAnnotation> = [];
+	public chartLineMultipleAxisAnnotations: Array<ChartLineAnnotation> = [];
 	public chartMultipleAnnotations: Array<Annotation> = [];
 	public chartBubbleAnnotations: Array<Annotation> = [];
 	public labels: Array<string> = [];
-	public labelLineAnnotations: Array<any> = [];
+	public labelsMultipleAxis: Array<number> = [];
+	public labelLineAnnotations: Array<number> = [];
 	public isBackgroundGrid = false;
 	public yMinValue = 0;
 	public yMaxValue = 5;
@@ -33,18 +43,26 @@ export class ShowcaseChartComponent {
 	public yLabelAxis = 'Title Y';
 	public tooltipSettings = new ChartTooltipSettings();
 	public isStacked = true;
-	@ViewChild('lineChart') lineChart: ChartComponent;
+
+	public multipleYAxisScales: Array<ChartMultipleYAxisScales> = [];
+
+	private static randomIntFromInterval(min, max) {
+		return Math.floor(Math.random() * (max - min + 1) + min);
+	}
 
 	constructor() {
 		this.type = 'line';
 		this.legend = true;
 		this.labels = ['January', 'February', 'March', 'April'];
+		this.labelsMultipleAxis = [1, 2, 3, 4];
 
 		this.tooltipSettings.backgroundColor = '#ffffff';
 		this.tooltipSettings.borderColor = '#0066ff';
 		this.tooltipSettings.borderWidth = 3;
 		this.tooltipSettings.bodyFontColor = '#6c757d';
 		this.tooltipSettings.titleFontColor = '#fd7e14';
+
+		this.generateMultipleAxisExample();
 
 		this.dataLine.push(new ChartItem('Only Line', [13, 20, 21, 15], '', '', false, true, false, 3, '',
 			new ChartTooltipItem('title', 'label', 'afterlabel', true)));
@@ -64,11 +82,11 @@ export class ShowcaseChartComponent {
 
 		this.dataPolarArea.push(new ChartItem('', [21, 23, 42, 52], '', '', true, true, false, 3));
 
-		this.dataBubble.push(new ChartItem('Test 1', [{ x: 13, y: 13, r: 4, t: 'Tooltip' }, { x: 1, y: 2, r: 3 }, { x: 15, y: 23, r: 4 },
-		{ x: -2, y: -2, r: 4 }, { x: -10, y: 13, r: 3 }, { x: 23, y: 12, r: 7 }, { x: 4, y: 4, r: 8 },
-		{ x: 3, y: 2, r: 9 }], '', '', true, false, false, 2));
-		this.dataBubble.push(new ChartItem('Test 2', [{ x: 6, y: -2, r: 4 }, { x: 2, y: 5, r: 3 }, { x: 12, y: 11, r: 4 }, { x: 5, y: 10, r: 4 },
-		{ x: 10, y: 46, r: 3 }, { x: 16, y: 24, r: 7 }, { x: 37, y: 6, r: 8 }, { x: 5, y: 3, r: 9 }], '', '', true, false, false, 2));
+		this.dataBubble.push(new ChartItem('Test 1', [{x: 13, y: 13, r: 4, t: 'Tooltip'}, {x: 1, y: 2, r: 3}, {x: 15, y: 23, r: 4},
+			{x: -2, y: -2, r: 4}, {x: -10, y: 13, r: 3}, {x: 23, y: 12, r: 7}, {x: 4, y: 4, r: 8},
+			{x: 3, y: 2, r: 9}], '', '', true, false, false, 2));
+		this.dataBubble.push(new ChartItem('Test 2', [{x: 6, y: -2, r: 4}, {x: 2, y: 5, r: 3}, {x: 12, y: 11, r: 4}, {x: 5, y: 10, r: 4},
+			{x: 10, y: 46, r: 3}, {x: 16, y: 24, r: 7}, {x: 37, y: 6, r: 8}, {x: 5, y: 3, r: 9}], '', '', true, false, false, 2));
 
 		this.dataLineBar.push(new ChartItem('Line', [13, 20, 21, 15], '', '', false, true, true, 3, 'line'));
 		this.dataLineBar.push(new ChartItem('Bar', [10, 20, 10, 15], '', '', true, true, false, 3));
@@ -107,9 +125,9 @@ export class ShowcaseChartComponent {
 		this.chartBubbleAnnotations.push(new ChartBoxAnnotation('beforeDatasetsDraw', 2, 10, 2, 10, 'box', '', '#cccccc'));
 		this.chartBubbleAnnotations.push(new ChartBoxAnnotation('beforeDatasetsDraw', 0, 12, 0, 12, 'box', '', '#5ac14b'));
 
-		this.dataBubbleAnnotations.push(new ChartItem('Test 1', [{ x: 13, y: 13, r: 2 }, { x: 1, y: 2, r: 2 }, { x: 15, y: 23, r: 2 },
-		{ x: -2, y: -2, r: 2 }, { x: -10, y: 13, r: 2 }, { x: 23, y: 12, r: 2 }, { x: 4, y: 4, r: 2 }, { x: 5, y: 6, r: 2 },
-		{ x: 2, y: 3, r: 2 }, { x: 1, y: 2, r: 2 }, { x: 3, y: 2, r: 2 }], '', '', true, false, false, 2));
+		this.dataBubbleAnnotations.push(new ChartItem('Test 1', [{x: 13, y: 13, r: 2}, {x: 1, y: 2, r: 2}, {x: 15, y: 23, r: 2},
+			{x: -2, y: -2, r: 2}, {x: -10, y: 13, r: 2}, {x: 23, y: 12, r: 2}, {x: 4, y: 4, r: 2}, {x: 5, y: 6, r: 2},
+			{x: 2, y: 3, r: 2}, {x: 1, y: 2, r: 2}, {x: 3, y: 2, r: 2}], '', '', true, false, false, 2));
 
 	}
 
@@ -122,21 +140,72 @@ export class ShowcaseChartComponent {
 
 	public doChange() {
 		this.dataLine = [];
-		const rnd = this.randomIntFromInterval(1, 4);
+		const rnd = ShowcaseChartComponent.randomIntFromInterval(1, 4);
 		for (let h = 1; h <= rnd; h++) {
-			const dataRnd = [];
+			const dataRnd: Array<number> = [];
 			for (let i = 1; i <= 4; i++) {
-				dataRnd.push(this.randomIntFromInterval(3, 35));
+				dataRnd.push(ShowcaseChartComponent.randomIntFromInterval(3, 35));
 			}
 			let fill = false;
-			if (this.randomIntFromInterval(0, 1) === 1) {
+			if (ShowcaseChartComponent.randomIntFromInterval(0, 1) === 1) {
 				fill = true;
 			}
 			this.dataLine.push(new ChartItem('Line ' + h, dataRnd, '', '', fill, true, false, 3));
 		}
 		this.lineChart.doUpdate();
 	}
-	private randomIntFromInterval(min, max) {
-		return Math.floor(Math.random() * (max - min + 1) + min);
+
+	public updateMultipleAxisExample() {
+		this.generateMultipleAxisExample();
+		this.lineChartMultipleAxis.doUpdate();
+	}
+
+	public generateMultipleAxisExample() {
+		this.dataLineMultipleAxis = [];
+
+		this.multipleYAxisScales = [];
+		this.multipleYAxisScales.push(this.generateChartMultipleYAxisScales('y-axis-0', 'left', 30, 105, 5));
+		this.multipleYAxisScales.push(this.generateChartMultipleYAxisScales('y-axis-1', 'right', 0, 10, 2));
+
+		this.chartLineMultipleAxisAnnotations.push(new ChartLineAnnotation(new ChartLabelAnnotation('Label', 'top'), 3,
+			'vertical', 'beforeDatasetsDraw', 'line', [], '#e53c29'));
+
+		const rndData = ShowcaseChartComponent.randomIntFromInterval(1, 3);
+		this.generateRandomData(rndData, 30, 105, 'y-axis-0', 'left');
+		this.generateRandomData(rndData, 0, 10, 'y-axis-1', 'right');
+	}
+
+	private generateRandomData(rndNumberOfElements: number, min: number, max: number, yAxisID: string, position: string) {
+		for (let h = 1; h <= rndNumberOfElements; h++) {
+			const dataRnd: Array<number> = [];
+			for (let i = 1; i <= 4; i++) {
+				dataRnd.push(ShowcaseChartComponent.randomIntFromInterval(min, max));
+			}
+			let fill = false;
+			if (ShowcaseChartComponent.randomIntFromInterval(0, 1) === 1) {
+				fill = true;
+			}
+			this.dataLineMultipleAxis.push(new ChartItem('Line ' + h + ' ' + position + ' axis', dataRnd, '', '', fill, true, false, 3,
+				'line', undefined, ShowcaseChartComponent.randomIntFromInterval(0, 3), yAxisID));
+		}
+	}
+
+	private generateChartMultipleYAxisScales(id: string, position: string, min: number, max: number,
+											 stepSize: number): ChartMultipleYAxisScales {
+		const defaultYAxisScales = new ChartMultipleYAxisScales();
+		defaultYAxisScales.id = id;
+		defaultYAxisScales.position = position;
+		defaultYAxisScales.type = 'linear';
+		defaultYAxisScales.gridLines = {display: true, drawBorder: true};
+		defaultYAxisScales.scaleLabel = {display: true, labelString: this.yLabelAxis};
+
+		defaultYAxisScales.ticks = {
+			min:      min,
+			max:      max,
+			display:  true,
+			stepSize: stepSize
+		};
+
+		return defaultYAxisScales;
 	}
 }
