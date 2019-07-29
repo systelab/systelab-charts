@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
 	ChartComponent, ChartItem, ChartLineAnnotation, ChartBoxAnnotation,
 	ChartLabelAnnotation, ChartTooltipItem, ChartTooltipSettings, Annotation, ChartMultipleYAxisScales
@@ -10,8 +10,8 @@ import {
 })
 export class ShowcaseChartComponent {
 
-	@ViewChild('lineChart') lineChart: ChartComponent;
-	@ViewChild('lineChartMultipleAxis') lineChartMultipleAxis: ChartComponent;
+	@ViewChild('lineChart', {static: false}) lineChart: ChartComponent;
+	@ViewChild('lineChartMultipleAxis', {static: false}) lineChartMultipleAxis: ChartComponent;
 
 	public type: string;
 	public itemSelected: any;
