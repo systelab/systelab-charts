@@ -141,7 +141,7 @@ export class ChartComponent implements AfterViewInit {
 
 	@Output() action = new EventEmitter();
 
-	@ViewChild('canvas') canvas: ElementRef;
+	@ViewChild('canvas', {static: false}) canvas: ElementRef;
 
 	public ngAfterViewInit() {
 
