@@ -1,17 +1,25 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {
-	ChartComponent, ChartItem, ChartLineAnnotation, ChartBoxAnnotation,
-	ChartLabelAnnotation, ChartTooltipItem, ChartTooltipSettings, Annotation, ChartMultipleYAxisScales
+	Annotation,
+	ChartBoxAnnotation,
+	ChartComponent,
+	ChartItem,
+	ChartLabelAnnotation,
+	ChartLineAnnotation,
+	ChartMultipleYAxisScales,
+	ChartTooltipItem,
+	ChartTooltipSettings
 } from '../../../systelab-charts/chart/chart.component';
 
 @Component({
-	selector:    'showcase-chart',
+	selector: 'showcase-chart',
 	templateUrl: './showcase-chart.component.html'
 })
 export class ShowcaseChartComponent {
 
 	@ViewChild('lineChart') lineChart: ChartComponent;
 	@ViewChild('lineChartMultipleAxis') lineChartMultipleAxis: ChartComponent;
+	@ViewChild('lineChartLegend') lineChartLegend: ChartComponent;
 
 	public type: string;
 	public itemSelected: any;
@@ -43,6 +51,7 @@ export class ShowcaseChartComponent {
 	public yLabelAxis = 'Title Y';
 	public tooltipSettings = new ChartTooltipSettings();
 	public isStacked = true;
+	public dataLineCustomLegend: Array<ChartItem> = [];
 
 	public multipleYAxisScales: Array<ChartMultipleYAxisScales> = [];
 
@@ -129,6 +138,10 @@ export class ShowcaseChartComponent {
 			{x: -2, y: -2, r: 2}, {x: -10, y: 13, r: 2}, {x: 23, y: 12, r: 2}, {x: 4, y: 4, r: 2}, {x: 5, y: 6, r: 2},
 			{x: 2, y: 3, r: 2}, {x: 1, y: 2, r: 2}, {x: 3, y: 2, r: 2}], '', '', true, false, false, 2));
 
+		this.dataLineCustomLegend.push(new ChartItem('Line', [13, 20, 21, 15], '', '', false, true, false, 3, '',
+			new ChartTooltipItem('title', 'label', 'afterlabel', true), undefined, undefined, 'line'));
+		this.dataLineCustomLegend.push(new ChartItem('Dots', [11, 18, 4, 3], '', '', false, false, false, 4, undefined, undefined, undefined, undefined, 'dots'));
+		this.dataLineCustomLegend.push(new ChartItem('Line and Area', [12, 41, 1, 21], '', '', true, true, false, 3, undefined, undefined, undefined, undefined, 'bar'));
 	}
 
 	public doAction(event: any) {
@@ -200,9 +213,9 @@ export class ShowcaseChartComponent {
 		defaultYAxisScales.scaleLabel = {display: true, labelString: this.yLabelAxis};
 
 		defaultYAxisScales.ticks = {
-			min:      min,
-			max:      max,
-			display:  true,
+			min: min,
+			max: max,
+			display: true,
 			stepSize: stepSize
 		};
 
