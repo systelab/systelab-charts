@@ -22,8 +22,13 @@
               "src/gh.ico"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/app"
+              ]
+            },
             "scripts": [
               "node_modules/chart.js/dist/Chart.min.js"
             ]
