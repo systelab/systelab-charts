@@ -7,7 +7,7 @@ Component to show a Chart
 ```html
    <systelab-chart [labels]="labels" [data]="data" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="type"
                 (action)="doAction($event)" [isBackgroundGrid]="isBackgroundGrid" [isHorizontal]="isHorizontal" [lineTension]="lineTension" 
-                [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [annotations]="annotations" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings" [isStacked]="isStacked"></systelab-chart>
+                [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [annotations]="annotations" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings" [isStacked]="isStacked" [customLegend]="customLegend"></systelab-chart>
 ```
 
 
@@ -57,6 +57,7 @@ Multiple charts example:
 | isStacked | boolean | false | Set to true, if you want that display a bar chart with stacked columns |
 | data | Array<ChartItem> |  | List of data |
 | multipleYAxisScales | Array<ChartMultipleYAxisScales> |  | List of Y axis scales |
+| customLegend | boolean | false | Define if you want a custom Legend (remember set legendType in chartItem) |
 
 #### ChartItem
 
@@ -74,6 +75,7 @@ Multiple charts example:
 | chartTooltipItem | ChartTooltipItem |  | Define what you want to display in the tooltip of this raw data |
 | pointRadius | number | 3 | The radius of the point shape. If set to 0, the point is not rendered. |
 | yAxisID | string |  | Define the ID of the y axis to plot this dataset on. |
+| legendType | string |  | Define legend type, it can be 'bar,' 'line' or 'dots'. It is only used if the [customLegend] property is true |
 
 #### ChartMultipleYAxisScales
 
