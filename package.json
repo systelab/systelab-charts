@@ -16,13 +16,15 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "cleardown": "rimraf css html build widgets",
+    "cleardown": "rimraf css sass html build widgets",
     "inline-build-templates": "gulp inline-build-templates",
+    "copysass": "gulp copysass",
     "ngc-build": "ngc -p ./tsconfig.lib.json",
-    "prepublish": "npm run cleardown && npm run inline-build-templates && npm run ngc-build"
+    "prepublish": "npm run cleardown && npm run inline-build-templates && npm run ngc-build && npm run copysass"
   },
   "files": [
-    "widgets"
+    "widgets",
+    "sass"
   ],
   "main": "./widgets/systelab-charts.module.js",
   "typings": "./widgets/systelab-charts.module.d.ts",
