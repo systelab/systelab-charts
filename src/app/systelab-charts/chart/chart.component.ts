@@ -132,7 +132,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() minValueForRadar: number;
 	@Input() maxValueForRadar: number;
 	@Input() multipleYAxisScales: Array<ChartMultipleYAxisScales>;
-	@Input() customLegend: false;
+	@Input() customLegend = false;
 
 	private dataset: Array<any> = [];
 
@@ -244,29 +244,29 @@ export class ChartComponent implements AfterViewInit {
 						const text = [];
 						text.push('<ul class="' + chart.id + '-legend">');
 						const data = chart.data;
-						const datasets = data.datasets;
-						if (datasets.length) {
-							for (let i = 0; i < datasets.length; ++i) {
+						const dataSets = data.datasets;
+						if (dataSets.length) {
+							for (let i = 0; i < dataSets.length; i++) {
 								text.push('<li>');
-								if (datasets[i].legendType) {
-									if (datasets[i].borderColor && datasets[i].backgroundColor) {
-										if (datasets[i].backgroundColor === 'transparent') {
-											text.push('<span class="' + datasets[i].legendType + '" style="background-color:' + datasets[i].borderColor + '; ' +
-												'border-color:' + datasets[i].borderColor + '"></span>');
-										} else if (datasets[i].borderColor === 'transparent') {
-											text.push('<span class="' + datasets[i].legendType + '" style="background-color:' + datasets[i].backgroundColor + '; ' +
-												'border-color:' + datasets[i].backgroundColor + '"></span>');
+								if (dataSets[i].legendType) {
+									if (dataSets[i].borderColor && dataSets[i].backgroundColor) {
+										if (dataSets[i].backgroundColor === 'transparent') {
+											text.push('<span class="' + dataSets[i].legendType + '" style="background-color:' + dataSets[i].borderColor + '; ' +
+												'border-color:' + dataSets[i].borderColor + '"></span>');
+										} else if (dataSets[i].borderColor === 'transparent') {
+											text.push('<span class="' + dataSets[i].legendType + '" style="background-color:' + dataSets[i].backgroundColor + '; ' +
+												'border-color:' + dataSets[i].backgroundColor + '"></span>');
 										} else {
-											text.push('<span class="' + datasets[i].legendType + '" style="background-color:' + datasets[i].backgroundColor + ';' +
-												' border-color:' + datasets[i].borderColor + '"></span>');
+											text.push('<span class="' + dataSets[i].legendType + '" style="background-color:' + dataSets[i].backgroundColor + ';' +
+												' border-color:' + dataSets[i].borderColor + '"></span>');
 										}
-									} else if (this.data[i].borderColor) {
-										text.push('<span class="' + datasets[i].legendType + '" style="border-color:' + datasets[i].borderColor + '"></span>');
-									} else if (this.data[i].backgroundColor) {
-										text.push('<span class="' + datasets[i].legendType + '" style="background-color:' + datasets[i].backgroundColor + '"></span>');
+									} else if (dataSets[i].borderColor) {
+										text.push('<span class="' + dataSets[i].legendType + '" style="border-color:' + dataSets[i].borderColor + '"></span>');
+									} else if (dataSets[i].backgroundColor) {
+										text.push('<span class="' + dataSets[i].legendType + '" style="background-color:' + dataSets[i].backgroundColor + '"></span>');
 									}
 								}
-								text.push(datasets[i].label);
+								text.push(dataSets[i].label);
 								text.push('</li>');
 							}
 						}
@@ -583,6 +583,9 @@ export class ChartComponent implements AfterViewInit {
 		this.setData(cx);
 		this.addAnnotations();
 		this.drawChart(cx);
+		if (this.customLegend && this.data.filter( obj => obj.legendType != null).length === this.data.length ) {
+			this.buildCustomLegend();
+		}
 	}
 
 	private legendClickCallback(event) {
@@ -597,11 +600,13 @@ export class ChartComponent implements AfterViewInit {
 		const index = Array.prototype.slice.call(parent.children).indexOf(target);
 
 		this.chart.data.datasets[index].hidden = !this.chart.data.datasets[index].hidden;
-		if (chart.isDatasetVisible(index)) {
-			target.classList.remove('hidden');
-		} else {
-			target.classList.add('hidden');
+		if (chart) {
+			if (chart.isDatasetVisible(index)) {
+				target.classList.remove('hidden');
+			} else {
+				target.classList.add('hidden');
+			}
+			chart.update();
 		}
-		chart.update();
 	}
 }
