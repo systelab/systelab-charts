@@ -1,11 +1,12 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { Chart } from 'chart.js';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {Chart} from 'chart.js';
 import 'chartjs-plugin-annotation';
 
 export class ChartItem {
 	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string,
 				public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number,
-				public chartType?: string, public chartTooltipItem?: ChartTooltipItem, public pointRadius?: number, public yAxisID?: string) {
+				public chartType?: string, public chartTooltipItem?: ChartTooltipItem, public pointRadius?: number, public yAxisID?: string,
+				public legendType?: string) {
 	}
 }
 
@@ -131,6 +132,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() minValueForRadar: number;
 	@Input() maxValueForRadar: number;
 	@Input() multipleYAxisScales: Array<ChartMultipleYAxisScales>;
+	@Input() customLegend = false;
 
 	private dataset: Array<any> = [];
 
@@ -142,6 +144,9 @@ export class ChartComponent implements AfterViewInit {
 	@Output() action = new EventEmitter();
 
 	@ViewChild('canvas') canvas: ElementRef;
+	@ViewChild('topLegend') topLegend: ElementRef;
+	@ViewChild('bottomLegend') bottomLegend: ElementRef;
+
 
 	public ngAfterViewInit() {
 
@@ -168,6 +173,10 @@ export class ChartComponent implements AfterViewInit {
 			cx = this.canvas.nativeElement.getContext('2d');
 		}
 
+		if (this.customLegend) {
+			this.initCustomLegend();
+		}
+
 		this.setData(cx);
 
 		if (this.type === 'pie' || this.type === 'doughnut' || this.type === 'polarArea' || this.type === 'radar') {
@@ -175,7 +184,27 @@ export class ChartComponent implements AfterViewInit {
 		}
 		this.addAnnotations();
 		this.drawChart(cx);
+		if (this.customLegend && this.data.filter( obj => obj.legendType != null).length === this.data.length ) {
+			this.buildCustomLegend();
+		}
+	}
 
+	private initCustomLegend() {
+		this.showLegend = false;
+	}
+
+	private buildCustomLegend() {
+		let legendItems = [];
+		if (this.legendPosition === 'top' ) {
+			this.topLegend.nativeElement.innerHTML = this.chart.generateLegend();
+			legendItems = this.topLegend.nativeElement.getElementsByTagName('li');
+		} else {
+			this.bottomLegend.nativeElement.innerHTML = this.chart.generateLegend();
+			legendItems = this.bottomLegend.nativeElement.getElementsByTagName('li');
+		}
+		for (let i = 0; i < legendItems.length; i += 1) {
+			legendItems[i].addEventListener('click', this.legendClickCallback.bind(this), false);
+		}
 	}
 
 	private drawChart(cx: CanvasRenderingContext2D) {
@@ -210,6 +239,39 @@ export class ChartComponent implements AfterViewInit {
 					legend:              {
 						display:  this.showLegend,
 						position: this.legendPosition
+					},
+					legendCallback: function(chart) {
+						const text = [];
+						text.push('<ul class="' + chart.id + '-legend">');
+						const data = chart.data;
+						const dataSets = data.datasets;
+						if (dataSets.length) {
+							for (let i = 0; i < dataSets.length; i++) {
+								text.push('<li>');
+								if (dataSets[i].legendType) {
+									if (dataSets[i].borderColor && dataSets[i].backgroundColor) {
+										if (dataSets[i].backgroundColor === 'transparent') {
+											text.push('<span class="' + dataSets[i].legendType + '" style="background-color:' + dataSets[i].borderColor + '; ' +
+												'border-color:' + dataSets[i].borderColor + '"></span>');
+										} else if (dataSets[i].borderColor === 'transparent') {
+											text.push('<span class="' + dataSets[i].legendType + '" style="background-color:' + dataSets[i].backgroundColor + '; ' +
+												'border-color:' + dataSets[i].backgroundColor + '"></span>');
+										} else {
+											text.push('<span class="' + dataSets[i].legendType + '" style="background-color:' + dataSets[i].backgroundColor + ';' +
+												' border-color:' + dataSets[i].borderColor + '"></span>');
+										}
+									} else if (dataSets[i].borderColor) {
+										text.push('<span class="' + dataSets[i].legendType + '" style="border-color:' + dataSets[i].borderColor + '"></span>');
+									} else if (dataSets[i].backgroundColor) {
+										text.push('<span class="' + dataSets[i].legendType + '" style="background-color:' + dataSets[i].backgroundColor + '"></span>');
+									}
+								}
+								text.push(dataSets[i].label);
+								text.push('</li>');
+							}
+						}
+						text.push('</ul>');
+						return text.join('');
 					},
 					scales:              {
 						yAxes: this.multipleYAxisScales ? this.multipleYAxisScales.map(yAxis => yAxis.getScaleDefinition()) : [
@@ -396,7 +458,8 @@ export class ChartComponent implements AfterViewInit {
 					borderWidth:      this.data[i].borderWidth,
 					showLine:         this.data[i].showLine,
 					pointRadius:      this.data[i].pointRadius,
-					chartTooltipItem: this.data[i].chartTooltipItem
+					chartTooltipItem: this.data[i].chartTooltipItem,
+					legendType:       this.data[i].legendType
 				});
 			}
 		}
@@ -520,5 +583,30 @@ export class ChartComponent implements AfterViewInit {
 		this.setData(cx);
 		this.addAnnotations();
 		this.drawChart(cx);
+		if (this.customLegend && this.data.filter( obj => obj.legendType != null).length === this.data.length ) {
+			this.buildCustomLegend();
+		}
+	}
+
+	private legendClickCallback(event) {
+		event = event || window.event;
+		let target = event.target || event.srcElement;
+		while (target.nodeName !== 'LI') {
+			target = target.parentElement;
+		}
+		const parent = target.parentElement;
+		const chartId = parseInt(parent.classList[0].split('-')[0], 10);
+		const chart = Chart.instances[chartId];
+		const index = Array.prototype.slice.call(parent.children).indexOf(target);
+
+		this.chart.data.datasets[index].hidden = !this.chart.data.datasets[index].hidden;
+		if (chart) {
+			if (chart.isDatasetVisible(index)) {
+				target.classList.remove('hidden');
+			} else {
+				target.classList.add('hidden');
+			}
+			chart.update();
+		}
 	}
 }
