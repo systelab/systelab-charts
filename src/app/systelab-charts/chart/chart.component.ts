@@ -1,12 +1,12 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
-import {Chart} from 'chart.js';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Chart } from 'chart.js';
 import 'chartjs-plugin-annotation';
 
 export class ChartItem {
 	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string,
 				public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number,
 				public chartType?: string, public chartTooltipItem?: ChartTooltipItem, public pointRadius?: number, public yAxisID?: string,
-				public legendType?: string) {
+				public legendType?: string, public labelBorderColors?: Array<number[]>, public labelBackgroundColors?: Array<number[]>) {
 	}
 }
 
@@ -147,7 +147,6 @@ export class ChartComponent implements AfterViewInit {
 	@ViewChild('topLegend', {static: false}) topLegend: ElementRef;
 	@ViewChild('bottomLegend', {static: false}) bottomLegend: ElementRef;
 
-
 	public ngAfterViewInit() {
 
 		let cx: CanvasRenderingContext2D;
@@ -184,7 +183,7 @@ export class ChartComponent implements AfterViewInit {
 		}
 		this.addAnnotations();
 		this.drawChart(cx);
-		if (this.customLegend && this.data.filter( obj => obj.legendType != null).length === this.data.length ) {
+		if (this.customLegend && this.data.filter(obj => obj.legendType != null).length === this.data.length) {
 			this.buildCustomLegend();
 		}
 	}
@@ -195,7 +194,7 @@ export class ChartComponent implements AfterViewInit {
 
 	private buildCustomLegend() {
 		let legendItems = [];
-		if (this.legendPosition === 'top' ) {
+		if (this.legendPosition === 'top') {
 			this.topLegend.nativeElement.innerHTML = this.chart.generateLegend();
 			legendItems = this.topLegend.nativeElement.getElementsByTagName('li');
 		} else {
@@ -240,7 +239,7 @@ export class ChartComponent implements AfterViewInit {
 						display:  this.showLegend,
 						position: this.legendPosition
 					},
-					legendCallback: function(chart) {
+					legendCallback:      function(chart) {
 						const text = [];
 						text.push('<ul class="' + chart.id + '-legend">');
 						const data = chart.data;
@@ -421,8 +420,17 @@ export class ChartComponent implements AfterViewInit {
 					const backgroundColorList: Array<any> = [];
 					const borderColorList: Array<any> = [];
 					for (let j = 0; j < this.data[i].data.length; j++) {
-						borderColorList.push(this.rgba(this.defaultColors[colorNumber], 1));
-						backgroundColorList.push(this.rgba(this.defaultColors[colorNumber], 1));
+						if (this.data[i].labelBorderColors && this.data[i].labelBorderColors[j]) {
+							borderColorList.push(this.rgba(this.data[i].labelBorderColors[j], 1));
+						} else {
+							borderColorList.push(this.rgba(this.defaultColors[colorNumber], 1));
+						}
+						if (this.data[i].labelBackgroundColors && this.data[i].labelBackgroundColors[j]) {
+							backgroundColorList.push(this.rgba(this.data[i].labelBackgroundColors[j], 1));
+						} else {
+							backgroundColorList.push(this.rgba(this.defaultColors[colorNumber], 1));
+						}
+
 						colorNumber++;
 						if (colorNumber > (this.defaultColors.length - 1)) {
 							colorNumber = 0;
@@ -583,7 +591,7 @@ export class ChartComponent implements AfterViewInit {
 		this.setData(cx);
 		this.addAnnotations();
 		this.drawChart(cx);
-		if (this.customLegend && this.data.filter( obj => obj.legendType != null).length === this.data.length ) {
+		if (this.customLegend && this.data.filter(obj => obj.legendType != null).length === this.data.length) {
 			this.buildCustomLegend();
 		}
 	}
@@ -597,7 +605,8 @@ export class ChartComponent implements AfterViewInit {
 		const parent = target.parentElement;
 		const chartId = parseInt(parent.classList[0].split('-')[0], 10);
 		const chart = Chart.instances[chartId];
-		const index = Array.prototype.slice.call(parent.children).indexOf(target);
+		const index = Array.prototype.slice.call(parent.children)
+			.indexOf(target);
 
 		this.chart.data.datasets[index].hidden = !this.chart.data.datasets[index].hidden;
 		if (chart) {

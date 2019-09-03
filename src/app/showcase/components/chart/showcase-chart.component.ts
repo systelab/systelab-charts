@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
 	Annotation,
 	ChartBoxAnnotation,
@@ -12,7 +12,7 @@ import {
 } from '../../../systelab-charts/chart/chart.component';
 
 @Component({
-	selector: 'showcase-chart',
+	selector:    'showcase-chart',
 	templateUrl: './showcase-chart.component.html'
 })
 export class ShowcaseChartComponent {
@@ -87,9 +87,15 @@ export class ShowcaseChartComponent {
 
 		this.dataDoughnut.push(new ChartItem('', [36, 23, 42, 52], '', '', true, true, false, 3));
 
-		this.dataPie.push(new ChartItem('', [36, 23, 42, 52], '', '', true, true, false, 3));
+		const pieChartItem = new ChartItem('', [36, 23, 42, 52], '', '#778899', true, true, false, 3);
+		pieChartItem.labelBorderColors = this.generateColorsForSections(pieChartItem.data.length);
+		pieChartItem.labelBackgroundColors = this.generateColorsForSections(pieChartItem.data.length);
+		this.dataPie.push(pieChartItem);
 
-		this.dataPolarArea.push(new ChartItem('', [21, 23, 42, 52], '', '', true, true, false, 3));
+		const polarAreaChartItem = new ChartItem('', [21, 23, 42, 52], '', '', true, true, false, 3);
+		polarAreaChartItem.labelBorderColors = this.generateColorsForSections(polarAreaChartItem.data.length);
+		polarAreaChartItem.labelBackgroundColors = this.generateColorsForSections(polarAreaChartItem.data.length);
+		this.dataPolarArea.push(polarAreaChartItem);
 
 		this.dataBubble.push(new ChartItem('Test 1', [{x: 13, y: 13, r: 4, t: 'Tooltip'}, {x: 1, y: 2, r: 3}, {x: 15, y: 23, r: 4},
 			{x: -2, y: -2, r: 4}, {x: -10, y: 13, r: 3}, {x: 23, y: 12, r: 7}, {x: 4, y: 4, r: 8},
@@ -213,12 +219,35 @@ export class ShowcaseChartComponent {
 		defaultYAxisScales.scaleLabel = {display: true, labelString: this.yLabelAxis};
 
 		defaultYAxisScales.ticks = {
-			min: min,
-			max: max,
-			display: true,
+			min:      min,
+			max:      max,
+			display:  true,
 			stepSize: stepSize
 		};
 
 		return defaultYAxisScales;
+	}
+
+	private generateColorsForSections(length: number): Array<number[]> {
+		const colorsArray: Array<number[]> = [];
+
+		for (var i = 0; i < length; i++) {
+			colorsArray.push(this.generateColorForSection(i));
+		}
+
+		return colorsArray;
+	}
+
+	private generateColorForSection(i: number): Array<number> {
+		switch (i % 4) {
+			case 0:
+				return [255, 0, 0];
+			case 1:
+				return [0, 255, 0];
+			case 2:
+				return [0, 0, 255];
+			default:
+				return [255, 228, 181];
+		}
 	}
 }
