@@ -76,6 +76,8 @@ Multiple charts example:
 | pointRadius | number | 3 | The radius of the point shape. If set to 0, the point is not rendered. |
 | yAxisID | string |  | Define the ID of the y axis to plot this dataset on. |
 | legendType | string |  | Define legend type, it can be 'bar,' 'line' or 'dots'. It is only used if the [customLegend] property is true |
+| labelBorderColors | Array<number[]> |  | If the ChartItem belongs to a Doughnut, Pie or Polar Area chart, this property contains a list of colors in RGB for the border of every value and every RGB color is expressed as an array of three numbers. If not defined, a default set of colors will be used instead|
+| labelBackgroundColors | Array<number[]> |  | As the [labelBorderColors] property, but it refers to the background color of every value. Like [labelBorderColors], if not defined a default set of colors will be used instead|
 
 #### ChartMultipleYAxisScales
 
