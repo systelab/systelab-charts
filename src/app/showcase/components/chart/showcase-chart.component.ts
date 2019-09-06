@@ -112,7 +112,6 @@ export class ShowcaseChartComponent {
 		const fontFamily = 'Courier, Arial Unicode MS, Arial, sans-serif';
 		this.pieChartLabelSettings.chartLabelFont = new ChartLabelFont(undefined, fontFamily, 16, undefined, 'bold', 0.8);
 		this.pieChartLabelSettings.chartLabelPadding = new ChartLabelPadding(undefined, 1, 1, 1, 1);
-		// this.pieChartLabelSettings.chartLabelText = new ChartLabelText(undefined, 'rgb(200, 200, 200)', 1, 0.2, 'black');
 
 		const myPieLabelFormatter = (value: any, context: any): string => {
 			let dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
