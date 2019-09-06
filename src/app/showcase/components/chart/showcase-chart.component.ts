@@ -93,17 +93,11 @@ export class ShowcaseChartComponent {
 		this.pieChartLabelSettings.position = new ChartLabelPosition();
 		this.pieChartLabelSettings.position.clip = false; // to avoid showing part of the label, set clip = true
 
-		const arraySum = (dataArr: Array<number>): number => {
-			let total = 0;
-			dataArr.forEach(n => total += n);
-			return total;
-		}
-
 		const displayFunction = (context: any): boolean => {
 
 			let dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
 
-			const currentPercentage = context.dataset.data[context.dataIndex] * 100 / arraySum(dataArr);
+			const currentPercentage = context.dataset.data[context.dataIndex] * 100 / dataArr.reduce((a, b) => a + b);
 
 			return currentPercentage >= 5;
 		}
@@ -115,7 +109,7 @@ export class ShowcaseChartComponent {
 
 		const myPieLabelFormatter = (value: any, context: any): string => {
 			let dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
-			return (value * 100 / arraySum(dataArr)).toFixed(0) + '%';
+			return (value * 100 / dataArr.reduce((a, b) => a + b)).toFixed(0) + '%';
 		}
 
 		this.pieChartLabelSettings.formatter = myPieLabelFormatter;
