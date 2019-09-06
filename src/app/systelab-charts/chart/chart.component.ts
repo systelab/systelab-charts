@@ -135,7 +135,7 @@ export class ChartComponent implements AfterViewInit {
 		[151, 187, 205],
 		[231, 233, 237],
 		[77, 83, 96]];
-	private chart: Chart;
+	public chart: Chart;
 	private _itemSelected: any;
 
 	@Input()
