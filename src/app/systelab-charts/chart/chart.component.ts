@@ -2,6 +2,8 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, View
 import { Chart } from 'chart.js';
 import 'chartjs-plugin-annotation';
 
+import * as ChartDataLabels from 'chartjs-plugin-datalabels';
+
 export class ChartItem {
 	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string,
 				public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number,
@@ -54,6 +56,46 @@ export class ChartTooltipSettings {
 	}
 }
 
+export class ChartLabelSettings {
+	constructor(public position?: ChartLabelPosition, public labelColors?: ChartLabelColor, public chartLabelFont?: ChartLabelFont, public chartLabelPadding?: ChartLabelPadding, public chartLabelText?: ChartLabelText, public formatter?: (value: any, context: any) => string) {
+		this.position = new ChartLabelPosition();
+		this.labelColors = new ChartLabelColor();
+		this.chartLabelFont = new ChartLabelFont();
+		this.chartLabelPadding = new ChartLabelPadding();
+		this.chartLabelText = new ChartLabelText();
+	}
+
+}
+
+export class ChartLabelPosition {
+	constructor(public align?: string | number, public anchor?: string, public clamp?: boolean, public clip?: boolean, public display?: ((context: any) => (boolean | string)) | boolean | string, public offset?: number, public rotation?: number) {
+	}
+}
+
+export class ChartLabelColor {
+	constructor(public backgroundColor?: string, public color?: string, public borderColor?: string, public borderRadius?: number, public borderWidth?: number, public opacity?: number) {
+
+	}
+}
+
+export class ChartLabelFont {
+	constructor(public font?: object, public family?: string, public size?: number, public style?: string, public weight?: string | number, public lineHeight?: string | number) {
+
+	}
+}
+
+export class ChartLabelPadding {
+	constructor(public padding?: number | object, public top?: number, public right?: number, public bottom?: number, public left?: number) {
+
+	}
+}
+
+export class ChartLabelText {
+	constructor(public textAlign?: string, public textStrokeColor?: string, public textStrokeWidth?: number, public textShadowBlur?: number, public textShadowColor?: string) {
+
+	}
+}
+
 export class ChartMultipleYAxisScales {
 	constructor(public id?: string, public type?: string, public position?: string,
 				public stacked = false,
@@ -93,7 +135,7 @@ export class ChartComponent implements AfterViewInit {
 		[151, 187, 205],
 		[231, 233, 237],
 		[77, 83, 96]];
-	chart = Chart;
+	private chart: Chart;
 	private _itemSelected: any;
 
 	@Input()
@@ -127,6 +169,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() responsive = true;
 	@Input() maintainAspectRatio = true;
 	@Input() tooltipSettings: ChartTooltipSettings;
+	@Input() chartLabelSettings: ChartLabelSettings;
 	@Input() isStacked = false;
 	@Input() animationDuration = 1000;
 	@Input() minValueForRadar: number;
@@ -143,11 +186,12 @@ export class ChartComponent implements AfterViewInit {
 
 	@Output() action = new EventEmitter();
 
-	@ViewChild('canvas', {static: false}) canvas: ElementRef;
+	@ViewChild('canvas', {static: true}) canvas: ElementRef;
 	@ViewChild('topLegend', {static: false}) topLegend: ElementRef;
 	@ViewChild('bottomLegend', {static: false}) bottomLegend: ElementRef;
 
 	public ngAfterViewInit() {
+		Chart.plugins.unregister(ChartDataLabels);
 
 		let cx: CanvasRenderingContext2D;
 
@@ -396,8 +440,98 @@ export class ChartComponent implements AfterViewInit {
 				};
 			}
 
+			if (this.chartLabelSettings) {
+				definition.plugins = [ChartDataLabels];
+				definition.options.plugins = {
+					datalabels: {
+						align:           this.chartLabelSettings.position.align,
+						anchor:          this.chartLabelSettings.position.anchor,
+						backgroundColor: this.chartLabelSettings.labelColors.backgroundColor,
+						borderColor:     this.chartLabelSettings.labelColors.borderColor,
+						borderRadius:    this.chartLabelSettings.labelColors.borderRadius,
+						borderWidth:     this.chartLabelSettings.labelColors.borderWidth,
+						clamp:           this.chartLabelSettings.position.clamp,
+						clip:            this.chartLabelSettings.position.clip,
+						color:           this.chartLabelSettings.labelColors.color,
+						display:         this.chartLabelSettings.position.display,
+						font:            this.initDatalabelsFontProperties(this.chartLabelSettings.chartLabelFont),
+						formatter:       this.chartLabelSettings.formatter,
+						offset:          this.chartLabelSettings.position.offset,
+						opacity:         this.chartLabelSettings.labelColors.opacity,
+						padding:         this.initDatalabelsPaddingProperties(this.chartLabelSettings.chartLabelPadding),
+						rotation:        this.chartLabelSettings.position.rotation,
+						textAlign:       this.chartLabelSettings.chartLabelText.textAlign,
+						textStrokeColor: this.chartLabelSettings.chartLabelText.textStrokeColor,
+						textStrokeWidth: this.chartLabelSettings.chartLabelText.textStrokeWidth,
+						textShadowBlur:  this.chartLabelSettings.chartLabelText.textShadowBlur,
+						textShadowColor: this.chartLabelSettings.chartLabelText.textShadowColor
+					}
+				};
+			}
+
 			this.chart = new Chart(cx, definition);
 		}
+	}
+
+	private initDatalabelsFontProperties(chartLabelText: ChartLabelFont): object {
+		let font: any;
+
+		if (chartLabelText.font) {
+			font = chartLabelText.font;
+		} else {
+			font = {};
+		}
+
+		if (chartLabelText.family) {
+			font.family = chartLabelText.family;
+		}
+
+		if (chartLabelText.size) {
+			font.size = chartLabelText.size;
+		}
+
+		if (chartLabelText.style) {
+			font.style = chartLabelText.style;
+		}
+
+		if (chartLabelText.weight) {
+			font.weight = chartLabelText.weight;
+		}
+
+		if (chartLabelText.lineHeight) {
+			font.lineHeight = chartLabelText.lineHeight;
+		}
+
+		return font;
+	}
+
+	private initDatalabelsPaddingProperties(chartLabelPadding: ChartLabelPadding): object {
+
+		let padding: any;
+
+		if (chartLabelPadding.padding) {
+			padding = chartLabelPadding.padding;
+		} else {
+			padding = {};
+		}
+
+		if (chartLabelPadding.top) {
+			padding.top = chartLabelPadding.top;
+		}
+
+		if (chartLabelPadding.right) {
+			padding.right = chartLabelPadding.right;
+		}
+
+		if (chartLabelPadding.bottom) {
+			padding.bottom = chartLabelPadding.bottom;
+		}
+
+		if (chartLabelPadding.left) {
+			padding.left = chartLabelPadding.left;
+		}
+
+		return padding;
 	}
 
 	private setData(cx: CanvasRenderingContext2D) {
@@ -603,8 +737,7 @@ export class ChartComponent implements AfterViewInit {
 			target = target.parentElement;
 		}
 		const parent = target.parentElement;
-		const chartId = parseInt(parent.classList[0].split('-')[0], 10);
-		const chart = Chart.instances[chartId];
+		const chart: any = this.chart;
 		const index = Array.prototype.slice.call(parent.children)
 			.indexOf(target);
 
