@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { Chart } from 'chart.js';
+import * as Chart from 'chart.js';
 import 'chartjs-plugin-annotation';
 
 import * as ChartDataLabels from 'chartjs-plugin-datalabels';
