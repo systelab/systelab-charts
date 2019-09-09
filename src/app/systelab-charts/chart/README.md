@@ -194,6 +194,161 @@ There is the option to display the label that you want instead of the coordinate
 [{ x: 13, y: 13, r: 4, t: 'Tooltip label' }, { x: 1, y: 2, r: 3 }]
 ```
 
+### Chart labels
+
+You can configure labels to show the value of the chart's datasets (e.g. the percentage of the value over the total) To do so, there is an input attribute named "chartLabelSettings"
+whose needs to receive a ChartLabelSettings object.
+
+#### ChartLabelSettings
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| position | ChartLabelPosition| | The settings for positioning every label|
+| labelColors | ChartLabelColor| | The settings for the color of *all* the labels|
+| chartLabelFont | ChartLabelFont| | The parameters for the labels' font (font family, size, style, etc)|
+| chartLabelPadding | ChartLabelPadding| | The padding for every label|
+| chartLabelText | ChartLabelText| | The parameters for the labels' text (text align, stroke, shadow)|
+| formatter | (value: any, context: any) => string| | A function that given a value and chart context returns the value as a formatted string
+
+Example of use: let's assume that we have the following code in a component
+```javascript
+		this.pieChartLabelSettings = new ChartLabelSettings();
+		this.pieChartLabelSettings.position = new ChartLabelPosition();
+		this.pieChartLabelSettings.position.clip = false; // to avoid showing part of the label, set clip = true
+
+		this.pieChartLabelSettings.position.display = 'auto';
+		this.pieChartLabelSettings.labelColors = new ChartLabelColor(undefined, 'black', undefined, 5, 1, 0.8);
+		const fontFamily = 'Courier, Arial Unicode MS, Arial, sans-serif';
+		this.pieChartLabelSettings.chartLabelFont = new ChartLabelFont(undefined, fontFamily, 16, undefined, 'bold', 0.8);
+		this.pieChartLabelSettings.chartLabelPadding = new ChartLabelPadding(undefined, 1, 1, 1, 1);
+
+		const myPieLabelFormatter = (value: any, context: any): string => {
+			let dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
+			return (value * 100 / arraySum(dataArr)).toFixed(0) + '%';
+		}
+
+		this.pieChartLabelSettings.formatter = myPieLabelFormatter;
+```
+Then we can use systelab-chart with the "chartLabelSettings" attribute among others:
+
+            <systelab-chart [labels]="labels" [data]="dataPie" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="'pie'" (action)="doAction($event)"
+                            [isBackgroundGrid]="isBackgroundGrid" [chartLabelSettings]="pieChartLabelSettings"></systelab-chart>
+
+The auxiliary classes (ChartLabelPosition, ChartLabelColor, etc) constructors  are defined as follows:
+
+##### ChartLabelPosition
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| align | string or number| 'center'| The align option defines the position of the label relative to the anchor point position and orientation. Its value can be expressed either by a number representing the clockwise angle (in degree) or by one of the following string presets:|
+| | | | 'center' (default): the label is centered on the anchor point |
+| | | | 'start': the label is positioned before the anchor point, following the same direction |
+| | | | 'end': the label is positioned after the anchor point, following the same direction |
+| | | | 'right': the label is positioned to the right of the anchor point (0°) |
+| | | | 'bottom': the label is positioned to the bottom of the anchor point (90°) |
+| | | | 'left': the label is positioned to the left of the anchor point (180°) |
+| | | | 'top':  the label is positioned to the top of the anchor point (270°) |
+| | | | a number:  the label is positioned to the specified number of grades relative to the anchor. E.g. 90 is equivalent to 'bottom', 45 in the "middle" between 'bottom' and 'right' |
+| anchor |string| 'center' | An anchor point is defined by an orientation vector and a position on the data element. The orientation depends on the scale type (vertical, horizontal or radial). The position is calculated based on the anchor option and the orientation vector. |
+| | | | 'center' (default):  label's anchor is centered on the element's boundary that the label represents|
+| | | | 'start' :  label's anchor is positioned in the lowest boundary of the element that the label represents|
+| | | | 'end' :  label's anchor is positioned in the highest boundary of the element that the label represents|
+| clamp | boolean| false| The clamp option, when true, enforces the anchor position to be calculated based on the visible geometry of the associated element (i.e. part inside the chart area)|
+| clip | boolean| false| When the clip option is true, the part of the label which is outside the chart area will be masked|
+| display | ((context: any) => (boolean or string)) or boolean| true | The display option controls the visibility of labels and accepts the following values:|
+| | | | true (default): the label is drawn |
+| | | | false : the label is hidden |
+| | | | 'auto' : the label is hidden if it overlap with another label |
+| | | | This option is scriptable, so it's possible to show/hide specific labels: see example below |
+| offset | number| 4| The offset represents the distance (in pixels) to pull the label away from the anchor point. This option is not applicable when align is 'center'. Also note that if align is 'start', the label is moved in the opposite direction.|
+| rotation | number| 0| This option controls the clockwise rotation angle (in degrees) of the label, the rotation center point being the label center.|
+
+Example of specifiying the "display" property as a function:
+
+```javascript
+const displayFunction = (context: any): boolean => {
+
+let dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
+
+const currentPercentage = context.dataset.data[context.dataIndex] * 100 / arraySum(dataArr);
+
+return currentPercentage >= 5;
+}
+this.pieChartLabelSettings.position.display = displayFunction;
+```
+
+##### ChartLabelColor
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| backgroundColor | string | null| The background color for every label. It accepts names, hexadecimal values and rgb definitions. E.g.: 'white', '#778899', 'rgb(0,255,0)'. If not defined, the background does not take any color|
+| color | string | '#666'| The color for the text in every label. It accepts names, hexadecimal values and rgb definitions, too.|
+| borderColor | string | null| The color for every label's border. Again, it accepts names, hexadecimal values and rgb definitions. If not defined, the border is not visible|
+| borderRadius | number | 0| The radius of every label's border. A value bigger than zero makes the label's border corner being rounded.|
+| borderWidth | number | 0| The width of the label's borders. If it's value is undefined or zero, the border is not shown.|
+| opacity | number | 1| Defines the opacity of the label's text. Values go from 0 to 1, including decimals (for example 0.5) A value of zero makes the text invisible|
+
+##### ChartLabelFont
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| font | object | null| An object that can be used as a shorthand to specify the family, size, style, weight and lineHeight parameters, see object's definition below. Usually, if this parameter is defined the rest of the parameters, family, size, etc are set as undefined. But if they don't, their values will substituted the ones defined in "font" |
+| family | string | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"| Font family for the text of all the labels|
+| size | number | 12| Labels' font size|   
+| style | string | 'normal'| Labels' font style. The possible values are 'italic', 'oblique' and 'normal'|
+| weight | string or number | 'normal'| Labels' font weight. The possible values are 'bold', 'bolder', 'lighter', 'normal' and a number (e.g. 100, 200, etc|
+| lineHeight | string or number | 1.2| Defines the space between each line in the labels' text (if the need more than one line)|
+
+Definition of the font parameter as an object:
+
+```javascript
+type Font = {
+	family?: string,
+	lineHeight?: string | number,
+	size?: number,
+	style?: 'normal' | 'italic' | 'oblique',
+	weight?: 'normal' | 'bold' | 'bolder' | 'lighter' | number
+};
+```
+
+##### ChartLabelPadding
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| padding | number or object | undefined| If used as a number, it specifies the padding for the top, right, bottom and left padding of the labels' text. If used as an object, it has to defined as a shorthand of the 4 properties, see the definition of the object below|
+| top | number | 4| The top padding for the labels' text|
+| right | number | 4| The right padding for the labels' text|
+| bottom | number | 4| The bottom padding for the labels' text|
+| left | number | 4| The left padding for the labels' text|
+
+Definition of the padding parameter as an object:
+
+```javascript
+type Padding = number | {
+	top?: number,
+	right?: number,
+	bottom?: number,
+	left?: number
+};
+```
+
+##### ChartLabelText
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| textAlign | string | 'start'| The textAlign option only applies to multiline labels and specifies the text alignment being used when drawing the label text|
+| | | | Supported values are: |
+| | | | 'start' (default): the text is left-aligned |
+| | | | 'center': the text is centered |
+| | | | 'end': the text is right-aligned |
+| | | | 'left': alias of 'start' |
+| | | | 'right': alias of 'end' |
+| textStrokeColor | string | null | Color for the labels' text stroke|
+| textStrokeWidth | number | null | Width of the labels' text stroke|
+| textShadowBlur | number | null | Blur of the labels' text stroke|
+| textShadowColor | string | null | Color for the labels' text shadow|
+
+
 ## Events
 
 | Name | Parameters | Description |

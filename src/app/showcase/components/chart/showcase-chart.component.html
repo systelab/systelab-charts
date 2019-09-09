@@ -29,7 +29,7 @@
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Pie Chart</showcase-title>
             <systelab-chart [labels]="labels" [data]="dataPie" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="'pie'" (action)="doAction($event)"
-                            [isBackgroundGrid]="isBackgroundGrid"></systelab-chart>
+                            [isBackgroundGrid]="isBackgroundGrid" [chartLabelSettings]="pieChartLabelSettings"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Doughnut Chart</showcase-title>
@@ -69,7 +69,8 @@
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Line Chart Custom Legend</showcase-title>
             <systelab-chart #lineChartLegend [labels]="labels" [data]="dataLineCustomLegend" [showLegend]="legend" [type]="'line'" [lineTension]="0.4"
-                            [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings" [customLegend]="true" [legendPosition]="'bottom'"></systelab-chart>
+                            [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings" [customLegend]="true"
+                            [legendPosition]="'bottom'"></systelab-chart>
         </div>
     </div>
 </div>

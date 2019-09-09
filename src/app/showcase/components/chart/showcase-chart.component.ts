@@ -4,11 +4,11 @@ import {
 	ChartBoxAnnotation,
 	ChartComponent,
 	ChartItem,
-	ChartLabelAnnotation,
+	ChartLabelAnnotation, ChartLabelColor, ChartLabelPadding, ChartLabelPosition, ChartLabelSettings, ChartLabelFont,
 	ChartLineAnnotation,
 	ChartMultipleYAxisScales,
 	ChartTooltipItem,
-	ChartTooltipSettings
+	ChartTooltipSettings, ChartLabelText
 } from '../../../systelab-charts/chart/chart.component';
 
 @Component({
@@ -55,6 +55,8 @@ export class ShowcaseChartComponent {
 
 	public multipleYAxisScales: Array<ChartMultipleYAxisScales> = [];
 
+	public pieChartLabelSettings: ChartLabelSettings;
+
 	private static randomIntFromInterval(min, max) {
 		return Math.floor(Math.random() * (max - min + 1) + min);
 	}
@@ -87,7 +89,31 @@ export class ShowcaseChartComponent {
 
 		this.dataDoughnut.push(new ChartItem('', [36, 23, 42, 52], '', '', true, true, false, 3));
 
-		const pieChartItem = new ChartItem('', [36, 23, 42, 52], '', '#778899', true, true, false, 3);
+		this.pieChartLabelSettings = new ChartLabelSettings();
+		this.pieChartLabelSettings.position = new ChartLabelPosition();
+		this.pieChartLabelSettings.position.clip = false; // to avoid showing part of the label, set clip = true
+
+		const displayFunction = (context: any): boolean => {
+
+			let dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
+
+			const currentPercentage = context.dataset.data[context.dataIndex] * 100 / dataArr.reduce((a, b) => a + b);
+
+			return currentPercentage >= 5;
+		}
+		this.pieChartLabelSettings.position.display = displayFunction;
+		this.pieChartLabelSettings.labelColors = new ChartLabelColor(undefined, 'black', undefined, 5, 1, 0.8);
+		const fontFamily = 'Courier, Arial Unicode MS, Arial, sans-serif';
+		this.pieChartLabelSettings.chartLabelFont = new ChartLabelFont(undefined, fontFamily, 16, undefined, 'bold', 0.8);
+		this.pieChartLabelSettings.chartLabelPadding = new ChartLabelPadding(undefined, 1, 1, 1, 1);
+
+		const myPieLabelFormatter = (value: any, context: any): string => {
+			let dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
+			return (value * 100 / dataArr.reduce((a, b) => a + b)).toFixed(0) + '%';
+		}
+
+		this.pieChartLabelSettings.formatter = myPieLabelFormatter;
+		const pieChartItem = new ChartItem('', [36, 4, 42, 52], '', '#778899', true, true, false, 3);
 		pieChartItem.labelBorderColors = this.generateColorsForSections(pieChartItem.data.length);
 		pieChartItem.labelBackgroundColors = this.generateColorsForSections(pieChartItem.data.length);
 		this.dataPie.push(pieChartItem);
@@ -245,7 +271,7 @@ export class ShowcaseChartComponent {
 			case 1:
 				return [0, 255, 0];
 			case 2:
-				return [0, 0, 255];
+				return [0, 127, 200];
 			default:
 				return [255, 228, 181];
 		}
