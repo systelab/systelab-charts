@@ -95,7 +95,7 @@ export class ShowcaseChartComponent {
 
 		const displayFunction = (context: any): boolean => {
 
-			let dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
+			const dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
 
 			const currentPercentage = context.dataset.data[context.dataIndex] * 100 / dataArr.reduce((a, b) => a + b);
 
@@ -108,7 +108,7 @@ export class ShowcaseChartComponent {
 		this.pieChartLabelSettings.chartLabelPadding = new ChartLabelPadding(undefined, 1, 1, 1, 1);
 
 		const myPieLabelFormatter = (value: any, context: any): string => {
-			let dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
+			const dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
 			return (value * 100 / dataArr.reduce((a, b) => a + b)).toFixed(0) + '%';
 		}
 
