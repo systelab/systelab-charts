@@ -64,8 +64,8 @@
             "tsConfig": "projects/showcase/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "projects/showcase/src/favicon.ico",
-              "projects/showcase/src/assets"
+              "projects/showcase/src/favicon.png",
+              "projects/showcase/src/gh.ico"
             ],
             "styles": [
               "projects/showcase/src/styles.scss"

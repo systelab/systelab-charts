@@ -5,7 +5,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build-showcase": "ng build showcase --prod",
+    "build-lib": "ng build systelab-charts --prod",
+    "postbuild-lib": "cp -r ./projects/systelab-charts/src/lib/sass ./dist/systelab-charts/sass",
     "test": "ng test --watch=false --browsers=ChromeHeadless",
     "lint": "ng lint",
     "e2e": "ng e2e"

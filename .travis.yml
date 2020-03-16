@@ -16,8 +16,8 @@ install:
   - npm install
 
 script:
-  - ng build systelab-charts --prod
-  - ng build showcase --prod
+  - npm run build-lib
+  - npm run build-showcase
 
 after_success: |
   if [ -n "$GITHUB_API_KEY" ] && [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
