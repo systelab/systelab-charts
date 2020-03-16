@@ -1,8 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import * as Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import 'chartjs-plugin-annotation';
-
-import * as ChartDataLabels from 'chartjs-plugin-datalabels';
 
 export class ChartItem {
 	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string,
