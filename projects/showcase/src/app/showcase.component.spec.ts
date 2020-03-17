@@ -3,7 +3,7 @@ import { ShowcaseComponent } from './showcase.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ShowcaseChartComponent } from './components/chart/showcase-chart.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { SystelabChartsModule } from '../systelab-charts/systelab-charts.module';
+import { SystelabChartsModule } from 'systelab-charts';
 import { FormsModule } from '@angular/forms';
 import { ShowcaseChartsComponent } from './components/showcase-charts.component';
 import { ShowcaseTitleComponent } from './components/showcase-title.component';

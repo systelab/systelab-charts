@@ -9,7 +9,7 @@ import {
 	ChartMultipleYAxisScales,
 	ChartTooltipItem,
 	ChartTooltipSettings, ChartLabelText
-} from '../../../systelab-charts/chart/chart.component';
+} from 'systelab-charts';
 
 @Component({
 	selector:    'showcase-chart',
