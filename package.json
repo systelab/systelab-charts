@@ -7,8 +7,10 @@
     "start": "ng serve",
     "build-showcase": "ng build showcase --prod",
     "build-lib": "ng build systelab-charts --prod",
-    "postbuild-lib": "cp -r ./projects/systelab-charts/src/lib/sass ./dist/systelab-charts/sass",
-    "test": "ng test --watch=false --browsers=ChromeHeadless",
+    "postbuild-lib": "npm run copysass && npm run copyreadme",
+    "copysass": "cp -r ./projects/systelab-charts/src/lib/sass ./dist/systelab-charts/sass",
+    "copyreadme": "cp projects/systelab-charts/README.md dist/systelab-charts",
+    "test": "ng test --watch=false --code-coverage --browsers=ChromeHeadless",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
