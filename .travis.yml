@@ -33,7 +33,6 @@ after_success: |
   fi
 
 before_deploy:
-  - cp README.md dist/systelab-charts
   - cd dist/systelab-charts
 
 deploy:

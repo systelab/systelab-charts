@@ -17,7 +17,6 @@
     ],
     "paths": {
       "systelab-charts": [
-        "dist/systelab-charts/systelab-charts",
         "dist/systelab-charts"
       ]
     }

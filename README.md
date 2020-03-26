@@ -27,3 +27,24 @@ npm run build-lib
 cd dist/systelab-charts
 npm publish
 ```
+
+## Documentation
+
+Read the [provided documentation](https://github.com/systelab/systelab-charts/blob/master/projects/systelab-charts/README.md) to use the library 
+
+# Breaking changes
+
+## Version 6
+Few changes where introduce in version 6 in order to standardize the library and support Angular 9.
+The following steps should be consider when migrating from version 5.
+
+1. When importing the module do not use .forRoot(); In WebStorm, replace in path:
+```
+- SystelabChartsModule.forRoot\(\)
+- SystelabChartsModule
+```
+2. When importing services and modules import them from systelab-charts root. In WebStorm, replace in path:
+```
+- from 'systelab-charts/lib.+ 
+- from 'systelab-charts';
+```
