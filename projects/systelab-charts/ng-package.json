@@ -3,7 +3,9 @@
   "dest": "../../dist/systelab-charts",
   "assets": [
     "./README.md",
-    "./sass/**/*.scss"
+    "./sass/**/*.scss",
+    "./src/assets/fonts/**/*.ttf",
+    "./src/assets/js/meter-charts/**/*.js"
   ],
   "lib": {
     "entryFile": "src/public-api.ts"

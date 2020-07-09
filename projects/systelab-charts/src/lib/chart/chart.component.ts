@@ -1,5 +1,7 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild } from '@angular/core';
 import * as Chart from 'chart.js';
+import * as RadialMeter from '../../assets/js/meter-charts/chart.radial-meter.js';
+
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import 'chartjs-plugin-annotation';
 
@@ -56,7 +58,9 @@ export class ChartTooltipSettings {
 }
 
 export class ChartLabelSettings {
-	constructor(public position?: ChartLabelPosition, public labelColors?: ChartLabelColor, public chartLabelFont?: ChartLabelFont, public chartLabelPadding?: ChartLabelPadding, public chartLabelText?: ChartLabelText, public formatter?: (value: any, context: any) => string) {
+	constructor(public position?: ChartLabelPosition, public labelColors?: ChartLabelColor, public chartLabelFont?: ChartLabelFont,
+				public chartLabelPadding?: ChartLabelPadding, public chartLabelText?: ChartLabelText,
+				public formatter?: (value: any, context: any) => string) {
 		this.position = new ChartLabelPosition();
 		this.labelColors = new ChartLabelColor();
 		this.chartLabelFont = new ChartLabelFont();
@@ -67,18 +71,21 @@ export class ChartLabelSettings {
 }
 
 export class ChartLabelPosition {
-	constructor(public align?: string | number, public anchor?: string, public clamp?: boolean, public clip?: boolean, public display?: ((context: any) => (boolean | string)) | boolean | string, public offset?: number, public rotation?: number) {
+	constructor(public align?: string | number, public anchor?: string, public clamp?: boolean, public clip?: boolean,
+				public display?: ((context: any) => (boolean | string)) | boolean | string, public offset?: number, public rotation?: number) {
 	}
 }
 
 export class ChartLabelColor {
-	constructor(public backgroundColor?: string, public color?: string, public borderColor?: string, public borderRadius?: number, public borderWidth?: number, public opacity?: number) {
+	constructor(public backgroundColor?: string, public color?: string, public borderColor?: string, public borderRadius?: number,
+				public borderWidth?: number, public opacity?: number) {
 
 	}
 }
 
 export class ChartLabelFont {
-	constructor(public font?: object, public family?: string, public size?: number, public style?: string, public weight?: string | number, public lineHeight?: string | number) {
+	constructor(public font?: object, public family?: string, public size?: number, public style?: string, public weight?: string | number,
+				public lineHeight?: string | number) {
 
 	}
 }
@@ -90,7 +97,8 @@ export class ChartLabelPadding {
 }
 
 export class ChartLabelText {
-	constructor(public textAlign?: string, public textStrokeColor?: string, public textStrokeWidth?: number, public textShadowBlur?: number, public textShadowColor?: string) {
+	constructor(public textAlign?: string, public textStrokeColor?: string, public textShadowBlur?: number,
+				public textStrokeWidth?: number, public textShadowColor?: string) {
 
 	}
 }
@@ -113,6 +121,23 @@ export class ChartMultipleYAxisScales {
 			gridLines:  this.gridLines,
 			scaleLabel: this.scaleLabel
 		};
+	}
+}
+
+export class ChartMeterConfiguration {
+	public borderColor = '#007bff';
+	public unitFormat: string;
+	public chartColour: string;
+	public goalColour: string;
+	public betterValues: 'higher' | 'lower';
+	public markerForGoal: string;
+	public defaultGoalValue: number;
+	public minVisualValue: number;
+	public maxVisualValue: number;
+	public showHistory = false;
+	public levels: Array<{ periodColor: string, minValue: number, maxValue: number }> = [];
+
+	constructor() {
 	}
 }
 
@@ -175,6 +200,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() maxValueForRadar: number;
 	@Input() multipleYAxisScales: Array<ChartMultipleYAxisScales>;
 	@Input() customLegend = false;
+	@Input() chartMeterConfiguration: ChartMeterConfiguration;
 
 	private dataset: Array<any> = [];
 
@@ -189,9 +215,12 @@ export class ChartComponent implements AfterViewInit {
 	@ViewChild('topLegend', {static: false}) topLegend: ElementRef;
 	@ViewChild('bottomLegend', {static: false}) bottomLegend: ElementRef;
 
-	public ngAfterViewInit() {
-		Chart.plugins.unregister(ChartDataLabels);
+	constructor(private readonly myRenderer: Renderer2) {
+	}
 
+	public ngAfterViewInit(): void {
+		Chart.plugins.unregister(ChartDataLabels);
+		Chart.defaults.radialMeter = RadialMeter;
 		let cx: CanvasRenderingContext2D;
 
 		if (this.type === 'bar') {
@@ -437,6 +466,9 @@ export class ChartComponent implements AfterViewInit {
 						max: this.maxValueForRadar
 					}
 				};
+			}
+			if (this.type.endsWith('Meter')) {
+				definition.options.chartMeterOptions = this.chartMeterConfiguration;
 			}
 
 			if (this.chartLabelSettings) {
@@ -714,7 +746,25 @@ export class ChartComponent implements AfterViewInit {
 			.join(',') + ')';
 	}
 
-	public doUpdate() {
+	public getBase64Image(height: number, width: number): string {
+		if (this.chart) {
+			const elementToPrint = this.chart.canvas.parentElement;
+			const canvasOffsetHeight = elementToPrint.offsetHeight;
+			const canvasOffsetWidth = elementToPrint.offsetWidth;
+
+			this.myRenderer.setStyle(elementToPrint, 'height', height + 'px');
+			this.myRenderer.setStyle(elementToPrint, 'width', width + 'px');
+			this.chart.resize();
+			const base64ImageString = this.chart.toBase64Image();
+			this.myRenderer.setStyle(elementToPrint, 'height', canvasOffsetHeight + 'px');
+			this.myRenderer.setStyle(elementToPrint, 'width', canvasOffsetWidth + 'px');
+			this.chart.resize();
+			return base64ImageString;
+		}
+		return undefined;
+	}
+
+	public doUpdate(): void {
 		let cx: CanvasRenderingContext2D;
 		if (this.canvas.nativeElement) {
 			cx = this.canvas.nativeElement.getContext('2d');

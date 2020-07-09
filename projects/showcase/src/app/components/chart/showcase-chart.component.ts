@@ -1,15 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import {
-	Annotation,
-	ChartBoxAnnotation,
-	ChartComponent,
-	ChartItem,
-	ChartLabelAnnotation, ChartLabelColor, ChartLabelPadding, ChartLabelPosition, ChartLabelSettings, ChartLabelFont,
-	ChartLineAnnotation,
-	ChartMultipleYAxisScales,
-	ChartTooltipItem,
-	ChartTooltipSettings, ChartLabelText
+	Annotation, ChartBoxAnnotation, ChartComponent, ChartItem, ChartLabelAnnotation, ChartLabelColor, ChartLabelFont,
+	ChartLabelPadding, ChartLabelPosition, ChartLabelSettings, ChartLineAnnotation, ChartMultipleYAxisScales, ChartTooltipItem, ChartTooltipSettings
 } from 'systelab-charts';
+import { ChartMeterConfiguration } from '../../../../../systelab-charts/src/lib/chart/chart.component';
 
 @Component({
 	selector:    'showcase-chart',
@@ -17,9 +11,10 @@ import {
 })
 export class ShowcaseChartComponent {
 
-	@ViewChild('lineChart', {static: false}) lineChart: ChartComponent;
-	@ViewChild('lineChartMultipleAxis', {static: false}) lineChartMultipleAxis: ChartComponent;
-	@ViewChild('lineChartLegend', {static: false}) lineChartLegend: ChartComponent;
+	@ViewChild('radialMeterChart') radialMeterChart: ChartComponent;
+	@ViewChild('lineChart') lineChart: ChartComponent;
+	@ViewChild('lineChartMultipleAxis') lineChartMultipleAxis: ChartComponent;
+	@ViewChild('lineChartLegend') lineChartLegend: ChartComponent;
 
 	public type: string;
 	public itemSelected: any;
@@ -27,6 +22,8 @@ export class ShowcaseChartComponent {
 	public dataLine: Array<ChartItem> = [];
 	public dataLineMultipleAxis: Array<ChartItem> = [];
 	public dataBar: Array<ChartItem> = [];
+	public dataChartMeterGadget: Array<ChartItem> = [];
+	public dataChartMeterGoalsGadget: Array<ChartItem> = [];
 	public dataRadar: Array<ChartItem> = [];
 	public dataPie: Array<ChartItem> = [];
 	public dataDoughnut: Array<ChartItem> = [];
@@ -41,6 +38,7 @@ export class ShowcaseChartComponent {
 	public chartMultipleAnnotations: Array<Annotation> = [];
 	public chartBubbleAnnotations: Array<Annotation> = [];
 	public labels: Array<string> = [];
+	public labelsChartMeterGadget: Array<string> = [];
 	public labelsMultipleAxis: Array<number> = [];
 	public labelLineAnnotations: Array<number> = [];
 	public isBackgroundGrid = false;
@@ -52,10 +50,9 @@ export class ShowcaseChartComponent {
 	public tooltipSettings = new ChartTooltipSettings();
 	public isStacked = true;
 	public dataLineCustomLegend: Array<ChartItem> = [];
-
 	public multipleYAxisScales: Array<ChartMultipleYAxisScales> = [];
-
 	public pieChartLabelSettings: ChartLabelSettings;
+	public chartGadgetConfiguration: ChartMeterConfiguration;
 
 	private static randomIntFromInterval(min, max) {
 		return Math.floor(Math.random() * (max - min + 1) + min);
@@ -66,6 +63,7 @@ export class ShowcaseChartComponent {
 		this.legend = true;
 		this.labels = ['January', 'February', 'March', 'April'];
 		this.labelsMultipleAxis = [1, 2, 3, 4];
+		this.labelsChartMeterGadget = ['06/05/2020', '06/06/2020', '06/07/2020', '06/08/2020', '06/09/2020', '06/10/2020'];
 
 		this.tooltipSettings.backgroundColor = '#ffffff';
 		this.tooltipSettings.borderColor = '#0066ff';
@@ -74,8 +72,9 @@ export class ShowcaseChartComponent {
 		this.tooltipSettings.titleFontColor = '#fd7e14';
 
 		this.generateMultipleAxisExample();
+		this.generateChartGadgetConfiguration();
 
-		this.dataLine.push(new ChartItem('Only Line', [13, 20, 21, 15], '', '', false, true, false, 3, '',
+		this.dataLine.push(new ChartItem('Only Line', [13, 20, 21, 15.5], '', '', false, true, false, 3, '',
 			new ChartTooltipItem('title', 'label', 'afterlabel', true)));
 
 		this.dataLine.push(new ChartItem('Only Dots', [11, 18, 4, 3], '', '', false, false, false, 4));
@@ -83,6 +82,9 @@ export class ShowcaseChartComponent {
 
 		this.dataBar.push(new ChartItem('Only Line', [12, 41, 1, 21], '', '', false, false, false, 3));
 		this.dataBar.push(new ChartItem('Line and Area', [13, 20, 21, 15], '', '', true, true, false, 3));
+
+		this.dataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false, 3, 'line'));
+		this.dataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 14], 'green', 'lightgreen', true, true, false, 1));
 
 		this.dataRadar.push(new ChartItem('Only Line', [36, 41, 35, 21], '', '', false, true, false, 3));
 		this.dataRadar.push(new ChartItem('Line and Area', [37, 40, 21, 15], '', '', true, true, false, 3));
@@ -93,26 +95,24 @@ export class ShowcaseChartComponent {
 		this.pieChartLabelSettings.position = new ChartLabelPosition();
 		this.pieChartLabelSettings.position.clip = false; // to avoid showing part of the label, set clip = true
 
-		const displayFunction = (context: any): boolean => {
+		this.pieChartLabelSettings.position.display = (context: any): boolean => {
 
 			const dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
 
 			const currentPercentage = context.dataset.data[context.dataIndex] * 100 / dataArr.reduce((a, b) => a + b);
 
 			return currentPercentage >= 5;
-		}
-		this.pieChartLabelSettings.position.display = displayFunction;
+		};
 		this.pieChartLabelSettings.labelColors = new ChartLabelColor(undefined, 'black', undefined, 5, 1, 0.8);
 		const fontFamily = 'Courier, Arial Unicode MS, Arial, sans-serif';
 		this.pieChartLabelSettings.chartLabelFont = new ChartLabelFont(undefined, fontFamily, 16, undefined, 'bold', 0.8);
 		this.pieChartLabelSettings.chartLabelPadding = new ChartLabelPadding(undefined, 1, 1, 1, 1);
 
-		const myPieLabelFormatter = (value: any, context: any): string => {
+		this.pieChartLabelSettings.formatter = (value: any, context: any): string => {
 			const dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
 			return (value * 100 / dataArr.reduce((a, b) => a + b)).toFixed(0) + '%';
-		}
+		};
 
-		this.pieChartLabelSettings.formatter = myPieLabelFormatter;
 		const pieChartItem = new ChartItem('', [36, 4, 42, 52], '', '#778899', true, true, false, 3);
 		pieChartItem.labelBorderColors = this.generateColorsForSections(pieChartItem.data.length);
 		pieChartItem.labelBackgroundColors = this.generateColorsForSections(pieChartItem.data.length);
@@ -172,8 +172,10 @@ export class ShowcaseChartComponent {
 
 		this.dataLineCustomLegend.push(new ChartItem('Line', [13, 20, 21, 15], '', '', false, true, false, 3, '',
 			new ChartTooltipItem('title', 'label', 'afterlabel', true), undefined, undefined, 'line'));
-		this.dataLineCustomLegend.push(new ChartItem('Dots', [11, 18, 4, 3], '', '', false, false, false, 4, undefined, undefined, undefined, undefined, 'dots'));
-		this.dataLineCustomLegend.push(new ChartItem('Line and Area', [12, 41, 1, 21], '', '', true, true, false, 3, undefined, undefined, undefined, undefined, 'bar'));
+		this.dataLineCustomLegend.push(new ChartItem('Dots', [11, 18, 4, 3], '', '', false, false, false,
+			4, undefined, undefined, undefined, undefined, 'dots'));
+		this.dataLineCustomLegend.push(new ChartItem('Line and Area', [12, 41, 1, 21], '', '', true, true,
+			false, 3, undefined, undefined, undefined, undefined, 'bar'));
 	}
 
 	public doAction(event: any) {
@@ -200,12 +202,27 @@ export class ShowcaseChartComponent {
 		this.lineChart.doUpdate();
 	}
 
-	public updateMultipleAxisExample() {
+	public updateMultipleAxisExample(): void {
 		this.generateMultipleAxisExample();
 		this.lineChartMultipleAxis.doUpdate();
 	}
 
-	public generateMultipleAxisExample() {
+	public generateChartGadgetConfiguration(): void {
+		this.chartGadgetConfiguration = new ChartMeterConfiguration();
+		this.chartGadgetConfiguration.unitFormat = '#,##';
+		this.chartGadgetConfiguration.betterValues = 'higher';
+		this.chartGadgetConfiguration.chartColour = 'green';
+		this.chartGadgetConfiguration.goalColour = 'blue';
+		this.chartGadgetConfiguration.defaultGoalValue = 8;
+		this.chartGadgetConfiguration.minVisualValue = 0;
+		this.chartGadgetConfiguration.maxVisualValue = 10;
+		this.chartGadgetConfiguration.levels.push({periodColor: '#FF0000AA', minValue: 0, maxValue: 2});
+		this.chartGadgetConfiguration.levels.push({periodColor: '#FFFF00AA', minValue: 3, maxValue: 5});
+		this.chartGadgetConfiguration.levels.push({periodColor: '#00FF00AA', minValue: 6, maxValue: 10});
+		this.chartGadgetConfiguration.showHistory = false;
+	}
+
+	public generateMultipleAxisExample(): void {
 		this.dataLineMultipleAxis = [];
 
 		this.multipleYAxisScales = [];
@@ -235,8 +252,7 @@ export class ShowcaseChartComponent {
 		}
 	}
 
-	private generateChartMultipleYAxisScales(id: string, position: string, min: number, max: number,
-											 stepSize: number): ChartMultipleYAxisScales {
+	private generateChartMultipleYAxisScales(id: string, position: string, min: number, max: number, stepSize: number): ChartMultipleYAxisScales {
 		const defaultYAxisScales = new ChartMultipleYAxisScales();
 		defaultYAxisScales.id = id;
 		defaultYAxisScales.position = position;
@@ -257,7 +273,7 @@ export class ShowcaseChartComponent {
 	private generateColorsForSections(length: number): Array<number[]> {
 		const colorsArray: Array<number[]> = [];
 
-		for (var i = 0; i < length; i++) {
+		for (let i = 0; i < length; i++) {
 			colorsArray.push(this.generateColorForSection(i));
 		}
 
@@ -274,6 +290,17 @@ export class ShowcaseChartComponent {
 				return [0, 127, 200];
 			default:
 				return [255, 228, 181];
+		}
+	}
+
+	public doShowHistory(meterType: string): void {
+		switch (meterType) {
+			case 'radialMeter':
+				this.chartGadgetConfiguration.showHistory = !this.chartGadgetConfiguration.showHistory;
+				this.radialMeterChart.doUpdate();
+				break;
+			default:
+				break;
 		}
 	}
 }
