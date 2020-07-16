@@ -80,7 +80,7 @@ export const getBoxSize = (canvasWidth) => {
 
 export const getFrameSize = (canvasWidth) => {
 	const baseWidth = 936;                   // selected default width for canvas
-	const baseFrameSize = 10;                     // default size for font
+	const baseFrameSize = 15;                     // default size for font
 
 	const ratio = baseFrameSize / baseWidth;   // calc ratio
 	return canvasWidth * ratio;   // get font size based on current width

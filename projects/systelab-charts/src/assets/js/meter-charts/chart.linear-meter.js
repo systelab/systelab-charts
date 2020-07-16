@@ -1,8 +1,36 @@
-import {drawRegions, drawTextPanel, getFontSized, getRadius, getTextBackgroundColor} from "./chart.common-meter-functions";
+import {drawRegions, drawTextPanel, getFontSized, getTextBackgroundColor} from "./chart.common-meter-functions";
+
+let LinearData = class {
+
+	constructor(dataArray, chartMeterOptions) {
+		this.text = dataArray.length > 0 ? dataArray[dataArray.length - 1] : '--';
+		this.textBackgroundColor = getTextBackgroundColor(chartMeterOptions.levels, dataArray[dataArray.length - 1]);
+		this.visualMinValue = chartMeterOptions.minVisualValue;
+		this.visualMaxValue = chartMeterOptions.maxVisualValue;
+		this.levelMinValue = Math.min(...chartMeterOptions.levels.map(value => value.minValue));
+		this.levelMaxValue = Math.max(...chartMeterOptions.levels.map(value => value.maxValue));
+		this.dataValue = dataArray[dataArray.length - 1];
+
+		// TODO visualValue must be taken into account based on a parameter
+		this.minValue = Math.min(this.visualMinValue, this.levelMinValue);
+		this.maxValue = Math.max(this.visualMaxValue, this.levelMaxValue);
+
+		while (this.dataValue <= this.minValue) {
+			this.minValue -= Math.abs(this.dataValue * 0.8);
+		}
+		while (this.dataValue >= this.maxValue) {
+			this.maxValue += Math.abs(this.dataValue * 0.8);
+		}
+
+		this.fractionDigits = (this.maxValue - this.minValue) < 10 ? 1 : 0;
+		this.textIncrement = Math.abs((this.maxValue - this.minValue)) / 61;
+	}
+
+};
 
 export const LinearMeter = Chart.controllers.bar.extend({
 
-	draw:               function(ease) {
+	draw:                         function(ease) {
 		// Call super method first
 		if (this.chart.options.chartMeterOptions.showHistory) {
 			// Chart.controllers.bar.prototype.draw.apply(this);
@@ -11,8 +39,6 @@ export const LinearMeter = Chart.controllers.bar.extend({
 			// Call super method to draw the bars
 			Chart.controllers.bar.prototype.draw.call(this, ease);
 		} else {
-			// Call super method first
-			// Chart.controllers.bar.prototype.draw.call(this, ease);
 			this.chart.options.tooltips.enabled = false;
 			this.chart.data.datasets[0].hidden = true;
 			const context = this.chart.chart.ctx;
@@ -22,8 +48,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 			const centerX = canvas.width / 2;
 			const centerY = canvas.height / 2;
 
-			const text = this._data.length > 0 ? this._data[this._data.length - 1] : '--';
-			const textBackgroundColor = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, this._data[this._data.length - 1]);
+			const linearData = new LinearData(this._data, this.chart.options.chartMeterOptions);
 
 			context.moveTo(centerX, centerY);
 
@@ -32,47 +57,31 @@ export const LinearMeter = Chart.controllers.bar.extend({
 				drawTextPanel(context, '', '#DDDDDD44', centerX / 4, centerY - (centerY / 3), centerX + centerX / 2,
 					centerY * 0.75, this.chart.options.chartMeterOptions.borderColor);
 
-				drawTextPanel(context, text, textBackgroundColor, centerX + (centerX / 2.1), centerY - (centerY / 3.4), centerX / 4,
+				drawTextPanel(context, linearData.text, linearData.textBackgroundColor, centerX + (centerX / 2.1), centerY - (centerY / 3.4), centerX / 4,
 					centerY / 8);
 
-				const visualMinValue = this.chart.options.chartMeterOptions.minVisualValue;
-				const visualMaxValue = this.chart.options.chartMeterOptions.maxVisualValue;
-				const levelMinValue = Math.min(...this.chart.options.chartMeterOptions.levels.map(value => value.minValue));
-				const levelMaxValue = Math.max(...this.chart.options.chartMeterOptions.levels.map(value => value.maxValue));
-				const dataValue = this._data[this._data.length - 1];
-
-				// TODO visualValue must be taken into account based on a parameter
-				let minValue = Math.min(visualMinValue, levelMinValue);
-				let maxValue = Math.max(visualMaxValue, levelMaxValue);
-
-				while (dataValue <= minValue) {
-					minValue -= Math.abs(dataValue * 0.8);
-				}
-				while (dataValue >= maxValue) {
-					maxValue += Math.abs(dataValue * 0.8);
-				}
-
-				const fractionDigits = (maxValue - minValue) < 10 ? 1 : 0;
-				const textIncrement = Math.abs((maxValue - minValue)) / 61;
 				const increment = ((centerX + centerX / 2) - (centerX / 5.7)) / 61;
-				this.drawTicksLabelsBar(context, centerX / 3, centerY + (centerY / 3.5), increment, minValue, textIncrement, fractionDigits);
+				this.drawHorizontalTicksLabelsBar(context, centerX / 3, centerY + (centerY / 3.5), increment, linearData.minValue,
+					linearData.textIncrement, linearData.fractionDigits);
 
 			} else {
-				const linearGradient = context.createLinearGradient(0, 0, 100, 0);
 
-				linearGradient.addColorStop(1, 'white');
-				linearGradient.addColorStop(0, 'lightgray');
-				drawTextPanel(context, '', linearGradient, centerX / 2, centerY - (centerY / 3), centerX,
-					centerY / 2, this.chart.options.chartMeterOptions.borderColor);
+				drawTextPanel(context, '', '#DDDDDD44', centerX - centerX / 6, 15, centerX / 3,
+					canvas.height * 0.9, this.chart.options.chartMeterOptions.borderColor);
 
-				drawTextPanel(context, text, textBackgroundColor, centerX / 2 + centerX, centerY - (centerY / 2), centerX / 4,
-					centerY / 8);
+				drawTextPanel(context, linearData.text, linearData.textBackgroundColor, centerX - centerX / 8,
+					canvas.height * 0.85, centerX / 4, centerY / 8);
+
+				const increment = (centerY + centerY / 2.5) / 61;
+				this.drawVerticalTicksLabelsBar(context, centerX - centerX / 8 + 15,
+					canvas.height * 0.8, increment, linearData.minValue,
+					linearData.textIncrement, linearData.fractionDigits);
 			}
 			context.restore();
 
 		}
 	},
-	drawTicksLabelsBar: function(context, xStartPos, yStartPos, increment, startingValue, textIncrement, fractionDigits) {
+	drawHorizontalTicksLabelsBar: function(context, xStartPos, yStartPos, increment, startingValue, textIncrement, fractionDigits) {
 		context.beginPath();
 		context.strokeStyle = 'darkgray';
 		context.font = getFontSized(12, 60, 'Helvetica');
@@ -80,8 +89,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		let valueIndex;
 		for (let index = 0; index <= 60; index++) {
 			if (startingValue + index * textIncrement <= this._data[this._data.length - 1]) {
-				valueIndex = index;
-				console.log(`${Number((startingValue + index * textIncrement).toFixed(fractionDigits))} -- ${startingValue + index * textIncrement} `);
+				valueIndex = index * (this._data[this._data.length - 1] / (startingValue + index * textIncrement));
 			}
 			switch (index % 10) {
 				case 0:
@@ -125,6 +133,62 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		context.lineWidth = 3;
 		context.fillStyle = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, this._data[this._data.length - 1]);
 		context.fillRect(xStartPos + 1, this.chart.canvas.height / 2 - yStartPos / 10 + 1, valueIndex * increment, yStartPos / 5 - 3);
+		context.closePath();
+	},
+	drawVerticalTicksLabelsBar:   function(context, xStartPos, yStartPos, increment, startingValue, textIncrement, fractionDigits) {
+		context.beginPath();
+		context.strokeStyle = 'darkgray';
+		context.font = getFontSized(12, 60, 'Helvetica');
+		context.fillStyle = 'darkgray';
+		let valueIndex;
+		for (let index = 0; index <= 60; index++) {
+			if (startingValue + index * textIncrement <= this._data[this._data.length - 1]) {
+				valueIndex = index * (this._data[this._data.length - 1] / (startingValue + index * textIncrement));
+			}
+			switch (index % 10) {
+				case 0:
+					context.lineWidth = 3;
+
+					const text = (startingValue + index * textIncrement).toFixed(fractionDigits);
+					context.fillText(text, xStartPos + -15 - context.measureText(text).width / 2,
+						yStartPos - index * increment + context.measureText(text).actualBoundingBoxAscent / 2);
+					context.beginPath();
+					context.moveTo(xStartPos + 10, yStartPos - index * increment);
+					context.lineTo(xStartPos, yStartPos - index * increment);
+					context.stroke();
+					context.closePath();
+					break;
+				case 5:
+					context.lineWidth = 2;
+					context.beginPath();
+					context.moveTo(xStartPos + 8, yStartPos - index * increment);
+					context.lineTo(xStartPos, yStartPos - index * increment);
+					context.stroke();
+					context.closePath();
+					break;
+				default:
+					context.lineWidth = 1;
+					context.beginPath();
+					context.moveTo(xStartPos + 5, yStartPos - index * increment);
+					context.lineTo(xStartPos, yStartPos - index * increment);
+					context.stroke();
+					context.closePath();
+					break;
+			}
+		}
+		const linearGradient = context.createLinearGradient(0, 100, 0, 50);
+
+		linearGradient.addColorStop(0.5, 'lightgray');
+		linearGradient.addColorStop(1, 'gray');
+		const barWidth = this.chart.canvas.width / 2 - (this.chart.canvas.width * 0.05) / 2;
+		drawTextPanel(context, '', 'white', barWidth,
+			yStartPos - increment * 60, this.chart.canvas.width * 0.05, increment * 61);
+
+		context.beginPath();
+		context.lineWidth = 3;
+		context.fillStyle = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, this._data[this._data.length - 1]);
+		context.fillRect(barWidth + 1, yStartPos - valueIndex * increment + 4,
+			this.chart.canvas.width * 0.05 - 2, valueIndex * increment);
 		context.closePath();
 	}
 });

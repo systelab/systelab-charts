@@ -15,6 +15,7 @@ export class ShowcaseChartComponent {
 	@ViewChild('radialMeterChart') radialMeterChart: ChartComponent;
 	@ViewChild('digitalMeterChart') digitalMeterChart: ChartComponent;
 	@ViewChild('horizontalLinearMeterChart') horizontalLinearMeterChart: ChartComponent;
+	@ViewChild('verticalLinearMeterChart') verticalLinearMeterChart: ChartComponent;
 	@ViewChild('lineChart') lineChart: ChartComponent;
 	@ViewChild('lineChartMultipleAxis') lineChartMultipleAxis: ChartComponent;
 	@ViewChild('lineChartLegend') lineChartLegend: ChartComponent;
@@ -88,7 +89,7 @@ export class ShowcaseChartComponent {
 
 		this.dataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
 			3, 'line', undefined, 5));
-		this.dataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 5.5], 'green', 'lightgreen', true, true, false, 1));
+		this.dataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 5.8], 'green', 'lightgreen', true, true, false, 1));
 
 		this.dataRadar.push(new ChartItem('Only Line', [36, 41, 35, 21], '', '', false, true, false, 3));
 		this.dataRadar.push(new ChartItem('Line and Area', [37, 40, 21, 15], '', '', true, true, false, 3));
@@ -311,6 +312,10 @@ export class ShowcaseChartComponent {
 			case 'horizontalLinearMeter':
 				this.chartGadgetConfiguration.showHistory = !this.chartGadgetConfiguration.showHistory;
 				this.horizontalLinearMeterChart.doUpdate();
+				break;
+			case 'verticalLinearMeter':
+				this.chartGadgetConfiguration.showHistory = !this.chartGadgetConfiguration.showHistory;
+				this.verticalLinearMeterChart.doUpdate();
 				break;
 			default:
 				break;
