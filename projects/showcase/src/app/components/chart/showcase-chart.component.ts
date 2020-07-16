@@ -1,7 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import {
-	Annotation, ChartBoxAnnotation, ChartComponent, ChartItem, ChartLabelAnnotation, ChartLabelColor, ChartLabelFont,
-	ChartLabelPadding, ChartLabelPosition, ChartLabelSettings, ChartLineAnnotation, ChartMultipleYAxisScales, ChartTooltipItem, ChartTooltipSettings
+	Annotation, ChartBoxAnnotation, ChartComponent, ChartItem, ChartLabelAnnotation, ChartLabelColor,
+	ChartLabelFont, ChartLabelPadding, ChartLabelPosition, ChartLabelSettings, ChartLineAnnotation, ChartMultipleYAxisScales,
+	ChartTooltipItem, ChartTooltipSettings
 } from 'systelab-charts';
 import { ChartMeterConfiguration } from '../../../../../systelab-charts/src/lib/chart/chart.component';
 
@@ -12,6 +13,8 @@ import { ChartMeterConfiguration } from '../../../../../systelab-charts/src/lib/
 export class ShowcaseChartComponent {
 
 	@ViewChild('radialMeterChart') radialMeterChart: ChartComponent;
+	@ViewChild('digitalMeterChart') digitalMeterChart: ChartComponent;
+	@ViewChild('horizontalLinearMeterChart') horizontalLinearMeterChart: ChartComponent;
 	@ViewChild('lineChart') lineChart: ChartComponent;
 	@ViewChild('lineChartMultipleAxis') lineChartMultipleAxis: ChartComponent;
 	@ViewChild('lineChartLegend') lineChartLegend: ChartComponent;
@@ -83,8 +86,9 @@ export class ShowcaseChartComponent {
 		this.dataBar.push(new ChartItem('Only Line', [12, 41, 1, 21], '', '', false, false, false, 3));
 		this.dataBar.push(new ChartItem('Line and Area', [13, 20, 21, 15], '', '', true, true, false, 3));
 
-		this.dataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false, 3, 'line'));
-		this.dataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 14], 'green', 'lightgreen', true, true, false, 1));
+		this.dataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
+			3, 'line', undefined, 5));
+		this.dataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 5.5], 'green', 'lightgreen', true, true, false, 1));
 
 		this.dataRadar.push(new ChartItem('Only Line', [36, 41, 35, 21], '', '', false, true, false, 3));
 		this.dataRadar.push(new ChartItem('Line and Area', [37, 40, 21, 15], '', '', true, true, false, 3));
@@ -209,7 +213,7 @@ export class ShowcaseChartComponent {
 
 	public generateChartGadgetConfiguration(): void {
 		this.chartGadgetConfiguration = new ChartMeterConfiguration();
-		this.chartGadgetConfiguration.unitFormat = '#,##';
+		this.chartGadgetConfiguration.unitFormat = '#.##';
 		this.chartGadgetConfiguration.betterValues = 'higher';
 		this.chartGadgetConfiguration.chartColour = 'green';
 		this.chartGadgetConfiguration.goalColour = 'blue';
@@ -220,6 +224,7 @@ export class ShowcaseChartComponent {
 		this.chartGadgetConfiguration.levels.push({periodColor: '#FFFF00AA', minValue: 3, maxValue: 5});
 		this.chartGadgetConfiguration.levels.push({periodColor: '#00FF00AA', minValue: 6, maxValue: 10});
 		this.chartGadgetConfiguration.showHistory = false;
+		this.chartGadgetConfiguration.markerForGoal = 'rectRot';
 	}
 
 	public generateMultipleAxisExample(): void {
@@ -298,6 +303,14 @@ export class ShowcaseChartComponent {
 			case 'radialMeter':
 				this.chartGadgetConfiguration.showHistory = !this.chartGadgetConfiguration.showHistory;
 				this.radialMeterChart.doUpdate();
+				break;
+			case 'digitalMeter':
+				this.chartGadgetConfiguration.showHistory = !this.chartGadgetConfiguration.showHistory;
+				this.digitalMeterChart.doUpdate();
+				break;
+			case 'horizontalLinearMeter':
+				this.chartGadgetConfiguration.showHistory = !this.chartGadgetConfiguration.showHistory;
+				this.horizontalLinearMeterChart.doUpdate();
 				break;
 			default:
 				break;

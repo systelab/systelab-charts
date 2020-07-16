@@ -1,11 +1,14 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild } from '@angular/core';
 import * as Chart from 'chart.js';
-import * as RadialMeter from '../../assets/js/meter-charts/chart.radial-meter.js';
+import { RadialMeter } from '../../assets/js/meter-charts/chart.radial-meter';
+import { DigitalMeter } from '../../assets/js/meter-charts/chart.digital-meter';
+import { LinearMeter } from '../../assets/js/meter-charts/chart.linear-meter';
 
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import 'chartjs-plugin-annotation';
 
 export class ChartItem {
+
 	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string,
 				public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number,
 				public chartType?: string, public chartTooltipItem?: ChartTooltipItem, public pointRadius?: number, public yAxisID?: string,
@@ -130,7 +133,8 @@ export class ChartMeterConfiguration {
 	public chartColour: string;
 	public goalColour: string;
 	public betterValues: 'higher' | 'lower';
-	public markerForGoal: string;
+	public markerForGoal: 'circle' | 'cross' | 'crossRot' | 'dash' | 'line' | 'rect' | 'rectRounded'
+		| 'rectRot' | 'star' | 'triangle' = 'circle';
 	public defaultGoalValue: number;
 	public minVisualValue: number;
 	public maxVisualValue: number;
@@ -216,11 +220,16 @@ export class ChartComponent implements AfterViewInit {
 	@ViewChild('bottomLegend', {static: false}) bottomLegend: ElementRef;
 
 	constructor(private readonly myRenderer: Renderer2) {
+		Chart.defaults.radialMeter = Chart.defaults.bar;
+		Chart.defaults.digitalMeter = Chart.defaults.bar;
+		Chart.defaults.linearMeter = Chart.defaults.bar;
+		Chart.controllers.radialMeter = RadialMeter;
+		Chart.controllers.digitalMeter = DigitalMeter;
+		Chart.controllers.linearMeter = LinearMeter;
 	}
 
 	public ngAfterViewInit(): void {
 		Chart.plugins.unregister(ChartDataLabels);
-		Chart.defaults.radialMeter = RadialMeter;
 		let cx: CanvasRenderingContext2D;
 
 		if (this.type === 'bar') {
@@ -469,6 +478,11 @@ export class ChartComponent implements AfterViewInit {
 			}
 			if (this.type.endsWith('Meter')) {
 				definition.options.chartMeterOptions = this.chartMeterConfiguration;
+				definition.data.datasets[0].pointStyle = this.chartMeterConfiguration.markerForGoal;
+				definition.data.datasets[1].categoryPercentage = 0.8;
+				definition.data.datasets[1].barPercentage = 0.9;
+				definition.options.scales.xAxes[0].offset = true;
+				definition.options.isHorizontal = this.isHorizontal;
 			}
 
 			if (this.chartLabelSettings) {

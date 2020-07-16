@@ -4,7 +4,7 @@
   "assets": [
     "./README.md",
     "./sass/**/*.scss",
-    "./src/assets/fonts/**/*.ttf",
+    "./src/assets/fonts/**/*.otf",
     "./src/assets/js/meter-charts/**/*.js"
   ],
   "lib": {
