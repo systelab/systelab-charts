@@ -40,7 +40,6 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			this.drawTicksAndLabels(context, radius, increment, fractionDigits);
 			const text = this._data.length > 0 ? this._data[this._data.length - 1] : '--';
 			const textBackgroundColor = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, this._data[this._data.length - 1]);
-			// drawTextPanel(context, radius, text, textBackgroundColor, getBoxSize(context.canvas.width), 0, 0);
 			const width = radius * 2 * .44;
 			const linearGradient = context.createLinearGradient(0, 0, 0, 75);
 

@@ -180,7 +180,7 @@ export class ChartComponent implements AfterViewInit {
 
 	@Input() labels: Array<any> = [];
 	@Input() data: Array<ChartItem> = [];
-	@Input() annotations: Array<ChartLineAnnotation | ChartBoxAnnotation> = [];
+	@Input() annotations: Array<Annotation | ChartLineAnnotation | ChartBoxAnnotation> = [];
 	@Input() showLegend = true;
 	@Input() legendPosition = 'top';
 	@Input() isHorizontal = false;
@@ -760,19 +760,24 @@ export class ChartComponent implements AfterViewInit {
 			.join(',') + ')';
 	}
 
-	public getBase64Image(height: number, width: number): string {
+	public getBase64Image(width?: number, height?: number): string {
 		if (this.chart) {
-			const elementToPrint = this.chart.canvas.parentElement;
-			const canvasOffsetHeight = elementToPrint.offsetHeight;
-			const canvasOffsetWidth = elementToPrint.offsetWidth;
+			let base64ImageString: string;
+			if (width && height) {
+				const elementToPrint = this.chart.canvas.parentElement;
+				const canvasOffsetHeight = elementToPrint.offsetHeight;
+				const canvasOffsetWidth = elementToPrint.offsetWidth;
 
-			this.myRenderer.setStyle(elementToPrint, 'height', height + 'px');
-			this.myRenderer.setStyle(elementToPrint, 'width', width + 'px');
-			this.chart.resize();
-			const base64ImageString = this.chart.toBase64Image();
-			this.myRenderer.setStyle(elementToPrint, 'height', canvasOffsetHeight + 'px');
-			this.myRenderer.setStyle(elementToPrint, 'width', canvasOffsetWidth + 'px');
-			this.chart.resize();
+				this.myRenderer.setStyle(elementToPrint, 'height', height + 'px');
+				this.myRenderer.setStyle(elementToPrint, 'width', width + 'px');
+				this.chart.resize();
+				base64ImageString = this.chart.toBase64Image();
+				this.myRenderer.setStyle(elementToPrint, 'height', canvasOffsetHeight + 'px');
+				this.myRenderer.setStyle(elementToPrint, 'width', canvasOffsetWidth + 'px');
+				this.chart.resize();
+			} else {
+				base64ImageString = this.chart.toBase64Image();
+			}
 			return base64ImageString;
 		}
 		return undefined;

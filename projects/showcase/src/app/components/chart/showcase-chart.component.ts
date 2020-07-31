@@ -26,8 +26,10 @@ export class ShowcaseChartComponent {
 	public dataLine: Array<ChartItem> = [];
 	public dataLineMultipleAxis: Array<ChartItem> = [];
 	public dataBar: Array<ChartItem> = [];
-	public dataChartMeterGadget: Array<ChartItem> = [];
-	public dataChartMeterGoalsGadget: Array<ChartItem> = [];
+	public radialDataChartMeterGadget: Array<ChartItem> = [];
+	public verticalLinearDataChartMeterGadget: Array<ChartItem> = [];
+	public horizontalLinearDataChartMeterGadget: Array<ChartItem> = [];
+	public digitalDataChartMeterGadget: Array<ChartItem> = [];
 	public dataRadar: Array<ChartItem> = [];
 	public dataPie: Array<ChartItem> = [];
 	public dataDoughnut: Array<ChartItem> = [];
@@ -56,7 +58,10 @@ export class ShowcaseChartComponent {
 	public dataLineCustomLegend: Array<ChartItem> = [];
 	public multipleYAxisScales: Array<ChartMultipleYAxisScales> = [];
 	public pieChartLabelSettings: ChartLabelSettings;
-	public chartGadgetConfiguration: ChartMeterConfiguration;
+	public radialChartGadgetConfiguration: ChartMeterConfiguration;
+	public verticalLinearChartGadgetConfiguration: ChartMeterConfiguration;
+	public horizontalLinearChartGadgetConfiguration: ChartMeterConfiguration;
+	public digitalChartGadgetConfiguration: ChartMeterConfiguration;
 
 	private static randomIntFromInterval(min, max) {
 		return Math.floor(Math.random() * (max - min + 1) + min);
@@ -76,7 +81,10 @@ export class ShowcaseChartComponent {
 		this.tooltipSettings.titleFontColor = '#fd7e14';
 
 		this.generateMultipleAxisExample();
-		this.generateChartGadgetConfiguration();
+		this.radialChartGadgetConfiguration = this.generateChartGadgetConfiguration();
+		this.digitalChartGadgetConfiguration = this.generateChartGadgetConfiguration();
+		this.horizontalLinearChartGadgetConfiguration = this.generateChartGadgetConfiguration();
+		this.verticalLinearChartGadgetConfiguration = this.generateChartGadgetConfiguration();
 
 		this.dataLine.push(new ChartItem('Only Line', [13, 20, 21, 15.5], '', '', false, true, false, 3, '',
 			new ChartTooltipItem('title', 'label', 'afterlabel', true)));
@@ -87,9 +95,21 @@ export class ShowcaseChartComponent {
 		this.dataBar.push(new ChartItem('Only Line', [12, 41, 1, 21], '', '', false, false, false, 3));
 		this.dataBar.push(new ChartItem('Line and Area', [13, 20, 21, 15], '', '', true, true, false, 3));
 
-		this.dataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
+		this.radialDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
 			3, 'line', undefined, 5));
-		this.dataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 5.8], 'green', 'lightgreen', true, true, false, 1));
+		this.radialDataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 5.5], 'green', 'lightgreen', true, true, false, 1));
+
+		this.digitalDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
+			3, 'line', undefined, 5));
+		this.digitalDataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 11], 'green', 'lightgreen', true, true, false, 1));
+
+		this.verticalLinearDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
+			3, 'line', undefined, 5));
+		this.verticalLinearDataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 6.6], 'green', 'lightgreen', true, true, false, 1));
+
+		this.horizontalLinearDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
+			3, 'line', undefined, 5));
+		this.horizontalLinearDataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 12], 'green', 'lightgreen', true, true, false, 1));
 
 		this.dataRadar.push(new ChartItem('Only Line', [36, 41, 35, 21], '', '', false, true, false, 3));
 		this.dataRadar.push(new ChartItem('Line and Area', [37, 40, 21, 15], '', '', true, true, false, 3));
@@ -212,20 +232,21 @@ export class ShowcaseChartComponent {
 		this.lineChartMultipleAxis.doUpdate();
 	}
 
-	public generateChartGadgetConfiguration(): void {
-		this.chartGadgetConfiguration = new ChartMeterConfiguration();
-		this.chartGadgetConfiguration.unitFormat = '#.##';
-		this.chartGadgetConfiguration.betterValues = 'higher';
-		this.chartGadgetConfiguration.chartColour = 'green';
-		this.chartGadgetConfiguration.goalColour = 'blue';
-		this.chartGadgetConfiguration.defaultGoalValue = 8;
-		this.chartGadgetConfiguration.minVisualValue = 0;
-		this.chartGadgetConfiguration.maxVisualValue = 10;
-		this.chartGadgetConfiguration.levels.push({periodColor: '#FF0000AA', minValue: 0, maxValue: 2});
-		this.chartGadgetConfiguration.levels.push({periodColor: '#FFFF00AA', minValue: 3, maxValue: 5});
-		this.chartGadgetConfiguration.levels.push({periodColor: '#00FF00AA', minValue: 6, maxValue: 10});
-		this.chartGadgetConfiguration.showHistory = false;
-		this.chartGadgetConfiguration.markerForGoal = 'rectRot';
+	public generateChartGadgetConfiguration(): ChartMeterConfiguration {
+		const chartMeterConfiguration = new ChartMeterConfiguration();
+		chartMeterConfiguration.unitFormat = '#.##';
+		chartMeterConfiguration.betterValues = 'higher';
+		chartMeterConfiguration.chartColour = 'green';
+		chartMeterConfiguration.goalColour = 'blue';
+		chartMeterConfiguration.defaultGoalValue = 8;
+		chartMeterConfiguration.minVisualValue = 0;
+		chartMeterConfiguration.maxVisualValue = 10;
+		chartMeterConfiguration.levels.push({periodColor: '#FF0000AA', minValue: 0, maxValue: 2});
+		chartMeterConfiguration.levels.push({periodColor: '#FFFF00AA', minValue: 3, maxValue: 5});
+		chartMeterConfiguration.levels.push({periodColor: '#00FF00AA', minValue: 6, maxValue: 10});
+		chartMeterConfiguration.showHistory = false;
+		chartMeterConfiguration.markerForGoal = 'rectRot';
+		return chartMeterConfiguration;
 	}
 
 	public generateMultipleAxisExample(): void {
@@ -302,19 +323,19 @@ export class ShowcaseChartComponent {
 	public doShowHistory(meterType: string): void {
 		switch (meterType) {
 			case 'radialMeter':
-				this.chartGadgetConfiguration.showHistory = !this.chartGadgetConfiguration.showHistory;
+				this.radialChartGadgetConfiguration.showHistory = !this.radialChartGadgetConfiguration.showHistory;
 				this.radialMeterChart.doUpdate();
 				break;
 			case 'digitalMeter':
-				this.chartGadgetConfiguration.showHistory = !this.chartGadgetConfiguration.showHistory;
+				this.digitalChartGadgetConfiguration.showHistory = !this.digitalChartGadgetConfiguration.showHistory;
 				this.digitalMeterChart.doUpdate();
 				break;
 			case 'horizontalLinearMeter':
-				this.chartGadgetConfiguration.showHistory = !this.chartGadgetConfiguration.showHistory;
+				this.horizontalLinearChartGadgetConfiguration.showHistory = !this.horizontalLinearChartGadgetConfiguration.showHistory;
 				this.horizontalLinearMeterChart.doUpdate();
 				break;
 			case 'verticalLinearMeter':
-				this.chartGadgetConfiguration.showHistory = !this.chartGadgetConfiguration.showHistory;
+				this.verticalLinearChartGadgetConfiguration.showHistory = !this.verticalLinearChartGadgetConfiguration.showHistory;
 				this.verticalLinearMeterChart.doUpdate();
 				break;
 			default:

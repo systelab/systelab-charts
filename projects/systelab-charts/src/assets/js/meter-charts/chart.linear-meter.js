@@ -22,7 +22,7 @@ let LinearData = class {
 			this.maxValue += Math.abs(this.dataValue * 0.8);
 		}
 
-		this.fractionDigits = (this.maxValue - this.minValue) < 10 ? 1 : 0;
+		this.fractionDigits = (this.maxValue - this.minValue) <= 10 ? 1 : 0;
 		this.textIncrement = Math.abs((this.maxValue - this.minValue)) / 61;
 	}
 
@@ -60,7 +60,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 				drawTextPanel(context, linearData.text, linearData.textBackgroundColor, centerX + (centerX / 2.1), centerY - (centerY / 3.4), centerX / 4,
 					centerY / 8);
 
-				const increment = ((centerX + centerX / 2) - (centerX / 5.7)) / 61;
+				const increment = ((centerX + centerX / 2) - (centerX / 7)) / 61;
 				this.drawHorizontalTicksLabelsBar(context, centerX / 3, centerY + (centerY / 3.5), increment, linearData.minValue,
 					linearData.textIncrement, linearData.fractionDigits);
 
@@ -72,10 +72,9 @@ export const LinearMeter = Chart.controllers.bar.extend({
 				drawTextPanel(context, linearData.text, linearData.textBackgroundColor, centerX - centerX / 8,
 					canvas.height * 0.85, centerX / 4, centerY / 8);
 
-				const increment = (centerY + centerY / 2.5) / 61;
-				this.drawVerticalTicksLabelsBar(context, centerX - centerX / 8 + 15,
-					canvas.height * 0.8, increment, linearData.minValue,
-					linearData.textIncrement, linearData.fractionDigits);
+				const increment = (centerY + centerY / 2.25) / 61;
+				this.drawVerticalTicksLabelsBar(context, centerX - centerX / 8 + 20, canvas.height * 0.8, increment,
+					linearData.minValue, linearData.textIncrement, linearData.fractionDigits);
 			}
 			context.restore();
 
@@ -88,7 +87,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		context.fillStyle = 'darkgray';
 		let valueIndex;
 		for (let index = 0; index <= 60; index++) {
-			if (startingValue + index * textIncrement <= this._data[this._data.length - 1]) {
+			if ((startingValue + index * textIncrement).toFixed(fractionDigits) <= this._data[this._data.length - 1]) {
 				valueIndex = index * (this._data[this._data.length - 1] / (startingValue + index * textIncrement));
 			}
 			switch (index % 10) {
@@ -142,12 +141,14 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		context.fillStyle = 'darkgray';
 		let valueIndex;
 		for (let index = 0; index <= 60; index++) {
-			if (startingValue + index * textIncrement <= this._data[this._data.length - 1]) {
+			if (!valueIndex && (this._data[this._data.length - 1] / (startingValue + index * textIncrement) - 1) <= 0.01) {
+				console.log(`${(startingValue + index * textIncrement)} <= ${this._data[this._data.length - 1]}`);
 				valueIndex = index * (this._data[this._data.length - 1] / (startingValue + index * textIncrement));
+				console.log(`${index} -- ${(yStartPos - index * textIncrement)} -- ${yStartPos - valueIndex * textIncrement}`);
 			}
 			switch (index % 10) {
 				case 0:
-					context.lineWidth = 3;
+					context.lineWidth = 2.5;
 
 					const text = (startingValue + index * textIncrement).toFixed(fractionDigits);
 					context.fillText(text, xStartPos + -15 - context.measureText(text).width / 2,
@@ -159,7 +160,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 					context.closePath();
 					break;
 				case 5:
-					context.lineWidth = 2;
+					context.lineWidth = 1.5;
 					context.beginPath();
 					context.moveTo(xStartPos + 8, yStartPos - index * increment);
 					context.lineTo(xStartPos, yStartPos - index * increment);
@@ -167,7 +168,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 					context.closePath();
 					break;
 				default:
-					context.lineWidth = 1;
+					context.lineWidth = 0.7;
 					context.beginPath();
 					context.moveTo(xStartPos + 5, yStartPos - index * increment);
 					context.lineTo(xStartPos, yStartPos - index * increment);
@@ -180,15 +181,15 @@ export const LinearMeter = Chart.controllers.bar.extend({
 
 		linearGradient.addColorStop(0.5, 'lightgray');
 		linearGradient.addColorStop(1, 'gray');
-		const barWidth = this.chart.canvas.width / 2 - (this.chart.canvas.width * 0.05) / 2;
-		drawTextPanel(context, '', 'white', barWidth,
-			yStartPos - increment * 60, this.chart.canvas.width * 0.05, increment * 61);
+		const barWidth = this.chart.canvas.width / 2 - (this.chart.canvas.width * 0.03) / 2;
+		drawTextPanel(context, '', 'white', barWidth, yStartPos - increment * 60,
+			this.chart.canvas.width * 0.06, increment * 61);
 
 		context.beginPath();
 		context.lineWidth = 3;
 		context.fillStyle = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, this._data[this._data.length - 1]);
-		context.fillRect(barWidth + 1, yStartPos - valueIndex * increment + 4,
-			this.chart.canvas.width * 0.05 - 2, valueIndex * increment);
+		context.fillRect(barWidth + 1, yStartPos - valueIndex * increment,
+			this.chart.canvas.width * 0.06 - 2, valueIndex * increment + 4);
 		context.closePath();
 	}
 });

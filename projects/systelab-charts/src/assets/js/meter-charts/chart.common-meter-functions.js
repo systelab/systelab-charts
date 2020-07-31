@@ -67,15 +67,7 @@ export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, width,
 	context.font = getFontSized(54, height, 'digital-font');
 	context.fillStyle = '#174967';
 
-	context.fillText(text, (xPos + width) - context.measureText(text).width - 5, yPos + height - frameSize / 2);
-};
-
-export const getBoxSize = (canvasWidth) => {
-	const baseWidth = 936;                   // selected default width for canvas
-	const baseBoxSize = 40;                     // default size for font
-
-	const ratio = baseBoxSize / baseWidth;   // calc ratio
-	return canvasWidth * ratio;   // get font size based on current width
+	context.fillText(text, (xPos + width) - context.measureText(text).width - 5, yPos + height - context.measureText(text).actualBoundingBoxAscent / 5);
 };
 
 export const getFrameSize = (canvasWidth) => {
