@@ -1,26 +1,24 @@
-import {drawRegions, drawTextPanel, getRadius, getTextBackgroundColor} from './chart.common-meter-functions';
+import {drawRegions, drawTextPanel, getRadius, getTextBackgroundColor, hideGoalsAndTooltips} from './chart.common-meter-functions';
 
 export const RadialMeter = Chart.controllers.bar.extend({
-
-	draw:                function(ease) {
+	buildOrUpdateElements: function() {
+		Chart.controllers.bar.prototype.buildOrUpdateElements.call(this);
+		hideGoalsAndTooltips(this.chart);
+	},
+	draw:                  function(ease) {
 
 		if (this.chart.options.chartMeterOptions.showHistory) {
 			drawRegions(this.chart);
-			this.chart.data.datasets[0].hidden = false;
 			// Call super method to draw the bars
 			Chart.controllers.bar.prototype.draw.call(this, ease);
 		} else {
-			// Call super method first
-			Chart.controllers.bar.prototype.draw.call(this, ease);
-			this.chart.options.tooltips.enabled = false;
-			this.chart.data.datasets[0].hidden = true;
 			const context = this.chart.chart.ctx;
 			const canvas = this.chart.canvas;
 			context.save();
 			context.clearRect(0, 0, canvas.width, canvas.height);
 			const centerX = canvas.width / 2;
 			const centerY = canvas.height / 2;
-			const radius = canvas.height / 2 - 10;
+			const radius = Math.max(Math.min(canvas.height / 2 - 10, canvas.width / 2 - 10), 115);
 
 			let minValue = this.chart.options.chartMeterOptions.minVisualValue;
 			let maxValue = this.chart.options.chartMeterOptions.maxVisualValue;
@@ -52,7 +50,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			context.translate(-centerX, -centerY);
 		}
 	},
-	drawBackground:      function(context, centerX, centerY, radius) {
+	drawBackground:        function(context, centerX, centerY, radius) {
 		context.beginPath();
 		context.fillStyle = this.chart.options.chartMeterOptions.borderColor;
 		context.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
@@ -71,7 +69,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 
 		context.translate(centerX, centerY);
 	},
-	drawLevels:          function(context, radius, minValue, maxValue, increment) {
+	drawLevels:            function(context, radius, minValue, maxValue, increment) {
 		this.chart.options.chartMeterOptions.levels.forEach(level => {
 
 			const startAngle = this.convertValueToRad((level.minValue <= minValue) ? minValue : level.minValue, increment);
@@ -81,7 +79,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			context.lineWidth = 15;
 			context.lineCap = 'butt';
 			// line color
-			context.strokeStyle = level.periodColor;
+			context.strokeStyle = level.levelColor;
 			context.stroke();
 			// glass color
 			context.strokeStyle = '#FFFFFF88';
@@ -89,7 +87,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			context.closePath();
 		});
 	},
-	drawTicksAndLabels:  function(context, radius, increment, fractionDigits) {
+	drawTicksAndLabels:    function(context, radius, increment, fractionDigits) {
 		context.beginPath();
 		context.strokeStyle = 'black';
 		context.font = '12px Helvetica';
@@ -146,7 +144,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			}
 		}
 	},
-	drawNeedle:          function(context, radius, minValue, maxValue) {
+	drawNeedle:            function(context, radius, minValue, maxValue) {
 		let value = this._data[this._data.length - 1];
 
 		if (value > maxValue) {
@@ -174,18 +172,25 @@ export const RadialMeter = Chart.controllers.bar.extend({
 		context.beginPath();
 		context.strokeStyle = '#000000';
 		context.fillStyle = 'darkgray';
-		context.arc(0, 0, 20, 0, 2 * Math.PI, true);
+		context.arc(0, 0, this.getNeedleRadius(context.canvas.width), 0, 2 * Math.PI, true);
 		context.fill();
 		context.closePath();
 	},
-	degToRad:            function(angle) {
+	degToRad:              function(angle) {
 		// Degrees to radians
 		return (angle * Math.PI) / 30;
 	},
-	convertValueToAngle: function(value) {
+	convertValueToAngle:   function(value) {
 		return value * 5 - 25;
 	},
-	convertValueToRad:   function(value, increment) {
+	convertValueToRad:     function(value, increment) {
 		return (((value * increment) * Math.PI) * 30 / 180) + (30 * Math.PI / 180);
+	},
+	getNeedleRadius:       function(contextWidth) {
+		const baseWidth = 936;                   // selected default width for canvas
+		const baseFrameSize = 20;                     // default size for font
+
+		const radius = Math.max(10, baseFrameSize * contextWidth / baseWidth);   // calc ratio
+		return Math.min(radius, baseFrameSize);   // get font size based on current width
 	}
 });

@@ -1,20 +1,17 @@
-import {drawRegions, drawTextPanel, getTextBackgroundColor} from './chart.common-meter-functions';
+import {drawRegions, drawTextPanel, getFontSized, getTextBackgroundColor, hideGoalsAndTooltips} from './chart.common-meter-functions';
 
 export const DigitalMeter = Chart.controllers.bar.extend({
-
-	draw: function(ease) {
+	buildOrUpdateElements: function() {
+		Chart.controllers.bar.prototype.buildOrUpdateElements.call(this);
+		hideGoalsAndTooltips(this.chart);
+	},
+	draw:                  function(ease) {
 		// Call super method first
 		if (this.chart.options.chartMeterOptions.showHistory) {
-			// Chart.controllers.bar.prototype.draw.apply(this);
 			drawRegions(this.chart);
-			this.chart.data.datasets[0].hidden = false;
 			// Call super method to draw the bars
 			Chart.controllers.bar.prototype.draw.call(this, ease);
 		} else {
-			// Call super method first
-			// Chart.controllers.bar.prototype.draw.call(this, ease);
-			this.chart.options.tooltips.enabled = false;
-			this.chart.data.datasets[0].hidden = true;
 			const context = this.chart.chart.ctx;
 			const canvas = this.chart.canvas;
 			context.save();
@@ -30,8 +27,12 @@ export const DigitalMeter = Chart.controllers.bar.extend({
 
 			linearGradient.addColorStop(1, textBackgroundColor);
 			linearGradient.addColorStop(0, 'white');
-			drawTextPanel(context, text, linearGradient, centerX / 2, centerY - (centerY / 4), centerX,
-				centerY / 4, this.chart.options.chartMeterOptions.borderColor);
+
+			context.font = getFontSized(72, centerY / 4, 'digital-font');
+			const measuredWidth = Math.max(context.canvas.width * 0.8, context.measureText(text).width + 20);
+
+			drawTextPanel(context, text, linearGradient, centerX - measuredWidth / 2, centerY - (centerY / 4), measuredWidth,
+				Math.max(60, centerY / 4), this.chart.options.chartMeterOptions.borderColor);
 			context.restore();
 
 		}

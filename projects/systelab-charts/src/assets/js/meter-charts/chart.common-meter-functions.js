@@ -36,7 +36,7 @@ export const drawRegions = (chart) => {
 			heightToPrint = minLevelY - chart.chartArea.top;
 		}
 		context.beginPath();
-		context.fillStyle = level.periodColor;
+		context.fillStyle = level.levelColor;
 		context.fillRect(chart.chartArea.left + 1, yPos, chart.chartArea.right - 25, heightToPrint);
 		context.fillStyle = '#FFFFFFAA';
 		context.fillRect(chart.chartArea.left + 1, yPos, chart.chartArea.right - 25, heightToPrint);
@@ -44,30 +44,34 @@ export const drawRegions = (chart) => {
 	});
 };
 
-export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, width, height, frameColor) => {
-
-	const frameSize = getFrameSize(context.canvas.width);
+export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWidth, rectHeight, frameColor) => {
+	context.font = getFontSized(54, rectHeight, 'digital-font');
+	context.lineJoin = "round";
+	rectWidth = Math.max(rectWidth, getFrameSize(context.canvas.width), context.measureText(text).width + 20);
+	let frameColorHeight = 0;
 	if (frameColor) {
+		frameColorHeight = 4;
+		// Set rectangle and corner values
+		context.fillStyle = backgroundColor;
+		context.lineWidth = 12;
+
+		// Change origin and dimensions to match true size (a stroke makes the shape a bit larger)
 		context.beginPath();
-		context.lineWidth = frameSize;
 		context.strokeStyle = frameColor;
-		context.strokeRect(xPos - frameSize / 2, yPos - frameSize / 2, width + frameSize, height + frameSize);
+		context.strokeRect(xPos, yPos, rectWidth, rectHeight);
 		context.closePath();
 	}
 
-	context.lineJoin = 'round';
 	context.beginPath();
 	context.lineWidth = 3;
 	context.fillStyle = backgroundColor;
-	context.fillRect(xPos, yPos, width, height);
+	context.fillRect(xPos + 4, yPos + frameColorHeight, rectWidth - 8, rectHeight - frameColorHeight * 2);
 	context.strokeStyle = 'darkgray';
-	context.strokeRect(xPos, yPos, width, height);
+	context.strokeRect(xPos + 4, yPos + frameColorHeight, rectWidth - 8, rectHeight - frameColorHeight * 2);
 	context.closePath();
 
-	context.font = getFontSized(54, height, 'digital-font');
 	context.fillStyle = '#174967';
-
-	context.fillText(text, (xPos + width) - context.measureText(text).width - 5, yPos + height - context.measureText(text).actualBoundingBoxAscent / 5);
+	context.fillText(text, (xPos + rectWidth) - context.measureText(text).width - 5, yPos + rectHeight - context.measureText(text).actualBoundingBoxAscent / 5);
 };
 
 export const getFrameSize = (canvasWidth) => {
@@ -88,14 +92,23 @@ export const getFontSized = (defaultFontSize, availableHeight, fontFamily) => {
 
 export const getRadius = (radius) => {
 	return 0.22 * radius;
-}
+};
 
 export const getTextBackgroundColor = (levels, currentValue) => {
 
 	const level = levels.filter(value => value.minValue <= currentValue && currentValue <= value.maxValue);
 
 	if (level.length > 0) {
-		return level[0].periodColor;
+		return level[0].levelColor;
 	}
 	return '#95D9FF';
-}
+};
+
+export const hideGoalsAndTooltips = (chart) => {
+	if (chart.options.chartMeterOptions.showHistory) {
+		chart.data.datasets[0].hidden = !(chart.data.datasets.length > 1);
+	} else {
+		chart.options.tooltips.enabled = false;
+		chart.data.datasets[0].hidden = chart.data.datasets.length > 1;
+	}
+};

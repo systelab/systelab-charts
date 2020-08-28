@@ -132,14 +132,14 @@ export class ChartMeterConfiguration {
 	public unitFormat: string;
 	public chartColour: string;
 	public goalColour: string;
-	public betterValues: 'higher' | 'lower';
-	public markerForGoal: 'circle' | 'cross' | 'crossRot' | 'dash' | 'line' | 'rect' | 'rectRounded'
+	public betterValues: string | 'higher' | 'lower';
+	public markerForGoal: string | 'circle' | 'cross' | 'crossRot' | 'dash' | 'line' | 'rect' | 'rectRounded'
 		| 'rectRot' | 'star' | 'triangle' = 'circle';
 	public defaultGoalValue: number;
 	public minVisualValue: number;
 	public maxVisualValue: number;
 	public showHistory = false;
-	public levels: Array<{ periodColor: string, minValue: number, maxValue: number }> = [];
+	public levels: Array<{ levelColor: string, minValue: number, maxValue: number }> = [];
 
 	constructor() {
 	}
@@ -767,6 +767,8 @@ export class ChartComponent implements AfterViewInit {
 				const elementToPrint = this.chart.canvas.parentElement;
 				const canvasOffsetHeight = elementToPrint.offsetHeight;
 				const canvasOffsetWidth = elementToPrint.offsetWidth;
+				const originalAspectRatio = this.maintainAspectRatio;
+				this.maintainAspectRatio = true;
 
 				this.myRenderer.setStyle(elementToPrint, 'height', height + 'px');
 				this.myRenderer.setStyle(elementToPrint, 'width', width + 'px');
@@ -774,6 +776,7 @@ export class ChartComponent implements AfterViewInit {
 				base64ImageString = this.chart.toBase64Image();
 				this.myRenderer.setStyle(elementToPrint, 'height', canvasOffsetHeight + 'px');
 				this.myRenderer.setStyle(elementToPrint, 'width', canvasOffsetWidth + 'px');
+				this.maintainAspectRatio = originalAspectRatio;
 				this.chart.resize();
 			} else {
 				base64ImageString = this.chart.toBase64Image();
