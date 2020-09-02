@@ -97,7 +97,7 @@ export class ShowcaseChartComponent {
 
 		this.radialDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
 			3, 'line', undefined, 5));
-		this.radialDataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 5.5], 'green', 'lightgreen', true, true, false, 1));
+		this.radialDataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 10], 'green', 'lightgreen', true, true, false, 1));
 
 		this.digitalDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
 			3, 'line', undefined, 5));
@@ -107,9 +107,9 @@ export class ShowcaseChartComponent {
 			3, 'line', undefined, 5));
 		this.verticalLinearDataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 6.6], 'green', 'lightgreen', true, true, false, 1));
 
-		this.horizontalLinearDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
+		this.horizontalLinearDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 8, 8], 'blue', 'blue', false, true, false,
 			3, 'line', undefined, 5));
-		this.horizontalLinearDataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 10], 'green', 'lightgreen', true, true, false, 1));
+		this.horizontalLinearDataChartMeterGadget.push(new ChartItem('Value', [3, 1, 12, -10], 'green', 'lightgreen', true, true, false, 1));
 
 		this.dataRadar.push(new ChartItem('Only Line', [36, 41, 35, 21], '', '', false, true, false, 3));
 		this.dataRadar.push(new ChartItem('Line and Area', [37, 40, 21, 15], '', '', true, true, false, 3));
@@ -239,9 +239,9 @@ export class ShowcaseChartComponent {
 		chartMeterConfiguration.chartColour = 'green';
 		chartMeterConfiguration.goalColour = 'blue';
 		chartMeterConfiguration.defaultGoalValue = 8;
-		chartMeterConfiguration.minVisualValue = -5;
+		chartMeterConfiguration.minVisualValue = 0;
 		chartMeterConfiguration.maxVisualValue = 18;
-		chartMeterConfiguration.levels.push({levelColor: '#FF0000AA', minValue: 0, maxValue: 2});
+		chartMeterConfiguration.levels.push({levelColor: '#ff0000', minValue: 0, maxValue: 2});
 		chartMeterConfiguration.levels.push({levelColor: '#FFFF00AA', minValue: 3, maxValue: 5});
 		chartMeterConfiguration.levels.push({levelColor: '#00FF00AA', minValue: 6, maxValue: 10});
 		chartMeterConfiguration.showHistory = false;

@@ -15,11 +15,7 @@ export const getRegionYPos = (yAxisLabelItem, level) => {
 		if (!higherLimit) {
 			return yAxisLabelItem[0].y;
 		}
-
-		const middleNumber = (Number(higherLimit.label) - Number(lowerLimit.label)) / 2;
-		const difference = (lowerLimit.y - higherLimit.y) / 2;
-
-		return (higherLimit.y + difference) * level / (Number(higherLimit.label) - middleNumber);
+		return range(Number(higherLimit.label), Number(lowerLimit.label), higherLimit.y, lowerLimit.y, Number(level));
 	}
 };
 
@@ -44,10 +40,11 @@ export const drawRegions = (chart) => {
 	});
 };
 
-export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWidth, rectHeight, frameColor) => {
+export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWidth, rectHeight, textColor, frameColor) => {
 	context.font = getFontSized(54, rectHeight, 'digital-font');
 	context.lineJoin = "round";
-	rectWidth = Math.max(rectWidth, getFrameSize(context.canvas.width), context.measureText(text).width + 20);
+	const textWidth = text ? context.measureText(text).width + 20 : 0;
+	rectWidth = Math.max(rectWidth, getFrameSize(context.canvas.width), textWidth);
 	let frameColorHeight = 0;
 	if (frameColor) {
 		frameColorHeight = 4;
@@ -69,9 +66,10 @@ export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWi
 	context.strokeStyle = 'darkgray';
 	context.strokeRect(xPos + 4, yPos + frameColorHeight, rectWidth - 8, rectHeight - frameColorHeight * 2);
 	context.closePath();
-
-	context.fillStyle = '#174967';
-	context.fillText(text, (xPos + rectWidth) - context.measureText(text).width - 5, yPos + rectHeight - context.measureText(text).actualBoundingBoxAscent / 5);
+	if (text) {
+		context.fillStyle = textColor;
+		context.fillText(text, (xPos + rectWidth) - context.measureText(text).width - 10, yPos + rectHeight - context.measureText(text).actualBoundingBoxAscent / 5);
+	}
 };
 
 export const getFrameSize = (canvasWidth) => {
@@ -104,11 +102,31 @@ export const getTextBackgroundColor = (levels, currentValue) => {
 	return '#95D9FF';
 };
 
+export const getTextColor = (color) => {
+	const c = color.substring(1);      // strip #
+	const rgb = parseInt(c, 16);   // convert rrggbb to decimal
+	const r = (rgb >> 16) & 0xff;  // extract red
+	const g = (rgb >> 8) & 0xff;  // extract green
+	const b = (rgb >> 0) & 0xff;  // extract blue
+
+	const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+
+	if (luma < 55) {
+		return '#FFF';
+	}
+	return '#174967';
+};
+
 export const hideGoalsAndTooltips = (chart) => {
 	if (chart.options.chartMeterOptions.showHistory) {
-		chart.data.datasets[0].hidden = !(chart.data.datasets.length > 1);
+		chart.data.datasets[0].hidden = chart.data.datasets.length <= 1;
 	} else {
 		chart.options.tooltips.enabled = false;
 		chart.data.datasets[0].hidden = chart.data.datasets.length > 1;
 	}
 };
+
+const lerp = (x, y, a) => x * (1 - a) + y * a;
+const clamp = (a, min = 0, max = 1) => Math.min(max, Math.max(min, a));
+const invlerp = (x, y, a) => clamp((a - x) / (y - x));
+export const range = (x1, y1, x2, y2, a) => lerp(x2, y2, invlerp(x1, y1, a));

@@ -1,4 +1,11 @@
-import {drawRegions, drawTextPanel, getFontSized, getTextBackgroundColor, hideGoalsAndTooltips} from './chart.common-meter-functions';
+import {
+	drawRegions,
+	drawTextPanel,
+	getFontSized,
+	getTextBackgroundColor,
+	getTextColor,
+	hideGoalsAndTooltips
+} from './chart.common-meter-functions';
 
 export const DigitalMeter = Chart.controllers.bar.extend({
 	buildOrUpdateElements: function() {
@@ -32,7 +39,7 @@ export const DigitalMeter = Chart.controllers.bar.extend({
 			const measuredWidth = Math.max(context.canvas.width * 0.8, context.measureText(text).width + 20);
 
 			drawTextPanel(context, text, linearGradient, centerX - measuredWidth / 2, centerY - (centerY / 4), measuredWidth,
-				Math.max(60, centerY / 4), this.chart.options.chartMeterOptions.borderColor);
+				Math.max(60, centerY / 4), getTextColor(textBackgroundColor), this.chart.options.chartMeterOptions.borderColor);
 			context.restore();
 
 		}

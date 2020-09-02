@@ -1,4 +1,12 @@
-import {drawRegions, drawTextPanel, getFontSized, getTextBackgroundColor, hideGoalsAndTooltips} from "./chart.common-meter-functions";
+import {
+	drawRegions,
+	drawTextPanel,
+	getFontSized,
+	getTextBackgroundColor,
+	getTextColor,
+	hideGoalsAndTooltips,
+	range
+} from "./chart.common-meter-functions";
 
 let LinearData = class {
 
@@ -56,18 +64,21 @@ export const LinearMeter = Chart.controllers.bar.extend({
 				const externalPanelHeight = Math.max(120, centerY * 0.75);
 				const externalPanelWidth = Math.max(470, centerX + centerX / 2);
 
-				const internalPanelHeight = Math.max(20, centerY / 8);
-				const internalPanelWidth = Math.max(80, centerX / 4);
+				const textPanelHeight = Math.max(20, centerY / 8);
+				const textPanelWidth = Math.max(80, centerX / 4);
 
-				drawTextPanel(context, '', '#DDDDDD44', centerX / 4, centerY - (centerY / 3), externalPanelWidth,
-					externalPanelHeight, this.chart.options.chartMeterOptions.borderColor);
+				const textPanelYPos = centerY - (centerY / 3) + 12;
 
-				drawTextPanel(context, linearData.text, linearData.textBackgroundColor, centerX + (centerX / 2.1), centerY - (centerY / 3) + 12,
-					internalPanelWidth, internalPanelHeight);
+				drawTextPanel(context, undefined, '#DDDDDD44', centerX / 4, centerY - (centerY / 3), externalPanelWidth,
+					externalPanelHeight, undefined, this.chart.options.chartMeterOptions.borderColor);
+
+				drawTextPanel(context, linearData.text, linearData.textBackgroundColor, centerX + (centerX / 2.1), textPanelYPos,
+					textPanelWidth, textPanelHeight, getTextColor(linearData.textBackgroundColor));
 
 				const increment = Math.max(7, ((centerX + centerX / 2) - (centerX / 7)) / 61);
-				this.drawHorizontalTicksLabelsBar(context, centerX / 3, centerY + internalPanelHeight / 3, increment, linearData.minValue,
-					linearData.textIncrement, linearData.fractionDigits);
+				this.drawHorizontalTicksLabelsBar(context, this._data[this._data.length - 1], centerX / 3,
+					textPanelYPos + textPanelHeight + textPanelHeight / 2, externalPanelHeight,
+					increment, linearData.minValue, linearData.textIncrement, linearData.fractionDigits);
 
 			} else {
 
@@ -78,39 +89,39 @@ export const LinearMeter = Chart.controllers.bar.extend({
 				const textPanelWidth = Math.max(98, centerX / 4);
 				const calculatedYPos = Math.max(333, externalPanelHeight - textPanelHeight - 20);
 
-				drawTextPanel(context, '', '#DDDDDD44', centerX - centerX / 6, 15, externalPanelWidth,
-					externalPanelHeight, this.chart.options.chartMeterOptions.borderColor);
+				drawTextPanel(context, undefined, '#DDDDDD44', centerX - centerX / 6, 15, externalPanelWidth,
+					externalPanelHeight, '#DDDDDD44', this.chart.options.chartMeterOptions.borderColor);
 
 				drawTextPanel(context, linearData.text, linearData.textBackgroundColor, centerX - centerX / 8,
-					calculatedYPos + 12, textPanelWidth, textPanelHeight);
+					calculatedYPos + 12, textPanelWidth, textPanelHeight, getTextColor(linearData.textBackgroundColor));
 
 				const increment = Math.max(5, (centerY + centerY / 2.25) / 61);
-				this.drawVerticalTicksLabelsBar(context, centerX - centerX / 8 + 20, externalPanelHeight - textPanelHeight - 20, increment,
-					linearData.minValue, linearData.textIncrement, linearData.fractionDigits);
+				this.drawVerticalTicksLabelsBar(context, this._data[this._data.length - 1], centerX - centerX / 8 + 20,
+					externalPanelHeight - textPanelHeight - 20, increment, linearData.minValue, linearData.textIncrement, linearData.fractionDigits);
 			}
 			context.restore();
 
 		}
 	},
-	drawHorizontalTicksLabelsBar: function(context, xStartPos, yStartPos, increment, startingValue, textIncrement, fractionDigits) {
+	drawHorizontalTicksLabelsBar: function(context, valueToPrint, xStartPos, yStartPos, panelHeight, increment, startingValue, textIncrement, fractionDigits) {
 		context.beginPath();
 		context.strokeStyle = 'darkgray';
-		context.font = getFontSized(12, 60, 'Helvetica');
 		context.fillStyle = 'darkgray';
-		const calculatedYPos = Math.max(175, yStartPos + yStartPos / 5);
-		const calculatedYPosForPanels = Math.max(120, yStartPos - yStartPos / 10);
-		const calculatedHeight = Math.max(35, yStartPos / 5);
-		let valueIndex;
+		const calculatedHeightForPanels = Math.max(35, panelHeight / 2.5);
+		const calculatedYPos = yStartPos + calculatedHeightForPanels + 15;
+		context.font = getFontSized(10, calculatedHeightForPanels, 'Helvetica');
+		const textGap = 15 * calculatedHeightForPanels / 70;
+		let valueToPrintXPos;
+
 		for (let index = 0; index <= 60; index++) {
-			if ((startingValue + index * textIncrement).toFixed(fractionDigits) <= this._data[this._data.length - 1]) {
-				valueIndex = index * (this._data[this._data.length - 1] / (startingValue + index * textIncrement));
-			}
+			const text = (startingValue + index * textIncrement).toFixed(fractionDigits);
 			switch (index % 10) {
 				case 0:
+					if (Number(text) === valueToPrint) {
+						valueToPrintXPos = xStartPos + index * increment - context.measureText(text).width - 10;
+					}
 					context.lineWidth = 3;
-
-					const text = (startingValue + index * textIncrement).toFixed(fractionDigits);
-					context.fillText(text, xStartPos + index * increment - context.measureText(text).width / 2, calculatedYPos + 15);
+					context.fillText(text, xStartPos + index * increment - context.measureText(text).width / 2, calculatedYPos + textGap);
 					context.beginPath();
 					context.moveTo(xStartPos + index * increment, calculatedYPos - 10);
 					context.lineTo(xStartPos + index * increment, calculatedYPos);
@@ -118,6 +129,9 @@ export const LinearMeter = Chart.controllers.bar.extend({
 					context.closePath();
 					break;
 				case 5:
+					if (Number(text) === valueToPrint) {
+						valueToPrintXPos = xStartPos + index * increment - 10;
+					}
 					context.lineWidth = 2;
 					context.beginPath();
 					context.moveTo(xStartPos + index * increment, calculatedYPos - 8);
@@ -126,6 +140,9 @@ export const LinearMeter = Chart.controllers.bar.extend({
 					context.closePath();
 					break;
 				default:
+					if (Number(text) === valueToPrint) {
+						valueToPrintXPos = xStartPos + index * increment - 10;
+					}
 					context.lineWidth = 1;
 					context.beginPath();
 					context.moveTo(xStartPos + index * increment, calculatedYPos - 5);
@@ -140,30 +157,36 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		linearGradient.addColorStop(0.5, 'lightgray');
 		linearGradient.addColorStop(1, 'gray');
 
-		drawTextPanel(context, '', 'white', xStartPos - 5, calculatedYPosForPanels, increment * 61.5, calculatedHeight);
+		drawTextPanel(context, undefined, 'white', xStartPos - 5, yStartPos, increment * 61, calculatedHeightForPanels);
 
+		const firstValue = Number((startingValue).toFixed(fractionDigits));
+		const lastValue = Number((startingValue + 60 * textIncrement).toFixed(fractionDigits));
+		const lastValueXPosition = xStartPos + 60 * increment;
+		if (!valueToPrintXPos) {
+			valueToPrintXPos = range(firstValue, lastValue, xStartPos, lastValueXPosition, valueToPrint);
+		}
 		context.beginPath();
 		context.lineWidth = 3;
-		context.fillStyle = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, this._data[this._data.length - 1]);
-		context.fillRect(xStartPos, calculatedYPosForPanels + 1, valueIndex * increment + 5, calculatedHeight - 2);
+		context.fillStyle = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, valueToPrint);
+		context.fillRect(xStartPos, yStartPos + 1, valueToPrintXPos - xStartPos, calculatedHeightForPanels - 2);
 		context.closePath();
 	},
-	drawVerticalTicksLabelsBar:   function(context, xStartPos, yStartPos, increment, startingValue, textIncrement, fractionDigits) {
+	drawVerticalTicksLabelsBar:   function(context, valueToPrint, xStartPos, yStartPos, increment, startingValue, textIncrement, fractionDigits) {
 		context.beginPath();
 		context.strokeStyle = 'darkgray';
 		context.font = getFontSized(12, 60, 'Helvetica');
 		context.fillStyle = 'darkgray';
 		const calculatedYPos = Math.max(333, yStartPos);
-		let valueIndex;
+		let valueToPrintYPos;
+
 		for (let index = 0; index <= 60; index++) {
-			if ((startingValue + index * textIncrement).toFixed(fractionDigits) <= this._data[this._data.length - 1]) {
-				valueIndex = index * (this._data[this._data.length - 1] / (startingValue + index * textIncrement));
-			}
+			const text = (startingValue + index * textIncrement).toFixed(fractionDigits);
 			switch (index % 10) {
 				case 0:
+					if (Number(text) === valueToPrint) {
+						valueToPrintYPos = calculatedYPos - index * increment;
+					}
 					context.lineWidth = 2.5;
-
-					const text = (startingValue + index * textIncrement).toFixed(fractionDigits);
 					context.fillText(text, xStartPos - 15 - context.measureText(text).width / 2,
 						calculatedYPos - index * increment + context.measureText(text).actualBoundingBoxAscent / 2);
 					context.beginPath();
@@ -173,6 +196,9 @@ export const LinearMeter = Chart.controllers.bar.extend({
 					context.closePath();
 					break;
 				case 5:
+					if (Number(text) === valueToPrint) {
+						valueToPrintYPos = calculatedYPos - index * increment;
+					}
 					context.lineWidth = 1.5;
 					context.beginPath();
 					context.moveTo(xStartPos + 8, calculatedYPos - index * increment);
@@ -181,6 +207,9 @@ export const LinearMeter = Chart.controllers.bar.extend({
 					context.closePath();
 					break;
 				default:
+					if (Number(text) === valueToPrint) {
+						valueToPrintYPos = calculatedYPos - index * increment;
+					}
 					context.lineWidth = 0.7;
 					context.beginPath();
 					context.moveTo(xStartPos + 5, calculatedYPos - index * increment);
@@ -196,14 +225,19 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		linearGradient.addColorStop(1, 'gray');
 
 		const calculatedBarWidth = Math.max(48, this.chart.canvas.width * 0.06);
-		drawTextPanel(context, '', 'white', xStartPos + 20, calculatedYPos - increment * 60,
+		drawTextPanel(context, undefined, 'white', xStartPos + 20, calculatedYPos - increment * 60,
 			calculatedBarWidth, increment * 60);
 
+		const firstValue = Number((startingValue).toFixed(fractionDigits));
+		const lastValue = Number((startingValue + 60 * textIncrement).toFixed(fractionDigits));
+		const lastValueYPosition = calculatedYPos - 60 * increment;
+		if (!valueToPrintYPos) {
+			valueToPrintYPos = range(lastValue, firstValue, lastValueYPosition, calculatedYPos, valueToPrint);
+		}
 		context.beginPath();
 		context.lineWidth = 3;
-		context.fillStyle = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, this._data[this._data.length - 1]);
-
-		context.fillRect(xStartPos + 25, calculatedYPos - valueIndex * increment, calculatedBarWidth - 10, valueIndex * increment - 1);
+		context.fillStyle = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, valueToPrint);
+		context.fillRect(xStartPos + 25, valueToPrintYPos, calculatedBarWidth - 10, calculatedYPos - valueToPrintYPos);
 		context.closePath();
 	}
 });

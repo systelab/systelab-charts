@@ -1,4 +1,11 @@
-import {drawRegions, drawTextPanel, getRadius, getTextBackgroundColor, hideGoalsAndTooltips} from './chart.common-meter-functions';
+import {
+	drawRegions,
+	drawTextPanel,
+	getRadius,
+	getTextBackgroundColor,
+	getTextColor,
+	hideGoalsAndTooltips
+} from './chart.common-meter-functions';
 
 export const RadialMeter = Chart.controllers.bar.extend({
 	buildOrUpdateElements: function() {
@@ -43,7 +50,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 
 			linearGradient.addColorStop(1, textBackgroundColor);
 			linearGradient.addColorStop(0, 'white');
-			drawTextPanel(context, text, linearGradient, -width / 2, (radius / 5) - 5, width, radius / 5);
+			drawTextPanel(context, text, linearGradient, -width / 2, (radius / 5) - 5, width, radius / 5, getTextColor(textBackgroundColor));
 			this.drawNeedle(context, radius, minValue, maxValue);
 
 			context.restore();
