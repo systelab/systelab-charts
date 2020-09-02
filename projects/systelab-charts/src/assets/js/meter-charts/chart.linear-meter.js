@@ -68,14 +68,15 @@ export const LinearMeter = Chart.controllers.bar.extend({
 				const textPanelWidth = Math.max(80, centerX / 4);
 
 				const textPanelYPos = centerY - (centerY / 3) + 12;
+				const increment = Math.max(7, ((centerX + centerX / 2) - (centerX / 7)) / 61);
 
 				drawTextPanel(context, undefined, '#DDDDDD44', centerX / 4, centerY - (centerY / 3), externalPanelWidth,
 					externalPanelHeight, undefined, this.chart.options.chartMeterOptions.borderColor);
 
-				drawTextPanel(context, linearData.text, linearData.textBackgroundColor, centerX + (centerX / 2.1), textPanelYPos,
-					textPanelWidth, textPanelHeight, getTextColor(linearData.textBackgroundColor));
+				drawTextPanel(context, linearData.text, linearData.textBackgroundColor, centerX / 4 + externalPanelWidth - textPanelWidth - increment, textPanelYPos,
+					textPanelWidth, textPanelHeight, getTextColor(linearData.textBackgroundColor)
+				);
 
-				const increment = Math.max(7, ((centerX + centerX / 2) - (centerX / 7)) / 61);
 				this.drawHorizontalTicksLabelsBar(context, this._data[this._data.length - 1], centerX / 3,
 					textPanelYPos + textPanelHeight + textPanelHeight / 2, externalPanelHeight,
 					increment, linearData.minValue, linearData.textIncrement, linearData.fractionDigits);
