@@ -61,7 +61,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 
 			if (this.chart.options.isHorizontal) {
 
-				const externalPanelHeight = Math.max(120, centerY * 0.75);
+				const externalPanelHeight = Math.max(130, centerY * 0.75);
 				const externalPanelWidth = Math.max(470, centerX + centerX / 2);
 
 				const textPanelHeight = Math.max(20, centerY / 8);
