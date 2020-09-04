@@ -97,7 +97,7 @@ export class ShowcaseChartComponent {
 
 		this.radialDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
 			3, 'line', undefined, 5));
-		this.radialDataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 10], 'green', 'lightgreen', true, true, false, 1));
+		this.radialDataChartMeterGadget.push(new ChartItem('Value', [5, 1, 2, 1.03, 3, 10], 'green', 'lightgreen', true, true, false, 1));
 
 		this.digitalDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
 			3, 'line', undefined, 5));

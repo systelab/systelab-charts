@@ -1,10 +1,12 @@
 import {
+	ChartMeterData,
 	drawRegions,
 	drawTextPanel,
 	getRadius,
 	getTextBackgroundColor,
 	getTextColor,
-	hideGoalsAndTooltips
+	hideGoalsAndTooltips,
+	range
 } from './chart.common-meter-functions';
 
 export const RadialMeter = Chart.controllers.bar.extend({
@@ -19,6 +21,8 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			// Call super method to draw the bars
 			Chart.controllers.bar.prototype.draw.call(this, ease);
 		} else {
+			const chartMeterData = new ChartMeterData(this._data, this.chart.options.chartMeterOptions);
+
 			const context = this.chart.chart.ctx;
 			const canvas = this.chart.canvas;
 			context.save();
@@ -27,8 +31,8 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			const centerY = canvas.height / 2;
 			const radius = Math.max(Math.min(canvas.height / 2 - 10, canvas.width / 2 - 10), 115);
 
-			let minValue = this.chart.options.chartMeterOptions.minVisualValue;
-			let maxValue = this.chart.options.chartMeterOptions.maxVisualValue;
+			let minValue = chartMeterData.visualMinValue;
+			let maxValue = chartMeterData.visualMaxValue;
 
 			if (minValue == null) {
 				minValue = Math.min(...this.chart.options.chartMeterOptions.levels.map(value => value.minValue));
@@ -37,21 +41,20 @@ export const RadialMeter = Chart.controllers.bar.extend({
 				maxValue = Math.max(...this.chart.options.chartMeterOptions.levels.map(value => value.maxValue));
 			}
 
-			const fractionDigits = (maxValue - minValue) < 10 ? 1 : 0;
-			const increment = Math.fround(Number(((maxValue - minValue) / 11).toFixed(fractionDigits)));
+			const increment = Math.fround(Number((maxValue - minValue) / 11));
 
 			this.drawBackground(context, centerX, centerY, radius);
 			this.drawLevels(context, radius, minValue, maxValue, increment);
-			this.drawTicksAndLabels(context, radius, increment, fractionDigits);
-			const text = this._data.length > 0 ? this._data[this._data.length - 1] : '--';
+			this.drawTicksAndLabels(context, radius, increment, minValue, maxValue, chartMeterData.fractionDigits);
+
 			const textBackgroundColor = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, this._data[this._data.length - 1]);
 			const width = radius * 2 * .44;
 			const linearGradient = context.createLinearGradient(0, 0, 0, 75);
 
 			linearGradient.addColorStop(1, textBackgroundColor);
 			linearGradient.addColorStop(0, 'white');
-			drawTextPanel(context, text, linearGradient, -width / 2, (radius / 5) - 5, width, radius / 5, getTextColor(textBackgroundColor));
-			this.drawNeedle(context, radius, minValue, maxValue);
+			drawTextPanel(context, chartMeterData.text, linearGradient, -width / 2, (radius / 5) - 5, width, radius / 5, getTextColor(textBackgroundColor));
+			this.drawNeedle(context, radius, this._data[this._data.length - 1], minValue, maxValue);
 
 			context.restore();
 			context.translate(-centerX, -centerY);
@@ -77,10 +80,15 @@ export const RadialMeter = Chart.controllers.bar.extend({
 		context.translate(centerX, centerY);
 	},
 	drawLevels:            function(context, radius, minValue, maxValue, increment) {
+		const iniRad = this.convertValueToRad(0, 1);
+		const endRad = this.convertValueToRad(10, 1);
 		this.chart.options.chartMeterOptions.levels.forEach(level => {
 
-			const startAngle = this.convertValueToRad((level.minValue <= minValue) ? minValue : level.minValue, increment);
-			const endAngle = this.convertValueToRad((level.maxValue >= maxValue) ? maxValue : level.maxValue, increment);
+			const minValueRanged = range(minValue, maxValue, 0, 10, level.minValue);
+			const maxValueRanged = range(minValue, maxValue, 0, 10, level.maxValue);
+
+			const startAngle = range(0, 10, iniRad, endRad, minValueRanged);// this.convertValueToRad(minValueRanged, increment);
+			const endAngle = range(0, 10, iniRad, endRad, maxValueRanged);// this.convertValueToRad(maxValueRanged, increment);
 			context.beginPath();
 			context.arc(0, 0, radius - getRadius(radius), Math.PI / 2 + startAngle, Math.PI / 2 + endAngle, false);
 			context.lineWidth = 15;
@@ -94,7 +102,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			context.closePath();
 		});
 	},
-	drawTicksAndLabels:    function(context, radius, increment, fractionDigits) {
+	drawTicksAndLabels:    function(context, radius, increment, minValue, maxValue, fractionDigits) {
 		context.beginPath();
 		context.strokeStyle = 'black';
 		context.font = '12px Helvetica';
@@ -115,11 +123,14 @@ export const RadialMeter = Chart.controllers.bar.extend({
 				oPointX = mySineAngle * (radius - radius / 7);
 				oPointY = myCoosAngle * (radius - radius / 7);
 
-				const wPointX = mySineAngle * (radius - radius / 2.5);
-				const wPointY = myCoosAngle * (radius - radius / 2.5);
+				const divider = index < 5 ? 3 : 2.5 - (fractionDigits * 0.1);
+				const wPointX = mySineAngle * (radius - radius / divider);
+				const wPointY = myCoosAngle * (radius - radius / 3);
 				context.fillStyle = 'black';
 				// console.log(`value text: ${((i + 25) * increment / 5)} - ${my30Angle}`);
-				context.fillText(((index + 25) * increment / 5).toFixed(fractionDigits), wPointX - 2, wPointY + 4);
+				const rangedValue = range(0, 10, minValue, maxValue, (index + 25) / 5);
+				// context.fillText(((index + 25) * increment / 5).toFixed(fractionDigits), wPointX - 2, wPointY + 4);
+				context.fillText(rangedValue.toFixed(fractionDigits), wPointX - 4, wPointY + 4);
 
 			} else if (index > -25 && index < 25) {
 				context.lineWidth = 1;
@@ -151,16 +162,15 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			}
 		}
 	},
-	drawNeedle:            function(context, radius, minValue, maxValue) {
-		let value = this._data[this._data.length - 1];
+	drawNeedle:            function(context, radius, value, minValue, maxValue) {
 
+		let rangedValue = range(minValue, maxValue, 0, 10, value);
 		if (value > maxValue) {
-			value = maxValue + 0.25;
+			rangedValue += 0.25;
 		} else if (value < minValue) {
-			value = minValue - 0.25;
+			rangedValue -= 0.25;
 		}
-
-		const angle = this.degToRad(this.convertValueToAngle(value));
+		const angle = this.degToRad(this.convertValueToAngle(rangedValue));
 		const sineAngle = Math.sin(angle);
 		const cosAngle = -Math.cos(angle);
 		const pointX = sineAngle * (3 / 4 * radius);

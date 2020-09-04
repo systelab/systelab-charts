@@ -4,37 +4,9 @@ import {
 	getFontSized,
 	getTextBackgroundColor,
 	getTextColor,
-	hideGoalsAndTooltips,
+	hideGoalsAndTooltips, ChartMeterData,
 	range
 } from "./chart.common-meter-functions";
-
-let LinearData = class {
-
-	constructor(dataArray, chartMeterOptions) {
-		this.text = dataArray.length > 0 ? dataArray[dataArray.length - 1] : '--';
-		this.textBackgroundColor = getTextBackgroundColor(chartMeterOptions.levels, dataArray[dataArray.length - 1]);
-		this.visualMinValue = chartMeterOptions.minVisualValue;
-		this.visualMaxValue = chartMeterOptions.maxVisualValue;
-		this.levelMinValue = Math.min(...chartMeterOptions.levels.map(value => value.minValue));
-		this.levelMaxValue = Math.max(...chartMeterOptions.levels.map(value => value.maxValue));
-		this.dataValue = dataArray[dataArray.length - 1];
-
-		// TODO visualValue must be taken into account based on a parameter
-		this.minValue = this.visualMinValue != null ? Math.min(this.visualMinValue, this.levelMinValue) : this.levelMinValue;
-		this.maxValue = this.visualMaxValue != null ? Math.max(this.visualMaxValue, this.levelMaxValue) : this.levelMaxValue;
-
-		while (this.dataValue <= this.minValue) {
-			this.minValue -= Math.abs(this.dataValue * 0.8);
-		}
-		while (this.dataValue >= this.maxValue) {
-			this.maxValue += Math.abs(this.dataValue * 0.8);
-		}
-
-		this.fractionDigits = (this.maxValue - this.minValue) <= 10 ? 1 : 0;
-		this.textIncrement = Math.abs((this.maxValue - this.minValue)) / 61;
-	}
-
-};
 
 export const LinearMeter = Chart.controllers.bar.extend({
 	buildOrUpdateElements:        function() {
@@ -55,7 +27,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 			const centerX = canvas.width / 2;
 			const centerY = canvas.height / 2;
 
-			const linearData = new LinearData(this._data, this.chart.options.chartMeterOptions);
+			const chartMeterData = new ChartMeterData(this._data, this.chart.options.chartMeterOptions);
 
 			context.moveTo(centerX, centerY);
 
@@ -73,13 +45,13 @@ export const LinearMeter = Chart.controllers.bar.extend({
 				drawTextPanel(context, undefined, '#DDDDDD44', centerX / 4, centerY - (centerY / 3), externalPanelWidth,
 					externalPanelHeight, undefined, this.chart.options.chartMeterOptions.borderColor);
 
-				drawTextPanel(context, linearData.text, linearData.textBackgroundColor, centerX / 4 + externalPanelWidth - textPanelWidth - increment, textPanelYPos,
-					textPanelWidth, textPanelHeight, getTextColor(linearData.textBackgroundColor)
+				drawTextPanel(context, chartMeterData.text, chartMeterData.textBackgroundColor, centerX / 4 + externalPanelWidth - textPanelWidth - increment, textPanelYPos,
+					textPanelWidth, textPanelHeight, getTextColor(chartMeterData.textBackgroundColor)
 				);
 
 				this.drawHorizontalTicksLabelsBar(context, this._data[this._data.length - 1], centerX / 3,
 					textPanelYPos + textPanelHeight + textPanelHeight / 2, externalPanelHeight,
-					increment, linearData.minValue, linearData.textIncrement, linearData.fractionDigits);
+					increment, chartMeterData.minValue, chartMeterData.textIncrement, chartMeterData.fractionDigits);
 
 			} else {
 
@@ -93,12 +65,14 @@ export const LinearMeter = Chart.controllers.bar.extend({
 				drawTextPanel(context, undefined, '#DDDDDD44', centerX - centerX / 6, 15, externalPanelWidth,
 					externalPanelHeight, '#DDDDDD44', this.chart.options.chartMeterOptions.borderColor);
 
-				drawTextPanel(context, linearData.text, linearData.textBackgroundColor, centerX - centerX / 8,
-					calculatedYPos + 12, textPanelWidth, textPanelHeight, getTextColor(linearData.textBackgroundColor));
+				drawTextPanel(context, chartMeterData.text, chartMeterData.textBackgroundColor, centerX - centerX / 8,
+					calculatedYPos + 15, textPanelWidth, textPanelHeight, getTextColor(chartMeterData.textBackgroundColor));
 
-				const increment = Math.max(5, (centerY + centerY / 2.25) / 61);
-				this.drawVerticalTicksLabelsBar(context, this._data[this._data.length - 1], centerX - centerX / 8 + 20,
-					externalPanelHeight - textPanelHeight - 20, increment, linearData.minValue, linearData.textIncrement, linearData.fractionDigits);
+				const increment = externalPanelHeight * 6.75 / 495; // Math.max(6, externalPanelHeight * 0.8 / 61);
+				const panelsSeparation = 15 * textPanelHeight / 30;
+				this.drawVerticalTicksLabelsBar(context, this._data[this._data.length - 1], centerX - centerX / 8 + panelsSeparation,
+					externalPanelHeight - textPanelHeight - panelsSeparation, textPanelWidth,
+					increment, chartMeterData.minValue, chartMeterData.textIncrement, chartMeterData.fractionDigits);
 			}
 			context.restore();
 
@@ -172,10 +146,10 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		context.fillRect(xStartPos, yStartPos + 1, valueToPrintXPos - xStartPos, calculatedHeightForPanels - 2);
 		context.closePath();
 	},
-	drawVerticalTicksLabelsBar:   function(context, valueToPrint, xStartPos, yStartPos, increment, startingValue, textIncrement, fractionDigits) {
+	drawVerticalTicksLabelsBar:   function(context, valueToPrint, xStartPos, yStartPos, panelWidth, increment, startingValue, textIncrement, fractionDigits) {
 		context.beginPath();
 		context.strokeStyle = 'darkgray';
-		context.font = getFontSized(12, 60, 'Helvetica');
+		context.font = getFontSized(12, panelWidth / 2, 'Helvetica');
 		context.fillStyle = 'darkgray';
 		const calculatedYPos = Math.max(333, yStartPos);
 		let valueToPrintYPos;
@@ -225,7 +199,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		linearGradient.addColorStop(0.5, 'lightgray');
 		linearGradient.addColorStop(1, 'gray');
 
-		const calculatedBarWidth = Math.max(48, this.chart.canvas.width * 0.06);
+		const calculatedBarWidth = panelWidth * 0.6;
 		drawTextPanel(context, undefined, 'white', xStartPos + 20, calculatedYPos - increment * 60,
 			calculatedBarWidth, increment * 60);
 

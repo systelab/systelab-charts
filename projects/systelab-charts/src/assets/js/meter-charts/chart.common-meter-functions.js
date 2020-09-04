@@ -1,3 +1,34 @@
+export const ChartMeterData = class {
+
+	constructor(dataArray, chartMeterOptions) {
+		this.textBackgroundColor = getTextBackgroundColor(chartMeterOptions.levels, dataArray[dataArray.length - 1]);
+		this.visualMinValue = chartMeterOptions.minVisualValue;
+		this.visualMaxValue = chartMeterOptions.maxVisualValue;
+		this.levelMinValue = Math.min(...chartMeterOptions.levels.map(value => value.minValue));
+		this.levelMaxValue = Math.max(...chartMeterOptions.levels.map(value => value.maxValue));
+		this.dataValue = dataArray[dataArray.length - 1];
+
+		this.minValue = this.visualMinValue != null ? Math.min(this.visualMinValue, this.levelMinValue) : this.levelMinValue;
+		this.maxValue = this.visualMaxValue != null ? Math.max(this.visualMaxValue, this.levelMaxValue) : this.levelMaxValue;
+
+		while (this.dataValue <= this.minValue) {
+			this.minValue -= Math.abs(this.dataValue * 0.8);
+		}
+		while (this.dataValue >= this.maxValue) {
+			this.maxValue += Math.abs(this.dataValue * 0.8);
+		}
+
+		if (chartMeterOptions.unitFormat && chartMeterOptions.unitFormat.lastIndexOf('.') > 0) {
+			this.fractionDigits = chartMeterOptions.unitFormat.substr(chartMeterOptions.unitFormat.indexOf('.') + 1).length;
+		} else {
+			this.fractionDigits = (this.maxValue - this.minValue) <= 20 ? 1 : 0;
+		}
+		this.text = dataArray.length > 0 ? dataArray[dataArray.length - 1].toFixed(this.fractionDigits) : '--';
+		this.textIncrement = Math.abs((this.maxValue - this.minValue)) / 61;
+	}
+
+};
+
 export const getRegionYPos = (yAxisLabelItem, level) => {
 
 	const label = yAxisLabelItem.filter(value => Number(value.label) === level);
@@ -91,6 +122,11 @@ export const getFontSized = (defaultFontSize, availableHeight, fontFamily) => {
 export const getRadius = (radius) => {
 	return 0.22 * radius;
 };
+
+export const applyFractionDigits = (number, fractionDigits) => {
+	return Number(number)
+		.toFixed(fractionDigits);
+}
 
 export const getTextBackgroundColor = (levels, currentValue) => {
 
