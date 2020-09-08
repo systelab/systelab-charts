@@ -19,6 +19,7 @@ export class ShowcaseChartComponent {
 	@ViewChild('lineChart') lineChart: ChartComponent;
 	@ViewChild('lineChartMultipleAxis') lineChartMultipleAxis: ChartComponent;
 	@ViewChild('lineChartLegend') lineChartLegend: ChartComponent;
+	@ViewChild('resizableCChart') resizableChart: ChartComponent;
 
 	public type: string;
 	public itemSelected: any;
@@ -62,6 +63,9 @@ export class ShowcaseChartComponent {
 	public verticalLinearChartGadgetConfiguration: ChartMeterConfiguration;
 	public horizontalLinearChartGadgetConfiguration: ChartMeterConfiguration;
 	public digitalChartGadgetConfiguration: ChartMeterConfiguration;
+	public defaultResizeWidth = 1280;
+	public defaultResizeHeight = 900;
+	public resizedImage: string;
 
 	private static randomIntFromInterval(min, max) {
 		return Math.floor(Math.random() * (max - min + 1) + min);
@@ -105,7 +109,8 @@ export class ShowcaseChartComponent {
 
 		this.verticalLinearDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
 			3, 'line', undefined, 5));
-		this.verticalLinearDataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 6.6], 'green', 'lightgreen', true, true, false, 1));
+		this.verticalLinearDataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 6.6], 'green', 'lightgreen',
+			true, true, false, 1));
 
 		this.horizontalLinearDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 8, 8], 'blue', 'blue', false, true, false,
 			3, 'line', undefined, 5));
@@ -279,7 +284,8 @@ export class ShowcaseChartComponent {
 		}
 	}
 
-	private generateChartMultipleYAxisScales(id: string, position: string, min: number, max: number, stepSize: number): ChartMultipleYAxisScales {
+	private generateChartMultipleYAxisScales(id: string, position: string, min: number, max: number, stepSize: number):
+		ChartMultipleYAxisScales {
 		const defaultYAxisScales = new ChartMultipleYAxisScales();
 		defaultYAxisScales.id = id;
 		defaultYAxisScales.position = position;
@@ -341,5 +347,16 @@ export class ShowcaseChartComponent {
 			default:
 				break;
 		}
+	}
+
+	public doResizeChart() {
+		this.resizedImage = this.resizableChart.getResizedBase64Image(this.defaultResizeHeight, this.defaultResizeWidth);
+		// this.resizableChart.doResizeChart(this.defaultResizeHeight, this.defaultResizeWidth);
+	}
+
+	public doUpdateChart() {
+		this.resizableChart.chartResized = false;
+		this.resizableChart.doUpdate();
+		this.resizableChart.chart.resize();
 	}
 }

@@ -405,4 +405,6 @@ Use the next @font-face declaration in your scss in order to use the digital fon
 
 | Name | Parameters | Description |
 | ---- |:----------:| ------------|
-| getBase64Image | number?, number? | Get the base64 png image scaled based on the width and height parameters if provided, if not the image will have the current width and height.|
+| getResizedBase64Image | number?, number? | Get the base64 png string image scaled based on the height and width parameters (if provided).|
+| doResizeChart | string, string | Perform a chart resize based on the height and width parameters (in pixels).|
+**Note**: _responsive_ and _maintainAspectRatio_ parameters must be set to _**false**_.

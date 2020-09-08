@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, ApplicationRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import * as Chart from 'chart.js';
 import { RadialMeter } from '../../assets/js/meter-charts/chart.radial-meter';
 import { DigitalMeter } from '../../assets/js/meter-charts/chart.digital-meter';
@@ -6,6 +6,7 @@ import { LinearMeter } from '../../assets/js/meter-charts/chart.linear-meter';
 
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import 'chartjs-plugin-annotation';
+import { Observable, of, timer } from 'rxjs';
 
 export class ChartItem {
 
@@ -218,8 +219,9 @@ export class ChartComponent implements AfterViewInit {
 	@ViewChild('canvas', {static: true}) canvas: ElementRef;
 	@ViewChild('topLegend', {static: false}) topLegend: ElementRef;
 	@ViewChild('bottomLegend', {static: false}) bottomLegend: ElementRef;
+	public chartResized = false;
 
-	constructor(private readonly myRenderer: Renderer2) {
+	constructor(private readonly appRef: ApplicationRef) {
 		Chart.defaults.radialMeter = Chart.defaults.bar;
 		Chart.defaults.digitalMeter = Chart.defaults.bar;
 		Chart.defaults.linearMeter = Chart.defaults.bar;
@@ -760,30 +762,51 @@ export class ChartComponent implements AfterViewInit {
 			.join(',') + ')';
 	}
 
-	public getBase64Image(width?: number, height?: number): string {
+	public getResizedBase64Image(height?: number, width?: number): string {
+		let base64ImageString: string;
 		if (this.chart) {
-			let base64ImageString: string;
-			if (width && height) {
-				const elementToPrint = this.chart.canvas.parentElement;
-				const canvasOffsetHeight = elementToPrint.offsetHeight;
-				const canvasOffsetWidth = elementToPrint.offsetWidth;
-				const originalAspectRatio = this.maintainAspectRatio;
-				this.maintainAspectRatio = true;
+			if (width || height) {
 
-				this.myRenderer.setStyle(elementToPrint, 'height', height + 'px');
-				this.myRenderer.setStyle(elementToPrint, 'width', width + 'px');
+				const canvasOffsetHeight = this.chart.canvas.parentElement.offsetHeight;
+				const canvasOffsetWidth = this.chart.canvas.parentElement.offsetWidth;
+				const originalAspectRatio = this.maintainAspectRatio;
+				const originalResponsive = this.responsive;
+				this.responsive = false;
+				this.maintainAspectRatio = false;
 				this.chart.resize();
-				base64ImageString = this.chart.toBase64Image();
-				this.myRenderer.setStyle(elementToPrint, 'height', canvasOffsetHeight + 'px');
-				this.myRenderer.setStyle(elementToPrint, 'width', canvasOffsetWidth + 'px');
-				this.maintainAspectRatio = originalAspectRatio;
-				this.chart.resize();
+				if (this.doResizeChart(height, width)) {
+					this.appRef.tick();
+
+					this.chart.resize();
+					base64ImageString = this.chart.toBase64Image();
+					this.maintainAspectRatio = originalAspectRatio;
+					this.responsive = originalResponsive;
+					this.chartResized = false;
+					this.doResizeChart(canvasOffsetHeight, canvasOffsetWidth);
+					this.doUpdate();
+
+				}
 			} else {
 				base64ImageString = this.chart.toBase64Image();
 			}
 			return base64ImageString;
 		}
 		return undefined;
+	}
+
+	public doResizeChart(height: number, width: number): boolean {
+		const elementToResize = this.chart.canvas.parentElement;
+		let doResize = false;
+		if (height) {
+			doResize = true;
+			elementToResize.style.height = height + 'px';
+		}
+		if (width) {
+			doResize = true;
+			elementToResize.style.width = width + 'px';
+		}
+		this.chartResized = doResize;
+		return doResize;
 	}
 
 	public doUpdate(): void {

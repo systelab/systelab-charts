@@ -111,5 +111,27 @@
             <systelab-chart #digitalMeterChart [labels]="labelsChartMeterGadget" [data]="digitalDataChartMeterGadget" [showLegend]="false"
                             [type]="'digitalMeter'" [chartMeterConfiguration]="digitalChartGadgetConfiguration"></systelab-chart>
         </div>
+        <div class="col-md-12 p-2 flex-column">
+            <showcase-title [href]="'chart'">Resizable Chart</showcase-title>
+            <div class="col-md-8 row">
+                <label for="defaultResizeWidth" class="col-form-label mr-2 col-md-1">Width: </label>
+                <input type="text" class="form-control rounded ml-4 col-md-1" id="defaultResizeWidth" [(ngModel)]="defaultResizeWidth"
+                       name="defaultResizeWidth">
+                <label for="defaultResizeHeight" class="col-form-label mr-2 col-md-1">Height: </label>
+                <input type="text" class="form-control rounded ml-4 col-md-1" id="defaultResizeHeight" [(ngModel)]="defaultResizeHeight"
+                       name="defaultResizeHeight">
+                <button class="btn btn-primary btn-sm ml-4 m-2" (click)="doResizeChart();">Resize Chart</button>
+                <button class="btn btn-primary btn-sm m-2" (click)="doUpdateChart();">Update Chart</button>
+            </div>
+            <div class="col-md-6">
+                <systelab-chart #resizableCChart [labels]="labels" [data]="dataLine" [showLegend]="legend" [type]="'line'"
+                                [lineTension]="0.4"
+                                [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings"
+                                [maintainAspectRatio]="false" [responsive]="true"></systelab-chart>
+                <div class="col-md-6">
+                    <img [src]="resizedImage" alt="Resized Image"/>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
