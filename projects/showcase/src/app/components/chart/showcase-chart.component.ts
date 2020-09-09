@@ -1,10 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import {
-	Annotation, ChartBoxAnnotation, ChartComponent, ChartItem, ChartLabelAnnotation, ChartLabelColor,
-	ChartLabelFont, ChartLabelPadding, ChartLabelPosition, ChartLabelSettings, ChartLineAnnotation, ChartMultipleYAxisScales,
-	ChartTooltipItem, ChartTooltipSettings
-} from 'systelab-charts';
-import { ChartMeterConfiguration } from '../../../../../systelab-charts/src/lib/chart/chart.component';
+	Annotation, ChartBoxAnnotation, ChartComponent, ChartItem, ChartLabelAnnotation, ChartLabelColor, ChartLabelFont, ChartLabelPadding,
+	ChartLabelPosition, ChartLabelSettings, ChartLineAnnotation, ChartMeterConfiguration, ChartMultipleYAxisScales, ChartTooltipItem,
+	ChartTooltipSettings
+} from '../../../../../systelab-charts/src/lib/chart/chart.component';
 
 @Component({
 	selector:    'showcase-chart',
