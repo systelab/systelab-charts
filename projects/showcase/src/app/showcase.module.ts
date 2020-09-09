@@ -6,7 +6,7 @@ import { ShowcaseTitleComponent } from './components/showcase-title.component';
 import { ShowcaseChartComponent } from './components/chart/showcase-chart.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ShowcaseChartsComponent } from './components/showcase-charts.component';
-import { SystelabChartsModule } from '../../../systelab-charts/src/lib/systelab-charts.module';
+import { SystelabChartsModule } from 'systelab-charts';
 
 @NgModule({
 	imports:      [
