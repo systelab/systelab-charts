@@ -99,7 +99,11 @@ export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWi
 	context.closePath();
 	if (text) {
 		context.fillStyle = textColor;
-		context.fillText(text, (xPos + rectWidth) - context.measureText(text).width - 10, yPos + rectHeight - context.measureText(text).actualBoundingBoxAscent / 5);
+		let actualBoundingBoxAscent = context.measureText(text).actualBoundingBoxAscent / 5;
+		if (Number.isNaN(actualBoundingBoxAscent)) {
+			actualBoundingBoxAscent = rectHeight * 4.2 / 30;
+		}
+		context.fillText(text, (xPos + rectWidth) - context.measureText(text).width - 10, yPos + rectHeight - actualBoundingBoxAscent);
 	}
 };
 

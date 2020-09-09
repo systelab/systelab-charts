@@ -161,9 +161,13 @@ export const LinearMeter = Chart.controllers.bar.extend({
 					if (Number(text) === valueToPrint) {
 						valueToPrintYPos = calculatedYPos - index * increment;
 					}
+					let actualBoundingBoxAscent = context.measureText(text).actualBoundingBoxAscent / 2;
+					if (Number.isNaN(actualBoundingBoxAscent)) {
+						actualBoundingBoxAscent = panelWidth * 4 / 114.625;
+					}
 					context.lineWidth = 2.5;
 					context.fillText(text, xStartPos - 15 + fractionDigits - context.measureText(text).width / 2,
-						calculatedYPos - index * increment + context.measureText(text).actualBoundingBoxAscent / 2);
+						calculatedYPos - index * increment + actualBoundingBoxAscent);
 					context.beginPath();
 					context.moveTo(xStartPos + 10 + fractionDigits * 4, calculatedYPos - index * increment);
 					context.lineTo(xStartPos + fractionDigits * 4, calculatedYPos - index * increment);
