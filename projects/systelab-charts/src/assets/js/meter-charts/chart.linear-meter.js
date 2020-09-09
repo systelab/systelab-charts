@@ -70,7 +70,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 
 				const increment = externalPanelHeight * 6.75 / 495; // Math.max(6, externalPanelHeight * 0.8 / 61);
 				const panelsSeparation = 15 * textPanelHeight / 30;
-				this.drawVerticalTicksLabelsBar(context, this._data[this._data.length - 1], centerX - centerX / 8 + panelsSeparation,
+				this.drawVerticalTicksLabelsBar(context, this._data[this._data.length - 1], centerX - centerX / 8 + panelsSeparation + chartMeterData.fractionDigits,
 					externalPanelHeight - textPanelHeight - panelsSeparation, textPanelWidth,
 					increment, chartMeterData.minValue, chartMeterData.textIncrement, chartMeterData.fractionDigits);
 			}
@@ -162,11 +162,11 @@ export const LinearMeter = Chart.controllers.bar.extend({
 						valueToPrintYPos = calculatedYPos - index * increment;
 					}
 					context.lineWidth = 2.5;
-					context.fillText(text, xStartPos - 15 - context.measureText(text).width / 2,
+					context.fillText(text, xStartPos - 15 + fractionDigits - context.measureText(text).width / 2,
 						calculatedYPos - index * increment + context.measureText(text).actualBoundingBoxAscent / 2);
 					context.beginPath();
-					context.moveTo(xStartPos + 10, calculatedYPos - index * increment);
-					context.lineTo(xStartPos, calculatedYPos - index * increment);
+					context.moveTo(xStartPos + 10 + fractionDigits * 4, calculatedYPos - index * increment);
+					context.lineTo(xStartPos + fractionDigits * 4, calculatedYPos - index * increment);
 					context.stroke();
 					context.closePath();
 					break;
@@ -176,8 +176,8 @@ export const LinearMeter = Chart.controllers.bar.extend({
 					}
 					context.lineWidth = 1.5;
 					context.beginPath();
-					context.moveTo(xStartPos + 8, calculatedYPos - index * increment);
-					context.lineTo(xStartPos, calculatedYPos - index * increment);
+					context.moveTo(xStartPos + 8 + fractionDigits * 4, calculatedYPos - index * increment);
+					context.lineTo(xStartPos + fractionDigits * 4, calculatedYPos - index * increment);
 					context.stroke();
 					context.closePath();
 					break;
@@ -187,8 +187,8 @@ export const LinearMeter = Chart.controllers.bar.extend({
 					}
 					context.lineWidth = 0.7;
 					context.beginPath();
-					context.moveTo(xStartPos + 5, calculatedYPos - index * increment);
-					context.lineTo(xStartPos, calculatedYPos - index * increment);
+					context.moveTo(xStartPos + 5 + fractionDigits * 4, calculatedYPos - index * increment);
+					context.lineTo(xStartPos + fractionDigits * 4, calculatedYPos - index * increment);
 					context.stroke();
 					context.closePath();
 					break;
@@ -199,8 +199,8 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		linearGradient.addColorStop(0.5, 'lightgray');
 		linearGradient.addColorStop(1, 'gray');
 
-		const calculatedBarWidth = panelWidth * 0.6;
-		drawTextPanel(context, undefined, 'white', xStartPos + 20, calculatedYPos - increment * 60,
+		const calculatedBarWidth = panelWidth * 0.6 - fractionDigits;
+		drawTextPanel(context, undefined, 'white', xStartPos + 20 + fractionDigits * 4, calculatedYPos - increment * 60,
 			calculatedBarWidth, increment * 60);
 
 		const firstValue = Number((startingValue).toFixed(fractionDigits));
@@ -212,7 +212,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		context.beginPath();
 		context.lineWidth = 3;
 		context.fillStyle = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, valueToPrint);
-		context.fillRect(xStartPos + 25, valueToPrintYPos, calculatedBarWidth - 10, calculatedYPos - valueToPrintYPos);
+		context.fillRect(xStartPos + 25 + fractionDigits * 4, valueToPrintYPos, calculatedBarWidth - 10, calculatedYPos - valueToPrintYPos);
 		context.closePath();
 	}
 });
