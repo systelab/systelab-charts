@@ -79,7 +79,7 @@ export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWi
 	rectWidth = Math.max(rectWidth, getFrameSize(context.canvas.width), textWidth);
 	let frameColorHeight = 0;
 	if (frameColor) {
-		frameColorHeight = 111;
+		frameColorHeight = 4;
 		// Set rectangle and corner values
 		context.fillStyle = backgroundColor;
 		context.lineWidth = 12;
