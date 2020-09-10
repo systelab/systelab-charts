@@ -390,7 +390,7 @@ Use the next @font-face declaration in your scss in order to use the digital fon
 ```scss
 @font-face {
   font-family: 'digital-font';
-  src: url('systelab-charts/assets/fonts/Segment7Standard.otf') format('truetype');
+  src: url('systelab-charts/assets/fonts/Segment7Standard.otf') format('opentype');
   font-style: normal;
 }
 ```

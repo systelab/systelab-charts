@@ -72,13 +72,14 @@ export const drawRegions = (chart) => {
 };
 
 export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWidth, rectHeight, textColor, frameColor) => {
+	const originalFont = context.font;
 	context.font = getFontSized(54, rectHeight, 'digital-font');
 	context.lineJoin = "round";
 	const textWidth = text ? context.measureText(text).width + 20 : 0;
 	rectWidth = Math.max(rectWidth, getFrameSize(context.canvas.width), textWidth);
 	let frameColorHeight = 0;
 	if (frameColor) {
-		frameColorHeight = 4;
+		frameColorHeight = 111;
 		// Set rectangle and corner values
 		context.fillStyle = backgroundColor;
 		context.lineWidth = 12;
@@ -105,6 +106,7 @@ export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWi
 		}
 		context.fillText(text, (xPos + rectWidth) - context.measureText(text).width - 10, yPos + rectHeight - actualBoundingBoxAscent);
 	}
+	context.font = originalFont;
 };
 
 export const getFrameSize = (canvasWidth) => {
@@ -164,6 +166,15 @@ export const hideGoalsAndTooltips = (chart) => {
 		chart.options.tooltips.enabled = false;
 		chart.data.datasets[0].hidden = chart.data.datasets.length > 1;
 	}
+};
+
+export const getRectWidthBasedOnText = (context, rectWidth, rectHeight, text) => {
+	const originalFont = context.font;
+	context.font = getFontSized(54, rectHeight, 'digital-font');
+	context.lineJoin = "round";
+
+	context.font = originalFont;
+	return Math.max(rectWidth, getFrameSize(context.canvas.width), context.measureText(text).width + 20);
 };
 
 const lerp = (x, y, a) => x * (1 - a) + y * a;
