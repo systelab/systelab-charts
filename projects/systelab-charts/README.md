@@ -7,7 +7,9 @@ Component to show a Chart
 ```html
    <systelab-chart [labels]="labels" [data]="data" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="type"
                 (action)="doAction($event)" [isBackgroundGrid]="isBackgroundGrid" [isHorizontal]="isHorizontal" [lineTension]="lineTension" 
-                [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [annotations]="annotations" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings" [isStacked]="isStacked" [customLegend]="customLegend"></systelab-chart>
+                [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [annotations]="annotations" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" 
+                [tooltipSettings]="tooltipSettings" [isStacked]="isStacked" [customLegend]="customLegend" 
+                [chartMeterConfiguration]="chartMeterConfiguration"></systelab-chart>
 ```
 
 
@@ -22,8 +24,11 @@ Set **type** with the chart type that you want to display. You can chose between
 - Bubble
 - Radar
 - Polar Area
+- Digital Meter
+- Radial Meter
+- Linear Meter (horizontal / vertical)
 
-Also you can show together different chart types, for example a Bar chart with Line chart. In order to do this, you should define the chart type in the properties of the data that you provide to the component. 
+Also, you can show together different chart types (less the meter ones); for example a Bar chart with Line chart. In order to do this, you should define the chart type in the properties of the data that you provide to the component. 
 
 Single example:
 ```javascript
@@ -43,7 +48,7 @@ Multiple charts example:
 | **itemSelected** | any | | is used to notify which item is clicked |
 | showLegend | boolean | true | Define the visibility of the legend |
 | legendPosition | string | 'top' | Define the position of the legend |
-| isBackgroundGrid | boolean | true | Define if you want a grid backgropund or not |
+| isBackgroundGrid | boolean | true | Define if you want a grid background or not |
 | lineTension | number | 0 | Define the tension of the line |
 | yMinValue | any | 0 | Min value of the axis Y |
 | yMaxValue | any | 0 | Max value of the axis Y |
@@ -349,9 +354,57 @@ type Padding = number | {
 | textShadowColor | string | null | Color for the labels' text shadow|
 
 
+##### ChartMeterConfiguration
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| borderColor | string |'#007bff'| The border color applied to the graph |
+| unitFormat | string | | The format value to apply the values | 
+| chartColour | string | | The color for the bars in the history chart |
+| goalColour | string | | The color for the goal values in the history chart |
+| betterValues | string | | Pending description |
+| | | | Supported values are: |
+| | | | 'higher' (default): the higher values are the better ones |
+| | | | 'lower' : the lower values are the better ones |
+| markerForGoal | string | | The marker for the goal value in the history chart|
+| | | | Supported values are: |
+| | | | 'circle' (default), 'cross', 'crossRot', 'dash', 'line', 'rect', 'rectRounded', 'rectRot', 'star', 'triangle'
+| defaultGoalValue | number | | The default goal value in case that there's no list of goal values |
+| minVisualValue | number | | Value as a lower limit in the graphs. If not informed the min value will be de lower value in the dataset|
+| maxVisualValue | number | | Value as a higher limit in the graphs. If not informed the max value will be de lower value in the dataset|
+| showHistory | boolean | false | Show the history graph by default|
+| levels | object | | List of levels to be included in the graphs |
+
+Definition of a level parameter as an object:
+
+```javascript
+type Levels = { 
+    levelColor: string, 
+    minValue: number, 
+    maxValue: number 
+};
+```
+
+Use the next @font-face declaration in your scss in order to use the digital font in the meter graphs:
+
+```scss
+@font-face {
+  font-family: 'digital-font';
+  src: url('systelab-charts/assets/fonts/Segment7Standard.otf') format('opentype');
+  font-style: normal;
+}
+```
 ## Events
 
 | Name | Parameters | Description |
 | ---- |:----------:| ------------|
-| doUpdate || Reset the chart with the new data.|
-|action||Is going to emit the event when you clicked in a item in the chart|
+| doUpdate | | Reset the chart with the new data.|
+|action| |Is going to emit the event when you clicked in a item in the chart|
+
+## Functions
+
+| Name | Parameters | Description |
+| ---- |:----------:| ------------|
+| getResizedBase64Image | number?, number? | Get the base64 png string image scaled based on the height and width parameters (if provided).|
+| doResizeChart | string, string | Perform a chart resize based on the height and width parameters (in pixels).|
+**Note**: _responsive_ and _maintainAspectRatio_ parameters must be set to _**false**_.

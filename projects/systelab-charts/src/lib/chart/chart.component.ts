@@ -1,9 +1,15 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ApplicationRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import * as Chart from 'chart.js';
+import { RadialMeter } from '../../assets/js/meter-charts/chart.radial-meter';
+import { DigitalMeter } from '../../assets/js/meter-charts/chart.digital-meter';
+import { LinearMeter } from '../../assets/js/meter-charts/chart.linear-meter';
+
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import 'chartjs-plugin-annotation';
+import { Observable, of, timer } from 'rxjs';
 
 export class ChartItem {
+
 	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string,
 				public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number,
 				public chartType?: string, public chartTooltipItem?: ChartTooltipItem, public pointRadius?: number, public yAxisID?: string,
@@ -56,7 +62,9 @@ export class ChartTooltipSettings {
 }
 
 export class ChartLabelSettings {
-	constructor(public position?: ChartLabelPosition, public labelColors?: ChartLabelColor, public chartLabelFont?: ChartLabelFont, public chartLabelPadding?: ChartLabelPadding, public chartLabelText?: ChartLabelText, public formatter?: (value: any, context: any) => string) {
+	constructor(public position?: ChartLabelPosition, public labelColors?: ChartLabelColor, public chartLabelFont?: ChartLabelFont,
+				public chartLabelPadding?: ChartLabelPadding, public chartLabelText?: ChartLabelText,
+				public formatter?: (value: any, context: any) => string) {
 		this.position = new ChartLabelPosition();
 		this.labelColors = new ChartLabelColor();
 		this.chartLabelFont = new ChartLabelFont();
@@ -67,18 +75,21 @@ export class ChartLabelSettings {
 }
 
 export class ChartLabelPosition {
-	constructor(public align?: string | number, public anchor?: string, public clamp?: boolean, public clip?: boolean, public display?: ((context: any) => (boolean | string)) | boolean | string, public offset?: number, public rotation?: number) {
+	constructor(public align?: string | number, public anchor?: string, public clamp?: boolean, public clip?: boolean,
+				public display?: ((context: any) => (boolean | string)) | boolean | string, public offset?: number, public rotation?: number) {
 	}
 }
 
 export class ChartLabelColor {
-	constructor(public backgroundColor?: string, public color?: string, public borderColor?: string, public borderRadius?: number, public borderWidth?: number, public opacity?: number) {
+	constructor(public backgroundColor?: string, public color?: string, public borderColor?: string, public borderRadius?: number,
+				public borderWidth?: number, public opacity?: number) {
 
 	}
 }
 
 export class ChartLabelFont {
-	constructor(public font?: object, public family?: string, public size?: number, public style?: string, public weight?: string | number, public lineHeight?: string | number) {
+	constructor(public font?: object, public family?: string, public size?: number, public style?: string, public weight?: string | number,
+				public lineHeight?: string | number) {
 
 	}
 }
@@ -90,7 +101,8 @@ export class ChartLabelPadding {
 }
 
 export class ChartLabelText {
-	constructor(public textAlign?: string, public textStrokeColor?: string, public textStrokeWidth?: number, public textShadowBlur?: number, public textShadowColor?: string) {
+	constructor(public textAlign?: string, public textStrokeColor?: string, public textShadowBlur?: number,
+				public textStrokeWidth?: number, public textShadowColor?: string) {
 
 	}
 }
@@ -113,6 +125,24 @@ export class ChartMultipleYAxisScales {
 			gridLines:  this.gridLines,
 			scaleLabel: this.scaleLabel
 		};
+	}
+}
+
+export class ChartMeterConfiguration {
+	public borderColor = '#007bff';
+	public unitFormat: string;
+	public chartColour: string;
+	public goalColour: string;
+	public betterValues: string | 'higher' | 'lower';
+	public markerForGoal: string | 'circle' | 'cross' | 'crossRot' | 'dash' | 'line' | 'rect' | 'rectRounded'
+		| 'rectRot' | 'star' | 'triangle' = 'circle';
+	public defaultGoalValue: number;
+	public minVisualValue: number;
+	public maxVisualValue: number;
+	public showHistory = false;
+	public levels: Array<{ levelColor: string, minValue: number, maxValue: number }> = [];
+
+	constructor() {
 	}
 }
 
@@ -151,7 +181,7 @@ export class ChartComponent implements AfterViewInit {
 
 	@Input() labels: Array<any> = [];
 	@Input() data: Array<ChartItem> = [];
-	@Input() annotations: Array<ChartLineAnnotation | ChartBoxAnnotation> = [];
+	@Input() annotations: Array<Annotation | ChartLineAnnotation | ChartBoxAnnotation> = [];
 	@Input() showLegend = true;
 	@Input() legendPosition = 'top';
 	@Input() isHorizontal = false;
@@ -175,6 +205,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() maxValueForRadar: number;
 	@Input() multipleYAxisScales: Array<ChartMultipleYAxisScales>;
 	@Input() customLegend = false;
+	@Input() chartMeterConfiguration: ChartMeterConfiguration;
 
 	private dataset: Array<any> = [];
 
@@ -188,10 +219,19 @@ export class ChartComponent implements AfterViewInit {
 	@ViewChild('canvas', {static: true}) canvas: ElementRef;
 	@ViewChild('topLegend', {static: false}) topLegend: ElementRef;
 	@ViewChild('bottomLegend', {static: false}) bottomLegend: ElementRef;
+	public chartResized = false;
 
-	public ngAfterViewInit() {
+	constructor(private readonly appRef: ApplicationRef) {
+		Chart.defaults.radialMeter = Chart.defaults.bar;
+		Chart.defaults.digitalMeter = Chart.defaults.bar;
+		Chart.defaults.linearMeter = Chart.defaults.bar;
+		Chart.controllers.radialMeter = RadialMeter;
+		Chart.controllers.digitalMeter = DigitalMeter;
+		Chart.controllers.linearMeter = LinearMeter;
+	}
+
+	public ngAfterViewInit(): void {
 		Chart.plugins.unregister(ChartDataLabels);
-
 		let cx: CanvasRenderingContext2D;
 
 		if (this.type === 'bar') {
@@ -437,6 +477,14 @@ export class ChartComponent implements AfterViewInit {
 						max: this.maxValueForRadar
 					}
 				};
+			}
+			if (this.type.endsWith('Meter')) {
+				definition.options.chartMeterOptions = this.chartMeterConfiguration;
+				definition.data.datasets[0].pointStyle = this.chartMeterConfiguration.markerForGoal;
+				definition.data.datasets[1].categoryPercentage = 0.8;
+				definition.data.datasets[1].barPercentage = 0.9;
+				definition.options.scales.xAxes[0].offset = true;
+				definition.options.isHorizontal = this.isHorizontal;
 			}
 
 			if (this.chartLabelSettings) {
@@ -714,7 +762,54 @@ export class ChartComponent implements AfterViewInit {
 			.join(',') + ')';
 	}
 
-	public doUpdate() {
+	public getResizedBase64Image(height?: number, width?: number): string {
+		let base64ImageString: string;
+		if (this.chart) {
+			if (width || height) {
+
+				const canvasOffsetHeight = this.chart.canvas.parentElement.offsetHeight;
+				const canvasOffsetWidth = this.chart.canvas.parentElement.offsetWidth;
+				const originalAspectRatio = this.maintainAspectRatio;
+				const originalResponsive = this.responsive;
+				this.responsive = false;
+				this.maintainAspectRatio = false;
+				this.chart.resize();
+				if (this.doResizeChart(height, width)) {
+					this.appRef.tick();
+
+					this.chart.resize();
+					base64ImageString = this.chart.toBase64Image();
+					this.maintainAspectRatio = originalAspectRatio;
+					this.responsive = originalResponsive;
+					this.chartResized = false;
+					this.doResizeChart(canvasOffsetHeight, canvasOffsetWidth);
+					this.doUpdate();
+
+				}
+			} else {
+				base64ImageString = this.chart.toBase64Image();
+			}
+			return base64ImageString;
+		}
+		return undefined;
+	}
+
+	public doResizeChart(height: number, width: number): boolean {
+		const elementToResize = this.chart.canvas.parentElement;
+		let doResize = false;
+		if (height) {
+			doResize = true;
+			elementToResize.style.height = height + 'px';
+		}
+		if (width) {
+			doResize = true;
+			elementToResize.style.width = width + 'px';
+		}
+		this.chartResized = doResize;
+		return doResize;
+	}
+
+	public doUpdate(): void {
 		let cx: CanvasRenderingContext2D;
 		if (this.canvas.nativeElement) {
 			cx = this.canvas.nativeElement.getContext('2d');
