@@ -371,6 +371,8 @@ export class ShowcaseChartComponent {
 
 			if (currentValue === Number.POSITIVE_INFINITY) {
 				return chartMeterConfiguration.minVisualValue;
+			} else if (!chartMeterConfiguration.minVisualValue) {
+				return currentValue;
 			} else {
 				return Math.min(chartMeterConfiguration.minVisualValue, currentValue);
 			}
