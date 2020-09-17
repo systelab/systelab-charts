@@ -1,25 +1,22 @@
 import {
 	ChartMeterData,
-	drawRegions,
+	hideGoalsAndTooltips,
 	drawTextPanel,
 	getRadius,
 	getTextBackgroundColor,
 	getTextColor,
-	hideGoalsAndTooltips,
 	range
 } from './chart.common-meter-functions';
 
 export const RadialMeter = Chart.controllers.bar.extend({
 	buildOrUpdateElements: function() {
-		Chart.controllers.bar.prototype.buildOrUpdateElements.call(this);
+		Chart.controllers.bar.prototype.buildOrUpdateElements.apply(this, arguments);
 		hideGoalsAndTooltips(this.chart);
 	},
 	draw:                  function(ease) {
 
 		if (this.chart.options.chartMeterOptions.showHistory) {
-			drawRegions(this.chart);
-			// Call super method to draw the bars
-			Chart.controllers.bar.prototype.draw.call(this, ease);
+			Chart.controllers.bar.prototype.draw.apply(this, arguments);
 		} else {
 			const chartMeterData = new ChartMeterData(this._data, this.chart.options.chartMeterOptions);
 
@@ -127,9 +124,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 				const wPointX = mySineAngle * (radius - radius / divider);
 				const wPointY = myCoosAngle * (radius - radius / 3);
 				context.fillStyle = 'black';
-				// console.log(`value text: ${((i + 25) * increment / 5)} - ${my30Angle}`);
 				const rangedValue = range(0, 10, minValue, maxValue, (index + 25) / 5);
-				// context.fillText(((index + 25) * increment / 5).toFixed(fractionDigits), wPointX - 2, wPointY + 4);
 				context.fillText(rangedValue.toFixed(fractionDigits), wPointX - 4, wPointY + 4);
 
 			} else if (index > -25 && index < 25) {

@@ -11,11 +11,20 @@ export const ChartMeterData = class {
 		this.minValue = this.visualMinValue != null ? Math.min(this.visualMinValue, this.levelMinValue) : this.levelMinValue;
 		this.maxValue = this.visualMaxValue != null ? Math.max(this.visualMaxValue, this.levelMaxValue) : this.levelMaxValue;
 
-		while (this.dataValue <= this.minValue) {
-			this.minValue -= Math.abs(this.dataValue * 0.8);
-		}
-		while (this.dataValue >= this.maxValue) {
-			this.maxValue += Math.abs(this.dataValue * 0.8);
+		if (this.dataValue === 0) {
+			if (this.dataValue <= this.minValue) {
+				this.minValue = -0.5;
+			}
+			if (this.dataValue >= this.maxValue) {
+				this.maxValue = 0.5;
+			}
+		} else {
+			while (this.dataValue <= this.minValue) {
+				this.minValue -= Math.abs(this.dataValue * 0.8);
+			}
+			while (this.dataValue >= this.maxValue) {
+				this.maxValue += Math.abs(this.dataValue * 0.8);
+			}
 		}
 
 		if (chartMeterOptions.unitFormat && chartMeterOptions.unitFormat.lastIndexOf('.') > 0) {
@@ -49,26 +58,41 @@ export const getRegionYPos = (yAxisLabelItem, level) => {
 		return range(Number(higherLimit.label), Number(lowerLimit.label), higherLimit.y, lowerLimit.y, Number(level));
 	}
 };
-
-export const drawRegions = (chart) => {
-	const yAxisLabelItems = chart.boxes.filter(value => value.id === 'y-axis-0')[0]._labelItems;
-	chart.options.chartMeterOptions.levels.forEach(level => {
-		const minLevelY = getRegionYPos(yAxisLabelItems, level.minValue);
-		const maxLevelY = getRegionYPos(yAxisLabelItems, level.maxValue);
-		const context = chart.chart.ctx;
-		let heightToPrint = minLevelY - maxLevelY;
-		let yPos = minLevelY - heightToPrint;
-		if (minLevelY - heightToPrint < chart.chartArea.top) {
-			yPos = chart.chartArea.top;
-			heightToPrint = minLevelY - chart.chartArea.top;
+export const drawRegionsPlugin = {
+	beforeDatasetsDraw(chartInstance) {
+		if (chartInstance.options.chartMeterOptions) {
+			if (chartInstance.options.chartMeterOptions.showHistory) {
+				const yAxisLabelItems = chartInstance.boxes.filter(value => value.id === 'y-axis-0')[0]._labelItems;
+				chartInstance.options.chartMeterOptions.levels.forEach(level => {
+					const minLevelY = getRegionYPos(yAxisLabelItems, level.minValue);
+					const maxLevelY = getRegionYPos(yAxisLabelItems, level.maxValue);
+					const context = chartInstance.ctx;
+					let heightToPrint = minLevelY - maxLevelY;
+					let yPos = minLevelY - heightToPrint;
+					if (minLevelY - heightToPrint < chartInstance.chartArea.top) {
+						yPos = chartInstance.chartArea.top;
+						heightToPrint = minLevelY - chartInstance.chartArea.top;
+					}
+					context.beginPath();
+					context.fillStyle = level.levelColor;
+					context.fillRect(chartInstance.chartArea.left + 1, yPos, chartInstance.chartArea.right - 25, heightToPrint);
+					context.fillStyle = '#FFFFFFAA';
+					context.fillRect(chartInstance.chartArea.left + 1, yPos, chartInstance.chartArea.right - 25, heightToPrint);
+					context.closePath();
+				});
+			}
 		}
-		context.beginPath();
-		context.fillStyle = level.levelColor;
-		context.fillRect(chart.chartArea.left + 1, yPos, chart.chartArea.right - 25, heightToPrint);
-		context.fillStyle = '#FFFFFFAA';
-		context.fillRect(chart.chartArea.left + 1, yPos, chart.chartArea.right - 25, heightToPrint);
-		context.closePath();
-	});
+	}
+};
+export const hideGoalsAndTooltips = (chartInstance) => {
+	if (chartInstance.options.chartMeterOptions) {
+		if (chartInstance.options.chartMeterOptions.showHistory) {
+			chartInstance.chart.data.datasets[0].hidden = chartInstance.chart.data.datasets.length <= 1;
+		} else {
+			chartInstance.options.tooltips.enabled = false;
+			chartInstance.chart.data.datasets[0].hidden = chartInstance.chart.data.datasets.length > 1;
+		}
+	}
 };
 
 export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWidth, rectHeight, textColor, frameColor) => {
@@ -157,15 +181,6 @@ export const getTextColor = (color) => {
 		return '#FFF';
 	}
 	return '#174967';
-};
-
-export const hideGoalsAndTooltips = (chart) => {
-	if (chart.options.chartMeterOptions.showHistory) {
-		chart.data.datasets[0].hidden = chart.data.datasets.length <= 1;
-	} else {
-		chart.options.tooltips.enabled = false;
-		chart.data.datasets[0].hidden = chart.data.datasets.length > 1;
-	}
 };
 
 export const getRectWidthBasedOnText = (context, rectWidth, rectHeight, text) => {

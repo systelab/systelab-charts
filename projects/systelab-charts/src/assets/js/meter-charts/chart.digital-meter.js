@@ -1,6 +1,5 @@
 import {
 	ChartMeterData,
-	drawRegions,
 	drawTextPanel,
 	getFontSized,
 	getTextBackgroundColor,
@@ -10,15 +9,13 @@ import {
 
 export const DigitalMeter = Chart.controllers.bar.extend({
 	buildOrUpdateElements: function() {
-		Chart.controllers.bar.prototype.buildOrUpdateElements.call(this);
+		Chart.controllers.bar.prototype.buildOrUpdateElements.apply(this, arguments);
 		hideGoalsAndTooltips(this.chart);
 	},
 	draw:                  function(ease) {
 		// Call super method first
 		if (this.chart.options.chartMeterOptions.showHistory) {
-			drawRegions(this.chart);
-			// Call super method to draw the bars
-			Chart.controllers.bar.prototype.draw.call(this, ease);
+			Chart.controllers.bar.prototype.draw.apply(this, arguments);
 		} else {
 			const chartMeterData = new ChartMeterData(this._data, this.chart.options.chartMeterOptions);
 			const context = this.chart.chart.ctx;
