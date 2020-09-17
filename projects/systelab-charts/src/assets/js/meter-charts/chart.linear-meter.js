@@ -1,24 +1,22 @@
 import {
-	drawRegions,
 	drawTextPanel,
 	getFontSized,
 	getTextBackgroundColor,
 	getTextColor,
-	hideGoalsAndTooltips, ChartMeterData,
-	range, getRectWidthBasedOnText
+	ChartMeterData,
+	range,
+	getRectWidthBasedOnText, hideGoalsAndTooltips
 } from "./chart.common-meter-functions";
 
 export const LinearMeter = Chart.controllers.bar.extend({
 	buildOrUpdateElements:        function() {
-		Chart.controllers.bar.prototype.buildOrUpdateElements.call(this);
+		Chart.controllers.bar.prototype.buildOrUpdateElements.apply(this, arguments);
 		hideGoalsAndTooltips(this.chart);
 	},
 	draw:                         function(ease) {
 		// Call super method first
 		if (this.chart.options.chartMeterOptions.showHistory) {
-			drawRegions(this.chart);
-			// Call super method to draw the bars
-			Chart.controllers.bar.prototype.draw.call(this, ease);
+			Chart.controllers.bar.prototype.draw.apply(this, arguments);
 		} else {
 			const context = this.chart.chart.ctx;
 			const canvas = this.chart.canvas;

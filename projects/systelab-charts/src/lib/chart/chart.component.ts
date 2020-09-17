@@ -3,10 +3,9 @@ import * as Chart from 'chart.js';
 import { RadialMeter } from '../../assets/js/meter-charts/chart.radial-meter';
 import { DigitalMeter } from '../../assets/js/meter-charts/chart.digital-meter';
 import { LinearMeter } from '../../assets/js/meter-charts/chart.linear-meter';
-
+import { drawRegionsPlugin } from '../../assets/js/meter-charts/chart.common-meter-functions';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import 'chartjs-plugin-annotation';
-import { Observable, of, timer } from 'rxjs';
 
 export class ChartItem {
 
@@ -228,6 +227,7 @@ export class ChartComponent implements AfterViewInit {
 		Chart.controllers.radialMeter = RadialMeter;
 		Chart.controllers.digitalMeter = DigitalMeter;
 		Chart.controllers.linearMeter = LinearMeter;
+		Chart.pluginService.register(drawRegionsPlugin);
 	}
 
 	public ngAfterViewInit(): void {
@@ -481,8 +481,10 @@ export class ChartComponent implements AfterViewInit {
 			if (this.type.endsWith('Meter')) {
 				definition.options.chartMeterOptions = this.chartMeterConfiguration;
 				definition.data.datasets[0].pointStyle = this.chartMeterConfiguration.markerForGoal;
-				definition.data.datasets[1].categoryPercentage = 0.8;
-				definition.data.datasets[1].barPercentage = 0.9;
+				definition.data.datasets.forEach((dataSet) => {
+					dataSet.categoryPercentage = 0.8;
+					dataSet.barPercentage = 0.9;
+				});
 				definition.options.scales.xAxes[0].offset = true;
 				definition.options.isHorizontal = this.isHorizontal;
 			}

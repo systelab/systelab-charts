@@ -86,30 +86,38 @@
         <div class="col-md-6 p-2">
             <showcase-title [href]="'chart'">Radial Meter Chart</showcase-title>
             <button class="btn btn-primary btn-sm mb-2" (click)="doShowHistory('radialMeter');">Show History Data</button>
-            <systelab-chart #radialMeterChart [labels]="labelsChartMeterGadget" [data]="radialDataChartMeterGadget" [showLegend]="false"
-                            [type]="'radialMeter'" [chartMeterConfiguration]="radialChartGadgetConfiguration"></systelab-chart>
+            <systelab-chart #radialMeterChart [labels]="labelsChartMeterGadget" [data]="radialDataChartMeterGadget"
+                            [yMaxValue]="getVisualValue(radialChartGadgetConfiguration,radialDataChartMeterGadget, false)"
+                            [yMinValue]="getVisualValue(radialChartGadgetConfiguration,radialDataChartMeterGadget)"
+                            [showLegend]="false" [type]="'radialMeter'"
+                            [chartMeterConfiguration]="radialChartGadgetConfiguration"></systelab-chart>
         </div>
         <div class="col-md-6 p-2">
             <showcase-title [href]="'chart'">Linear Meter Chart (horizontal)</showcase-title>
             <button class="btn btn-primary btn-sm mb-2" (click)="doShowHistory('horizontalLinearMeter');">Show History Data</button>
             <systelab-chart #horizontalLinearMeterChart [labels]="labelsChartMeterGadget" [data]="horizontalLinearDataChartMeterGadget"
-                            [showLegend]="false"
-                            [type]="'linearMeter'" [isHorizontal]="true"
+                            [yMaxValue]="getVisualValue(horizontalLinearChartGadgetConfiguration,horizontalLinearDataChartMeterGadget, false)"
+                            [yMinValue]="getVisualValue(horizontalLinearChartGadgetConfiguration,horizontalLinearDataChartMeterGadget)"
+                            [showLegend]="false" [type]="'linearMeter'" [isHorizontal]="true"
                             [chartMeterConfiguration]="horizontalLinearChartGadgetConfiguration"></systelab-chart>
         </div>
         <div class="col-md-6 p-2">
             <showcase-title [href]="'chart'">Linear Meter Chart (vertical)</showcase-title>
             <button class="btn btn-primary btn-sm mb-2" (click)="doShowHistory('verticalLinearMeter');">Show History Data</button>
             <systelab-chart #verticalLinearMeterChart [labels]="labelsChartMeterGadget" [data]="verticalLinearDataChartMeterGadget"
-                            [showLegend]="false"
-                            [type]="'linearMeter'" [isHorizontal]="false"
+                            [yMaxValue]="getVisualValue(verticalLinearChartGadgetConfiguration,verticalLinearDataChartMeterGadget, false)"
+                            [yMinValue]="getVisualValue(verticalLinearChartGadgetConfiguration,verticalLinearDataChartMeterGadget)"
+                            [showLegend]="false" [type]="'linearMeter'" [isHorizontal]="false"
                             [chartMeterConfiguration]="verticalLinearChartGadgetConfiguration"></systelab-chart>
         </div>
         <div class="col-md-6 p-2">
             <showcase-title [href]="'chart'">Digital Meter Chart</showcase-title>
             <button class="btn btn-primary btn-sm mb-2" (click)="doShowHistory('digitalMeter');">Show History Data</button>
-            <systelab-chart #digitalMeterChart [labels]="labelsChartMeterGadget" [data]="digitalDataChartMeterGadget" [showLegend]="false"
-                            [type]="'digitalMeter'" [chartMeterConfiguration]="digitalChartGadgetConfiguration"></systelab-chart>
+            <systelab-chart #digitalMeterChart [labels]="labelsChartMeterGadget" [data]="digitalDataChartMeterGadget"
+                            [yMaxValue]="getVisualValue(digitalChartGadgetConfiguration,digitalDataChartMeterGadget, false)"
+                            [yMinValue]="getVisualValue(digitalChartGadgetConfiguration,digitalDataChartMeterGadget)"
+                            [showLegend]="false" [type]="'digitalMeter'" [chartMeterConfiguration]="digitalChartGadgetConfiguration"
+                            [isStacked]="isStacked"></systelab-chart>
         </div>
         <div class="col-md-12 p-2 flex-column">
             <showcase-title [href]="'chart'">Resizable Chart</showcase-title>

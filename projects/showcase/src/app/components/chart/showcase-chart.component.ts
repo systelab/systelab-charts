@@ -105,6 +105,7 @@ export class ShowcaseChartComponent {
 		this.digitalDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
 			3, 'line', undefined, 5));
 		this.digitalDataChartMeterGadget.push(new ChartItem('Value', [0, 1, 2, 1.03, 3, 11], 'green', 'lightgreen', true, true, false, 1));
+		this.digitalDataChartMeterGadget.push(new ChartItem('Value 2', [0, 1, 2, 1.03, 3, 11], 'blue', 'lightblue', true, true, false, 1));
 
 		this.verticalLinearDataChartMeterGadget.push(new ChartItem('Goal', [8, 8, 2, 8, 8, 8], 'blue', 'blue', false, true, false,
 			3, 'line', undefined, 5));
@@ -357,5 +358,46 @@ export class ShowcaseChartComponent {
 		this.resizableChart.chartResized = false;
 		this.resizableChart.doUpdate();
 		this.resizableChart.chart.resize();
+	}
+
+	public getVisualValue(chartMeterConfiguration: ChartMeterConfiguration, chartItems: Array<ChartItem>, minValue = true): number {
+		let currentValue: number;
+
+		if (minValue) {
+			currentValue = Number.POSITIVE_INFINITY;
+			if (chartItems) {
+				chartItems.forEach(chartItem => currentValue = Math.min(currentValue, ...chartItem.data));
+			}
+
+			if (currentValue === Number.POSITIVE_INFINITY) {
+				return chartMeterConfiguration.minVisualValue;
+			} else {
+				return Math.min(chartMeterConfiguration.minVisualValue, currentValue);
+			}
+		} else {
+
+			const arrayOfValues: Array<number> = [Number.NEGATIVE_INFINITY];
+			if (chartItems) {
+				const maxLength = Math.max(...chartItems.map(item => item.data.length));
+				for (let index = 0; index < maxLength; index++) {
+					let value = 0;
+					chartItems.forEach(item => {
+						if (item.data.length > index) {
+							value += item.data[index];
+						}
+					});
+					arrayOfValues.push(value);
+				}
+				currentValue = Math.max(...arrayOfValues);
+
+				if (currentValue === Number.NEGATIVE_INFINITY) {
+					return chartMeterConfiguration.maxVisualValue;
+				} else if (chartMeterConfiguration.maxVisualValue && chartMeterConfiguration.maxVisualValue > currentValue) {
+					return chartMeterConfiguration.maxVisualValue;
+				} else {
+					return undefined;
+				}
+			}
+		}
 	}
 }
