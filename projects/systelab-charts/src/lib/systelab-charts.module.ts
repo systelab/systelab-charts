@@ -18,7 +18,7 @@ import {FormsModule} from '@angular/forms';
 	]
 })
 export class SystelabChartsModule {
-	static forRoot(entryComponents?: Array<Type<any> | any[]>): ModuleWithProviders {
+	static forRoot(entryComponents?: Array<Type<any> | any[]>): ModuleWithProviders<SystelabChartsModule> {
 		return {
 			ngModule: SystelabChartsModule
 		};
