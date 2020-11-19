@@ -1,6 +1,6 @@
 {
   "name": "systelab-charts",
-  "version": "6.2.0",
+  "version": "7.0.0",
   "license": "MIT",
   "keywords": [
     "Angular",
@@ -13,9 +13,12 @@
     "url": "https://github.com/systelab/systelab-charts.git"
   },
   "private": false,
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
   "peerDependencies": {
-    "@angular/common": ">=9.0.0 <10.0.0",
-    "@angular/core": ">=9.0.0 <10.0.0",
+    "@angular/common": ">=10.0.0 <11.0.0",
+    "@angular/core": ">=10.0.0 <11.0.0",
     "chart.js": ">=2.8.0 <3.0.0",
     "chartjs-plugin-annotation": ">=0.5.7 <1.0.0",
     "chartjs-plugin-datalabels": ">=0.6.0 <1.0.0"
