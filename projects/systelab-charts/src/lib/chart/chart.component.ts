@@ -244,13 +244,6 @@ export class ChartComponent implements AfterViewInit {
 			this.tooltipSettings = new ChartTooltipSettings();
 		}
 
-		/* Axes Labels */
-		if (this.xLabelAxis) {
-			this.xAxisLabelVisible = true;
-		}
-		if (this.yLabelAxis) {
-			this.yAxisLabelVisible = true;
-		}
 		if (this.canvas.nativeElement) {
 			cx = this.canvas.nativeElement.getContext('2d');
 		}
@@ -261,9 +254,8 @@ export class ChartComponent implements AfterViewInit {
 
 		this.setData(cx);
 
-		if (this.type === 'pie' || this.type === 'doughnut' || this.type === 'polarArea' || this.type === 'radar') {
-			this.axesVisible = false;
-		}
+		this.setAxisVisibility();
+
 		this.addAnnotations();
 		this.drawChart(cx);
 		if (this.customLegend && this.data.filter(obj => obj.legendType != null).length === this.data.length) {
@@ -817,6 +809,9 @@ export class ChartComponent implements AfterViewInit {
 			cx = this.canvas.nativeElement.getContext('2d');
 		}
 		this.chart.destroy();
+
+		this.setAxisVisibility();
+
 		this.dataset = [];
 		this.setData(cx);
 		this.addAnnotations();
@@ -824,6 +819,13 @@ export class ChartComponent implements AfterViewInit {
 		if (this.customLegend && this.data.filter(obj => obj.legendType != null).length === this.data.length) {
 			this.buildCustomLegend();
 		}
+	}
+
+	private setAxisVisibility(): void {
+		/* Axes Labels */
+		this.axesVisible = !(this.type === 'pie' || this.type === 'doughnut' || this.type === 'polarArea' || this.type === 'radar');
+		this.xAxisLabelVisible = !!this.xLabelAxis;
+		this.yAxisLabelVisible = !!this.yLabelAxis;
 	}
 
 	private legendClickCallback(event) {
