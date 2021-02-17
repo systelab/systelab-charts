@@ -5,6 +5,7 @@
     "./README.md",
     "./sass/**/*.scss",
     "./assets/fonts/**/*.otf",
+    "./assets/fonts/**/Readme.txt",
     "./src/assets/js/meter-charts/**/*.js"
   ],
   "lib": {
