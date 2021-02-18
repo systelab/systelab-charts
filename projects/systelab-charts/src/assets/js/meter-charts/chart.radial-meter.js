@@ -5,7 +5,7 @@ import {
 	getRadius,
 	getTextBackgroundColor,
 	getTextColor,
-	range
+	range, getLevelColor
 } from './chart.common-meter-functions';
 
 export const RadialMeter = Chart.controllers.bar.extend({
@@ -41,7 +41,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			const increment = Math.fround(Number((maxValue - minValue) / 11));
 
 			this.drawBackground(context, centerX, centerY, radius);
-			this.drawLevels(context, radius, minValue, maxValue, increment);
+			this.drawLevels(context, radius, minValue, maxValue);
 			this.drawTicksAndLabels(context, radius, increment, minValue, maxValue, chartMeterData.fractionDigits);
 
 			const textBackgroundColor = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, this._data[this._data.length - 1]);
@@ -76,7 +76,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 
 		context.translate(centerX, centerY);
 	},
-	drawLevels:            function(context, radius, minValue, maxValue, increment) {
+	drawLevels:            function(context, radius, minValue, maxValue) {
 		const iniRad = this.convertValueToRad(0, 1);
 		const endRad = this.convertValueToRad(10, 1);
 		this.chart.options.chartMeterOptions.levels.forEach(level => {
@@ -90,11 +90,8 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			context.arc(0, 0, radius - getRadius(radius), Math.PI / 2 + startAngle, Math.PI / 2 + endAngle, false);
 			context.lineWidth = 15;
 			context.lineCap = 'butt';
-			// line color
-			context.strokeStyle = level.levelColor;
-			context.stroke();
-			// glass color
-			context.strokeStyle = '#FFFFFF88';
+			// level color
+			context.strokeStyle = getLevelColor(level.levelColor);
 			context.stroke();
 			context.closePath();
 		});
