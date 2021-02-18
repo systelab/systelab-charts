@@ -74,10 +74,8 @@ export const drawRegionsPlugin = {
 						heightToPrint = minLevelY - chartInstance.chartArea.top;
 					}
 					context.beginPath();
-					context.fillStyle = level.levelColor;
-					context.fillRect(chartInstance.chartArea.left + 1, yPos, chartInstance.chartArea.right - 25, heightToPrint);
-					context.fillStyle = '#FFFFFFAA';
-					context.fillRect(chartInstance.chartArea.left + 1, yPos, chartInstance.chartArea.right - 25, heightToPrint);
+					context.fillStyle = getLevelColor(level.levelColor);
+					context.fillRect(chartInstance.chartArea.left + 1, yPos, chartInstance.chartArea.right - 30, heightToPrint);
 					context.closePath();
 				});
 			}
@@ -163,10 +161,96 @@ export const getTextBackgroundColor = (levels, currentValue) => {
 	const level = levels.filter(value => value.minValue <= currentValue && currentValue <= value.maxValue);
 
 	if (level.length > 0) {
+		if (level[0].levelColor.toLowerCase()
+			.startsWith('rgba')) {
+			return RGBAToHexA(level[0].levelColor, false);
+		}
 		return level[0].levelColor;
 	}
 	return '#95D9FF';
 };
+
+export const getLevelColor = (levelColor) => {
+	if (levelColor.toLowerCase()
+		.startsWith('#')) {
+		return hexAToRGBA(levelColor, 0.25)
+	} else if (levelColor.toLowerCase()
+		.startsWith('rgb(')) {
+		return levelColor.replace('rgb(', 'rgba(')
+			.replace(')', ', 0.25)');
+	}
+	return levelColor;
+}
+
+export const RGBAToHexA = (rgba, includeAlpha) => {
+	let sep = rgba.indexOf(',') > -1 ? ',' : ' ';
+	rgba = rgba.substr(5)
+		.split(')')[0].split(sep);
+
+	// Strip the slash if using space-separated syntax
+	if (rgba.indexOf('/') > -1)
+		rgba.splice(3, 1);
+
+	for (let R in rgba) {
+		let r = rgba[R];
+		if (r.indexOf('%') > -1) {
+			let p = r.substr(0, r.length - 1) / 100;
+
+			if (R < 3) {
+				rgba[R] = Math.round(p * 255);
+			} else {
+				rgba[R] = p;
+			}
+		}
+	}
+
+	let r = (+rgba[0]).toString(16),
+		g = (+rgba[1]).toString(16),
+		b = (+rgba[2]).toString(16),
+		a = Math.round(+rgba[3] * 255)
+			.toString(16);
+
+	if (r.length === 1)
+		r = '0' + r;
+	if (g.length === 1)
+		g = '0' + g;
+	if (b.length === 1)
+		b = '0' + b;
+	if (a.length === 1)
+		a = '0' + a;
+
+	return '#' + r + g + b + (includeAlpha ? a : '');
+}
+
+export const hexAToRGBA = (h, alpha) => {
+	let r = 0, g = 0, b = 0, a = 0;
+
+	if (h.length === 4) {
+		r = '0x' + h[1] + h[1];
+		g = '0x' + h[2] + h[2];
+		b = '0x' + h[3] + h[3];
+		a = alpha != null ? alpha : '1.0';
+	} else if (h.length === 5) {
+		r = '0x' + h[1] + h[1];
+		g = '0x' + h[2] + h[2];
+		b = '0x' + h[3] + h[3];
+		a = '0x' + h[4] + h[4];
+		a = +(a / 255).toFixed(3);
+	} else if (h.length === 7) {
+		r = '0x' + h[1] + h[2];
+		g = '0x' + h[3] + h[4];
+		b = '0x' + h[5] + h[6];
+		a = alpha != null ? alpha : '1.0';
+	} else if (h.length === 9) {
+		r = '0x' + h[1] + h[2];
+		g = '0x' + h[3] + h[4];
+		b = '0x' + h[5] + h[6];
+		a = '0x' + h[7] + h[8];
+		a = +(a / 255).toFixed(3);
+	}
+
+	return 'rgba(' + +r + ',' + +g + ',' + +b + ',' + a + ')';
+}
 
 export const getTextColor = (color) => {
 	const c = color.substring(1);      // strip #
