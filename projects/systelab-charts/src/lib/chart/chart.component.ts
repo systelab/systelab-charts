@@ -11,7 +11,7 @@ export class ChartItem {
 
 	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string,
 				public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number,
-				public chartType?: string, public chartTooltipItem?: ChartTooltipItem, public pointRadius?: number, public yAxisID?: string,
+				public chartType?: string, public chartTooltipItem?: ChartTooltipItem | Array<ChartTooltipItem>, public pointRadius?: number, public yAxisID?: string,
 				public legendType?: string, public labelBorderColors?: Array<number[]>, public labelBackgroundColors?: Array<number[]>) {
 	}
 }
@@ -391,9 +391,11 @@ export class ChartComponent implements AfterViewInit {
 						callbacks:       {
 							title:      function(tooltipItem, data) {
 								const item = data.datasets[tooltipItem[0].datasetIndex];
+
 								if (item.chartTooltipItem) {
-									if (item.chartTooltipItem.title) {
-										return item.chartTooltipItem.title;
+									const chartTooltipItem = item.chartTooltipItem instanceof Array ? item.chartTooltipItem[tooltipItem.index] : item.chartTooltipItem;
+									if (chartTooltipItem.title) {
+										return chartTooltipItem.title;
 									}
 								}
 							},
@@ -415,10 +417,12 @@ export class ChartComponent implements AfterViewInit {
 									rt = val;
 								}
 								if (item.chartTooltipItem) {
-									if (item.chartTooltipItem.label) {
-										label = item.chartTooltipItem.label;
+									const chartTooltipItem = item.chartTooltipItem instanceof Array ? item.chartTooltipItem[tooltipItem.index] : item.chartTooltipItem;
+
+									if (chartTooltipItem.label) {
+										label = chartTooltipItem.label;
 									}
-									if (!item.chartTooltipItem.valueInAfterLabel) {
+									if (!chartTooltipItem.valueInAfterLabel) {
 										label += ': ' + rt;
 									}
 								} else {
@@ -429,12 +433,14 @@ export class ChartComponent implements AfterViewInit {
 							afterLabel: function(tooltipItem, data) {
 								const item = data.datasets[tooltipItem.datasetIndex];
 								let afterLabel = '';
+
 								if (item.chartTooltipItem) {
-									if (item.chartTooltipItem.afterLabel) {
-										afterLabel = item.chartTooltipItem.afterLabel;
+									const chartTooltipItem = item.chartTooltipItem instanceof Array ? item.chartTooltipItem[tooltipItem.index] : item.chartTooltipItem;
+									if (chartTooltipItem.afterLabel) {
+										afterLabel = chartTooltipItem.afterLabel;
 									}
-									if (item.chartTooltipItem.valueInAfterLabel) {
-										const val = item.data[tooltipItem.index];
+									if (chartTooltipItem.valueInAfterLabel) {
+										const val = data[tooltipItem.index];
 										let rt = '';
 										if (val instanceof Object) {
 											if (val.t) {
