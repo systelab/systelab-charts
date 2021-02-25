@@ -7,6 +7,7 @@ import {
 	getTextColor,
 	range, getLevelColor
 } from './chart.common-meter-functions';
+import {DecimalFormat} from "../decimalFormat";
 
 export const RadialMeter = Chart.controllers.bar.extend({
 	buildOrUpdateElements: function() {
@@ -42,7 +43,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 
 			this.drawBackground(context, centerX, centerY, radius);
 			this.drawLevels(context, radius, minValue, maxValue);
-			this.drawTicksAndLabels(context, radius, increment, minValue, maxValue, chartMeterData.fractionDigits);
+			this.drawTicksAndLabels(context, radius, increment, minValue, maxValue, chartMeterData.numberFormat, chartMeterData.fractionDigits);
 
 			const textBackgroundColor = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, this._data[this._data.length - 1]);
 			const width = radius * 2 * .44;
@@ -96,7 +97,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			context.closePath();
 		});
 	},
-	drawTicksAndLabels:    function(context, radius, increment, minValue, maxValue, fractionDigits) {
+	drawTicksAndLabels:    function(context, radius, increment, minValue, maxValue, numberFormat, fractionDigits) {
 		context.beginPath();
 		context.strokeStyle = 'black';
 		context.font = '12px Helvetica';
@@ -117,12 +118,27 @@ export const RadialMeter = Chart.controllers.bar.extend({
 				oPointX = mySineAngle * (radius - radius / 7);
 				oPointY = myCoosAngle * (radius - radius / 7);
 
+				const rangedValue = range(0, 10, minValue, maxValue, (index + 25) / 5);
+
+				let textValue;
+				let numDigits = 0;
+
+				if (numberFormat) {
+					textValue = new DecimalFormat(numberFormat).format(rangedValue);
+				} else {
+					textValue = rangedValue.toFixed(fractionDigits);
+				}
+
+				if (textValue.includes('.')) {
+					numDigits = textValue.substr(textValue.indexOf('.') + 1).length;
+				}
+
 				const divider = index < 5 ? 3 : 2.5 - (fractionDigits * 0.1);
 				const wPointX = mySineAngle * (radius - radius / divider);
 				const wPointY = myCoosAngle * (radius - radius / 3);
 				context.fillStyle = 'black';
-				const rangedValue = range(0, 10, minValue, maxValue, (index + 25) / 5);
-				context.fillText(rangedValue.toFixed(fractionDigits), wPointX - 4, wPointY + 4);
+
+				context.fillText(textValue, wPointX - 4, wPointY + 4);
 
 			} else if (index > -25 && index < 25) {
 				context.lineWidth = 1;

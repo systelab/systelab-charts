@@ -375,7 +375,7 @@ Padding = number | {
 | Name | Type | Default | Description |
 | ---- |:----:|:-------:| ----------- |
 | borderColor | string |'#007bff'| The border color applied to the graph |
-| unitFormat | string | | The format value to apply the values | 
+| numberFormat | string | | The number format to apply the values | 
 | chartColour | string | | The color for the bars in the history chart |
 | goalColour | string | | The color for the goal values in the history chart |
 | betterValues | string | | Pending description |
