@@ -4,6 +4,7 @@ import { RadialMeter } from '../../assets/js/meter-charts/chart.radial-meter';
 import { DigitalMeter } from '../../assets/js/meter-charts/chart.digital-meter';
 import { LinearMeter } from '../../assets/js/meter-charts/chart.linear-meter';
 import { drawRegionsPlugin } from '../../assets/js/meter-charts/chart.common-meter-functions';
+import { DecimalFormat } from '../../assets/js/decimalFormat';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import 'chartjs-plugin-annotation';
 
@@ -11,8 +12,9 @@ export class ChartItem {
 
 	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string,
 				public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number,
-				public chartType?: string, public chartTooltipItem?: ChartTooltipItem, public pointRadius?: number, public yAxisID?: string,
-				public legendType?: string, public labelBorderColors?: Array<number[]>, public labelBackgroundColors?: Array<number[]>) {
+				public chartType?: string, public chartTooltipItem?: ChartTooltipItem | Array<ChartTooltipItem>, public pointRadius?: number,
+				public yAxisID?: string, public legendType?: string, public labelBorderColors?: Array<number[]>,
+				public labelBackgroundColors?: Array<number[]>) {
 	}
 }
 
@@ -43,7 +45,8 @@ export class ChartLabelAnnotation {
 }
 
 export class ChartTooltipItem {
-	constructor(public title?: string, public label?: string, public afterLabel?: string, public valueInAfterLabel?: boolean) {
+	constructor(public title?: string, public label?: string, public afterLabel?: string, public valueInAfterLabel?: boolean,
+				public numberFormat?: string) {
 	}
 }
 
@@ -129,7 +132,7 @@ export class ChartMultipleYAxisScales {
 
 export class ChartMeterConfiguration {
 	public borderColor = '#007bff';
-	public unitFormat: string;
+	public numberFormat: string;
 	public chartColour: string;
 	public goalColour: string;
 	public betterValues: string | 'higher' | 'lower';
@@ -388,12 +391,15 @@ export class ChartComponent implements AfterViewInit {
 						annotations: this._annotations
 					},
 					tooltips:            {
+						position:        this.type === 'bar' ? 'nearest' : 'average',
 						callbacks:       {
 							title:      function(tooltipItem, data) {
 								const item = data.datasets[tooltipItem[0].datasetIndex];
+
 								if (item.chartTooltipItem) {
-									if (item.chartTooltipItem.title) {
-										return item.chartTooltipItem.title;
+									const chartTooltipItem = item.chartTooltipItem instanceof Array ? item.chartTooltipItem[tooltipItem[0].index] : item.chartTooltipItem;
+									if (chartTooltipItem.title) {
+										return chartTooltipItem.title;
 									}
 								}
 							},
@@ -405,6 +411,7 @@ export class ChartComponent implements AfterViewInit {
 								}
 								const val = item.data[tooltipItem.index];
 								let rt = '';
+								let rtVal: number;
 								if (val instanceof Object) {
 									if (val.t) {
 										rt = val.t;
@@ -413,12 +420,19 @@ export class ChartComponent implements AfterViewInit {
 									}
 								} else {
 									rt = val;
+									rtVal = val;
 								}
 								if (item.chartTooltipItem) {
-									if (item.chartTooltipItem.label) {
-										label = item.chartTooltipItem.label;
+									const chartTooltipItem = item.chartTooltipItem instanceof Array ? item.chartTooltipItem[tooltipItem.index] : item.chartTooltipItem;
+
+									if (!isNaN(rtVal) && chartTooltipItem.numberFormat) {
+										rt = new DecimalFormat(item.chartTooltipItem.numberFormat).format(val);
 									}
-									if (!item.chartTooltipItem.valueInAfterLabel) {
+
+									if (chartTooltipItem.label) {
+										label = chartTooltipItem.label;
+									}
+									if (!chartTooltipItem.valueInAfterLabel) {
 										label += ': ' + rt;
 									}
 								} else {
@@ -429,12 +443,14 @@ export class ChartComponent implements AfterViewInit {
 							afterLabel: function(tooltipItem, data) {
 								const item = data.datasets[tooltipItem.datasetIndex];
 								let afterLabel = '';
+
 								if (item.chartTooltipItem) {
-									if (item.chartTooltipItem.afterLabel) {
-										afterLabel = item.chartTooltipItem.afterLabel;
+									const chartTooltipItem = item.chartTooltipItem instanceof Array ? item.chartTooltipItem[tooltipItem.index] : item.chartTooltipItem;
+									if (chartTooltipItem.afterLabel) {
+										afterLabel = chartTooltipItem.afterLabel;
 									}
-									if (item.chartTooltipItem.valueInAfterLabel) {
-										const val = item.data[tooltipItem.index];
+									if (chartTooltipItem.valueInAfterLabel) {
+										const val = data[tooltipItem.index];
 										let rt = '';
 										if (val instanceof Object) {
 											if (val.t) {
@@ -443,7 +459,11 @@ export class ChartComponent implements AfterViewInit {
 												rt = '(' + val.x + ',' + val.y + ')';
 											}
 										} else {
-											rt = val;
+											if (!isNaN(val) && chartTooltipItem.numberFormat) {
+												rt = new DecimalFormat(chartTooltipItem.numberFormat).format(val);
+											} else {
+												rt = val;
+											}
 										}
 										afterLabel += ' (' + rt + ')';
 									}

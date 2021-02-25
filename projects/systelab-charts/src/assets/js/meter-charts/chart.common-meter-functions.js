@@ -1,3 +1,5 @@
+import {DecimalFormat} from "../decimalFormat";
+
 export const ChartMeterData = class {
 
 	constructor(dataArray, chartMeterOptions) {
@@ -27,12 +29,24 @@ export const ChartMeterData = class {
 			}
 		}
 
-		if (chartMeterOptions.unitFormat && chartMeterOptions.unitFormat.lastIndexOf('.') > 0) {
-			this.fractionDigits = chartMeterOptions.unitFormat.substr(chartMeterOptions.unitFormat.indexOf('.') + 1).length;
+		if (chartMeterOptions.numberFormat && chartMeterOptions.numberFormat.lastIndexOf('.') > 0) {
+			if (chartMeterOptions.numberFormat.toLowerCase()
+				.includes('e')) {
+				this.fractionDigits = chartMeterOptions.numberFormat.substring(chartMeterOptions.numberFormat.indexOf('.') + 1,
+					chartMeterOptions.numberFormat.indexOf('e'));
+			} else {
+				this.fractionDigits = chartMeterOptions.numberFormat.substr(chartMeterOptions.numberFormat.indexOf('.') + 1).length;
+			}
 		} else {
 			this.fractionDigits = (this.maxValue - this.minValue) <= 20 ? 1 : 0;
 		}
-		this.text = dataArray.length > 0 ? dataArray[dataArray.length - 1].toFixed(this.fractionDigits) : '--';
+		if (chartMeterOptions.numberFormat) {
+			this.numberFormat = chartMeterOptions.numberFormat;
+			this.text = dataArray.length > 0 ? new DecimalFormat(chartMeterOptions.numberFormat).format(dataArray[dataArray.length - 1]) : '--';
+		} else {
+			this.text = dataArray.length > 0 ? dataArray[dataArray.length - 1].toFixed(this.fractionDigits) : '--';
+		}
+
 		this.textIncrement = Math.abs((this.maxValue - this.minValue)) / 61;
 	}
 

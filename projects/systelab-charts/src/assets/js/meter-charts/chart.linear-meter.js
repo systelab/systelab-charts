@@ -7,6 +7,7 @@ import {
 	range,
 	getRectWidthBasedOnText, hideGoalsAndTooltips
 } from "./chart.common-meter-functions";
+import {DecimalFormat} from "../decimalFormat";
 
 export const LinearMeter = Chart.controllers.bar.extend({
 	buildOrUpdateElements:        function() {
@@ -49,7 +50,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 
 				this.drawHorizontalTicksLabelsBar(context, this._data[this._data.length - 1], centerX / 3,
 					textPanelYPos + textPanelHeight + textPanelHeight / 2, externalPanelHeight,
-					increment, chartMeterData.minValue, chartMeterData.textIncrement, chartMeterData.fractionDigits);
+					increment, chartMeterData.minValue, chartMeterData.textIncrement, chartMeterData.numberFormat, chartMeterData.fractionDigits);
 
 			} else {
 				const textPanelHeight = Math.max(30, centerY / 8);
@@ -70,13 +71,13 @@ export const LinearMeter = Chart.controllers.bar.extend({
 				const panelsSeparation = 15 * textPanelHeight / 30;
 				this.drawVerticalTicksLabelsBar(context, this._data[this._data.length - 1], centerX - centerX / 6 + 3,
 					externalPanelHeight - textPanelHeight - panelsSeparation, textPanelWidth,
-					increment, chartMeterData.minValue, chartMeterData.textIncrement, chartMeterData.fractionDigits);
+					increment, chartMeterData.minValue, chartMeterData.textIncrement, chartMeterData.numberFormat, chartMeterData.fractionDigits);
 			}
 			context.restore();
 
 		}
 	},
-	drawHorizontalTicksLabelsBar: function(context, valueToPrint, xStartPos, yStartPos, panelHeight, increment, startingValue, textIncrement, fractionDigits) {
+	drawHorizontalTicksLabelsBar: function(context, valueToPrint, xStartPos, yStartPos, panelHeight, increment, startingValue, textIncrement, numberFormat, fractionDigits) {
 		context.beginPath();
 		context.strokeStyle = 'darkgray';
 		context.fillStyle = 'darkgray';
@@ -87,14 +88,15 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		let valueToPrintXPos;
 
 		for (let index = 0; index <= 60; index++) {
-			const text = (startingValue + index * textIncrement).toFixed(fractionDigits);
+			let textValue = this.getTextValue(startingValue + index * textIncrement, numberFormat, fractionDigits);
+
 			switch (index % 10) {
 				case 0:
-					if (Number(text) === valueToPrint) {
-						valueToPrintXPos = xStartPos + index * increment - context.measureText(text).width - 10;
+					if (Number(textValue) === valueToPrint) {
+						valueToPrintXPos = xStartPos + index * increment - context.measureText(textValue).width - 10;
 					}
 					context.lineWidth = 3;
-					context.fillText(text, xStartPos + index * increment - context.measureText(text).width / 2, calculatedYPos + textGap);
+					context.fillText(textValue, xStartPos + index * increment - context.measureText(textValue).width / 2, calculatedYPos + textGap);
 					context.beginPath();
 					context.moveTo(xStartPos + index * increment, calculatedYPos - 10);
 					context.lineTo(xStartPos + index * increment, calculatedYPos);
@@ -102,7 +104,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 					context.closePath();
 					break;
 				case 5:
-					if (Number(text) === valueToPrint) {
+					if (Number(textValue) === valueToPrint) {
 						valueToPrintXPos = xStartPos + index * increment - 10;
 					}
 					context.lineWidth = 2;
@@ -113,7 +115,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 					context.closePath();
 					break;
 				default:
-					if (Number(text) === valueToPrint) {
+					if (Number(textValue) === valueToPrint) {
 						valueToPrintXPos = xStartPos + index * increment - 10;
 					}
 					context.lineWidth = 1;
@@ -132,8 +134,8 @@ export const LinearMeter = Chart.controllers.bar.extend({
 
 		drawTextPanel(context, undefined, 'white', xStartPos - 5, yStartPos, increment * 61, calculatedHeightForPanels);
 
-		const firstValue = Number((startingValue).toFixed(fractionDigits));
-		const lastValue = Number((startingValue + 60 * textIncrement).toFixed(fractionDigits));
+		const firstValue = Number(this.getTextValue(startingValue, numberFormat, fractionDigits));
+		const lastValue = Number(this.getTextValue(startingValue + 60 * textIncrement, numberFormat, fractionDigits));
 		const lastValueXPosition = xStartPos + 60 * increment;
 		if (!valueToPrintXPos) {
 			valueToPrintXPos = range(firstValue, lastValue, xStartPos, lastValueXPosition, valueToPrint);
@@ -144,7 +146,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		context.fillRect(xStartPos, yStartPos + 1, valueToPrintXPos - xStartPos, calculatedHeightForPanels - 2);
 		context.closePath();
 	},
-	drawVerticalTicksLabelsBar:   function(context, valueToPrint, xStartPos, yStartPos, panelWidth, increment, startingValue, textIncrement, fractionDigits) {
+	drawVerticalTicksLabelsBar:   function(context, valueToPrint, xStartPos, yStartPos, panelWidth, increment, startingValue, textIncrement, numberFormat, fractionDigits) {
 		context.beginPath();
 		context.strokeStyle = 'darkgray';
 		context.font = getFontSized(12, panelWidth / 2, 'Helvetica');
@@ -156,24 +158,25 @@ export const LinearMeter = Chart.controllers.bar.extend({
 
 		for (let index = 0; index <= 60; index++) {
 			if (index % 10 === 0) {
-				const text = (startingValue + index * textIncrement).toFixed(fractionDigits);
-				maxTextLabelWidth = Math.max(maxTextLabelWidth, context.measureText(text).width * 1.525);
+				const textValue = this.getTextValue(startingValue + index * textIncrement, numberFormat, fractionDigits);
+				maxTextLabelWidth = Math.max(maxTextLabelWidth, context.measureText(textValue).width * 1.525);
 			}
 		}
 
 		for (let index = 0; index <= 60; index++) {
-			const text = (startingValue + index * textIncrement).toFixed(fractionDigits);
+			const textValue = this.getTextValue(startingValue + index * textIncrement, numberFormat, fractionDigits);
+
 			switch (index % 10) {
 				case 0:
-					if (Number(text) === valueToPrint) {
+					if (Number(textValue) === valueToPrint) {
 						valueToPrintYPos = calculatedYPos - index * increment;
 					}
-					let actualBoundingBoxAscent = context.measureText(text).actualBoundingBoxAscent / 2;
+					let actualBoundingBoxAscent = context.measureText(textValue).actualBoundingBoxAscent / 2;
 					if (Number.isNaN(actualBoundingBoxAscent)) {
 						actualBoundingBoxAscent = panelWidth * 4 / 114.625;
 					}
 					context.lineWidth = 2.5;
-					context.fillText(text, xStartPos + 10, calculatedYPos - index * increment + actualBoundingBoxAscent);
+					context.fillText(textValue, xStartPos + 10, calculatedYPos - index * increment + actualBoundingBoxAscent);
 					context.beginPath();
 					context.moveTo(xStartPos + 10 + maxTextLabelWidth, calculatedYPos - index * increment);
 					context.lineTo(xStartPos + maxTextLabelWidth, calculatedYPos - index * increment);
@@ -181,7 +184,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 					context.closePath();
 					break;
 				case 5:
-					if (Number(text) === valueToPrint) {
+					if (Number(textValue) === valueToPrint) {
 						valueToPrintYPos = calculatedYPos - index * increment;
 					}
 					context.lineWidth = 1.5;
@@ -192,7 +195,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 					context.closePath();
 					break;
 				default:
-					if (Number(text) === valueToPrint) {
+					if (Number(textValue) === valueToPrint) {
 						valueToPrintYPos = calculatedYPos - index * increment;
 					}
 					context.lineWidth = 0.7;
@@ -213,8 +216,8 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		drawTextPanel(context, undefined, 'white', xStartPos + 20 + maxTextLabelWidth, calculatedYPos - increment * 60,
 			calculatedBarWidth, increment * 60);
 
-		const firstValue = Number((startingValue).toFixed(fractionDigits));
-		const lastValue = Number((startingValue + 60 * textIncrement).toFixed(fractionDigits));
+		const firstValue = Number(this.getTextValue(startingValue, numberFormat, fractionDigits));
+		const lastValue = Number(this.getTextValue(startingValue + 60 * textIncrement, numberFormat, fractionDigits));
 		const lastValueYPosition = calculatedYPos - 60 * increment;
 		if (!valueToPrintYPos) {
 			valueToPrintYPos = range(lastValue, firstValue, lastValueYPosition, calculatedYPos, valueToPrint);
@@ -224,5 +227,12 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		context.fillStyle = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, valueToPrint);
 		context.fillRect(xStartPos + 25 + maxTextLabelWidth, valueToPrintYPos, calculatedBarWidth - 10, calculatedYPos - valueToPrintYPos);
 		context.closePath();
+	},
+	getTextValue:                 function(value, numberFormat, fractionDigits) {
+		if (numberFormat) {
+			return new DecimalFormat(numberFormat).format(value);
+		} else {
+			return (value).toFixed(fractionDigits);
+		}
 	}
 });
