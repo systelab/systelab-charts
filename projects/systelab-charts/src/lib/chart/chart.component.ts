@@ -426,7 +426,7 @@ export class ChartComponent implements AfterViewInit {
 									const chartTooltipItem = item.chartTooltipItem instanceof Array ? item.chartTooltipItem[tooltipItem.index] : item.chartTooltipItem;
 
 									if (!isNaN(rtVal) && chartTooltipItem.numberFormat) {
-										rt = new DecimalFormat(item.chartTooltipItem.numberFormat).format(val);
+										rt = new DecimalFormat(chartTooltipItem.numberFormat).format(val);
 									}
 
 									if (chartTooltipItem.label) {
