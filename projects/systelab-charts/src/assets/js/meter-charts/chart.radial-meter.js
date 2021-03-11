@@ -67,8 +67,8 @@ export const RadialMeter = Chart.controllers.bar.extend({
 		context.beginPath();
 		context.arc(centerX, centerY, radius - 15, 0, Math.PI * 2, true);
 		const gradients = context.createRadialGradient(centerX, centerY, radius - 15, centerX, centerY, radius - getRadius(radius));
-		gradients.addColorStop(1, '#FFFFFF');
 		gradients.addColorStop(0, 'darkgray');
+		gradients.addColorStop(1, 'white');
 
 		context.fillStyle = gradients;
 		context.fill();
