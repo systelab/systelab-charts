@@ -107,6 +107,28 @@ export const hideGoalsAndTooltips = (chartInstance) => {
 	}
 };
 
+export const drawRoundedRect = (context, x, y, width, height, radius, lineWidth, lineColor, shadow) => {
+	context.beginPath();
+	context.moveTo(x, y + radius);
+	context.lineTo(x, y + height - radius);
+	context.arcTo(x, y + height, x + radius, y + height, radius);
+	context.lineTo(x + width - radius, y + height);
+	context.arcTo(x + width, y + height, x + width, y + height - radius, radius);
+	context.lineTo(x + width, y + radius);
+	context.arcTo(x + width, y, x + width - radius, y, radius);
+	context.lineTo(x + radius, y);
+	context.arcTo(x, y, x, y + radius, radius);
+	context.lineWidth = lineWidth;
+	context.strokeStyle = lineColor;
+	if (shadow) {
+		context.shadowColor = 'black';
+		context.shadowBlur = 15;
+	}
+	context.stroke();
+	context.closePath();
+	context.restore();
+}
+
 export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWidth, rectHeight, textColor, frameColor) => {
 	const originalFont = context.font;
 	context.font = getFontSized(54, rectHeight, 'digital-font');
@@ -118,12 +140,12 @@ export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWi
 		frameColorHeight = 4;
 		// Set rectangle and corner values
 		context.fillStyle = backgroundColor;
-		context.lineWidth = 12;
+		context.lineWidth = 18;
 
 		// Change origin and dimensions to match true size (a stroke makes the shape a bit larger)
 		context.beginPath();
 		context.strokeStyle = frameColor;
-		context.strokeRect(xPos, yPos, rectWidth, rectHeight);
+		context.strokeRect(xPos - 4, yPos - 4, rectWidth + 8, rectHeight + 8);
 		context.closePath();
 	}
 
@@ -164,11 +186,6 @@ export const getFontSized = (defaultFontSize, availableHeight, fontFamily) => {
 export const getRadius = (radius) => {
 	return 0.22 * radius;
 };
-
-export const applyFractionDigits = (number, fractionDigits) => {
-	return Number(number)
-		.toFixed(fractionDigits);
-}
 
 export const getTextBackgroundColor = (levels, currentValue) => {
 
@@ -275,7 +292,7 @@ export const getTextColor = (color) => {
 
 	const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
 
-	if (luma < 55) {
+	if (luma < 65) {
 		return '#FFF';
 	}
 	return '#174967';
