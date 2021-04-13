@@ -10,8 +10,8 @@ export const ChartMeterData = class {
 		this.levelMaxValue = Math.max(...chartMeterOptions.levels.map(value => value.maxValue));
 		this.dataValue = dataArray[dataArray.length - 1];
 
-		this.minValue = this.visualMinValue !== null && this.visualMinValue !== undefined ? this.visualMinValue : this.levelMinValue;
-		this.maxValue = this.visualMaxValue !== null && this.visualMaxValue !== undefined ? this.visualMaxValue : this.levelMaxValue;
+		this.minValue = this.visualMinValue ?? this.levelMinValue;
+		this.maxValue = this.visualMaxValue ?? this.levelMaxValue;
 
 		if (chartMeterOptions.numberFormat && chartMeterOptions.numberFormat.lastIndexOf('.') > 0) {
 			if (chartMeterOptions.numberFormat.toLowerCase()
@@ -91,7 +91,7 @@ export const hideGoalsAndTooltips = (chartInstance) => {
 	}
 };
 
-export const drawRoundedRect = (context, x, y, width, height, radius, lineWidth, lineColor, shadow) => {
+export const drawRoundedRect = (context, x, y, width, height, radius, lineWidth, lineColor) => {
 	context.beginPath();
 	context.moveTo(x, y + radius);
 	context.lineTo(x, y + height - radius);
@@ -104,10 +104,6 @@ export const drawRoundedRect = (context, x, y, width, height, radius, lineWidth,
 	context.arcTo(x, y, x, y + radius, radius);
 	context.lineWidth = lineWidth;
 	context.strokeStyle = lineColor;
-	if (shadow) {
-		context.shadowColor = 'black';
-		context.shadowBlur = 15;
-	}
 	context.stroke();
 	context.closePath();
 	context.restore();
@@ -137,7 +133,7 @@ export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWi
 	context.lineWidth = 3;
 	context.fillStyle = backgroundColor;
 	context.fillRect(xPos + 4, yPos + frameColorHeight, rectWidth - 8, rectHeight - frameColorHeight * 2);
-	context.strokeStyle = 'darkgray';
+	context.strokeStyle = '#a9a9a9';
 	context.strokeRect(xPos + 4, yPos + frameColorHeight, rectWidth - 8, rectHeight - frameColorHeight * 2);
 	context.closePath();
 	if (text) {

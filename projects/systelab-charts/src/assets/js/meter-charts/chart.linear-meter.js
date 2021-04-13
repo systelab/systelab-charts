@@ -44,10 +44,10 @@ export const LinearMeter = Chart.controllers.bar.extend({
 				const ticksLabelsXStartPos = centerX / 4 + increment * 2.5;
 
 				const linearGradient = context?.createLinearGradient(centerX / 4, centerY - (centerY / 3), centerX / 4, (centerY - (centerY / 3)) + externalPanelHeight);
-				linearGradient.addColorStop(0, 'lightgray');
-				linearGradient.addColorStop(0.25, 'white');
-				linearGradient.addColorStop(0.75, 'white');
-				linearGradient.addColorStop(1, 'lightgray');
+				linearGradient.addColorStop(0, '#d3d3d3');
+				linearGradient.addColorStop(0.25, '#ffffff');
+				linearGradient.addColorStop(0.75, '#ffffff');
+				linearGradient.addColorStop(1, '#d3d3d3');
 
 				context.fillStyle = linearGradient;
 				context.fillRect(centerX / 4, centerY - (centerY / 3), externalPanelWidth, externalPanelHeight);
@@ -73,10 +73,10 @@ export const LinearMeter = Chart.controllers.bar.extend({
 				const calculatedYPos = Math.max(333, externalPanelHeight - textPanelHeight - 20);
 
 				const linearGradient = context?.createLinearGradient(centerX - centerX / 6, 15, (centerX - centerX / 6) + externalPanelWidth, 15);
-				linearGradient.addColorStop(0, 'lightgray');
-				linearGradient.addColorStop(0.25, 'white');
-				linearGradient.addColorStop(0.75, 'white');
-				linearGradient.addColorStop(1, 'lightgray');
+				linearGradient.addColorStop(0, '#d3d3d3');
+				linearGradient.addColorStop(0.25, '#ffffff');
+				linearGradient.addColorStop(0.75, '#ffffff');
+				linearGradient.addColorStop(1, '#d3d3d3');
 
 				context.fillStyle = linearGradient;
 				context.fillRect(centerX - centerX / 6, 15, externalPanelWidth, externalPanelHeight);
@@ -102,8 +102,8 @@ export const LinearMeter = Chart.controllers.bar.extend({
 	},
 	drawHorizontalTicksLabelsBar: function(context, valueToPrint, xStartPos, yStartPos, panelHeight, increment, minValue, maxValue, textIncrement, numberFormat, fractionDigits) {
 		context.beginPath();
-		context.strokeStyle = 'black';
-		context.fillStyle = 'black';
+		context.strokeStyle = '#000000';
+		context.fillStyle = '#000000';
 		const calculatedHeightForPanels = Math.max(35, panelHeight / 3.5);
 		const calculatedYPos = yStartPos + calculatedHeightForPanels + 20;
 		context.font = getFontSized(14, calculatedHeightForPanels, 'Helvetica');
@@ -155,7 +155,7 @@ export const LinearMeter = Chart.controllers.bar.extend({
 			}
 		}
 
-		drawTextPanel(context, undefined, 'white', xStartPos - 5, yStartPos, increment * 61, calculatedHeightForPanels);
+		drawTextPanel(context, undefined, '#ffffff', xStartPos - 5, yStartPos, increment * 61, calculatedHeightForPanels);
 
 		const firstValue = Number(this.getTextValue(minValue, numberFormat, fractionDigits));
 		const lastValue = Number(this.getTextValue(maxValue, numberFormat, fractionDigits));
@@ -173,9 +173,9 @@ export const LinearMeter = Chart.controllers.bar.extend({
 	},
 	drawVerticalTicksLabelsBar:   function(context, valueToPrint, xStartPos, yStartPos, panelWidth, increment, minValue, maxValue, textIncrement, numberFormat, fractionDigits) {
 		context.beginPath();
-		context.strokeStyle = 'black';
+		context.strokeStyle = '#000000';
 		context.font = getFontSized(12, panelWidth / 2, 'Helvetica');
-		context.fillStyle = 'black';
+		context.fillStyle = '#000000';
 		const calculatedYPos = Math.max(333, yStartPos);
 
 		let valueToPrintYPos;
@@ -241,11 +241,11 @@ export const LinearMeter = Chart.controllers.bar.extend({
 		}
 		const linearGradient = context.createLinearGradient(0, 100, 0, 50);
 
-		linearGradient.addColorStop(0.5, 'lightgray');
-		linearGradient.addColorStop(1, 'gray');
+		linearGradient.addColorStop(0.5, '#d3d3d3');
+		linearGradient.addColorStop(1, '#808080');
 
 		const calculatedBarWidth = panelWidth * 0.6 - fractionDigits;
-		drawTextPanel(context, undefined, 'white', xStartPos + 20 + maxTextLabelWidth, calculatedYPos - increment * 60,
+		drawTextPanel(context, undefined, '#ffffff', xStartPos + 20 + maxTextLabelWidth, calculatedYPos - increment * 60,
 			calculatedBarWidth, increment * 60);
 
 		const firstValue = Number(this.getTextValue(minValue, numberFormat, fractionDigits));

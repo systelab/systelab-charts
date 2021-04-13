@@ -31,7 +31,7 @@ export const DigitalMeter = Chart.controllers.bar.extend({
 			const linearGradient = context.createLinearGradient(0, 0, 0, 75);
 
 			linearGradient.addColorStop(1, textBackgroundColor);
-			linearGradient.addColorStop(0, 'white');
+			linearGradient.addColorStop(0, '#ffffff');
 
 			context.font = getFontSized(72, centerY / 4, 'digital-font');
 			const measuredWidth = Math.max(context.canvas.width * 0.8, context.measureText(chartMeterData.text).width + 20);
