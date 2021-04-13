@@ -10,24 +10,8 @@ export const ChartMeterData = class {
 		this.levelMaxValue = Math.max(...chartMeterOptions.levels.map(value => value.maxValue));
 		this.dataValue = dataArray[dataArray.length - 1];
 
-		this.minValue = this.visualMinValue != null ? Math.min(this.visualMinValue, this.levelMinValue) : this.levelMinValue;
-		this.maxValue = this.visualMaxValue != null ? Math.max(this.visualMaxValue, this.levelMaxValue) : this.levelMaxValue;
-
-		if (this.dataValue === 0) {
-			if (this.dataValue <= this.minValue) {
-				this.minValue = -0.5;
-			}
-			if (this.dataValue >= this.maxValue) {
-				this.maxValue = 0.5;
-			}
-		} else {
-			while (this.dataValue <= this.minValue) {
-				this.minValue -= Math.abs(this.dataValue * 0.8);
-			}
-			while (this.dataValue >= this.maxValue) {
-				this.maxValue += Math.abs(this.dataValue * 0.8);
-			}
-		}
+		this.minValue = this.visualMinValue !== null && this.visualMinValue !== undefined ? this.visualMinValue : this.levelMinValue;
+		this.maxValue = this.visualMaxValue !== null && this.visualMaxValue !== undefined ? this.visualMaxValue : this.levelMaxValue;
 
 		if (chartMeterOptions.numberFormat && chartMeterOptions.numberFormat.lastIndexOf('.') > 0) {
 			if (chartMeterOptions.numberFormat.toLowerCase()
@@ -185,6 +169,10 @@ export const getFontSized = (defaultFontSize, availableHeight, fontFamily) => {
 
 export const getRadius = (radius) => {
 	return 0.22 * radius;
+};
+
+export const getScaledWidthOrHeightValue = (value, baseValue, baseOutputValue) => {
+	return value * baseOutputValue / baseValue;
 };
 
 export const getTextBackgroundColor = (levels, currentValue) => {

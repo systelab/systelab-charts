@@ -29,21 +29,11 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			const centerY = canvas.height / 2;
 			const radius = Math.max(Math.min(canvas.height / 2 - 10, canvas.width / 2 - 10), 115);
 
-			let minValue = chartMeterData.visualMinValue;
-			let maxValue = chartMeterData.visualMaxValue;
-
-			if (minValue == null) {
-				minValue = Math.min(...this.chart.options.chartMeterOptions.levels.map(value => value.minValue));
-			}
-			if (maxValue == null) {
-				maxValue = Math.max(...this.chart.options.chartMeterOptions.levels.map(value => value.maxValue));
-			}
-
-			const increment = Math.fround(Number((maxValue - minValue) / 11));
+			const increment = Math.fround(Number((chartMeterData.maxValue - chartMeterData.minValue) / 11));
 
 			this.drawBackground(context, centerX, centerY, radius);
-			this.drawLevels(context, radius, minValue, maxValue);
-			this.drawTicksAndLabels(context, radius, increment, minValue, maxValue, chartMeterData.numberFormat, chartMeterData.fractionDigits);
+			this.drawLevels(context, radius, chartMeterData.minValue, chartMeterData.maxValue);
+			this.drawTicksAndLabels(context, radius, increment, chartMeterData.minValue, chartMeterData.maxValue, chartMeterData.numberFormat, chartMeterData.fractionDigits);
 
 			const textBackgroundColor = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, this._data[this._data.length - 1]);
 			const width = radius * 2 * .44;
@@ -52,7 +42,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			linearGradient.addColorStop(0, 'white');
 			linearGradient.addColorStop(1, textBackgroundColor);
 			drawTextPanel(context, chartMeterData.text, linearGradient, -width / 2, (radius / 5) - 5, width, radius / 5, getTextColor(textBackgroundColor));
-			this.drawNeedle(context, radius, this._data[this._data.length - 1], minValue, maxValue);
+			this.drawNeedle(context, radius, this._data[this._data.length - 1], chartMeterData.minValue, chartMeterData.maxValue);
 
 			context.restore();
 			context.translate(-centerX, -centerY);
