@@ -29,30 +29,20 @@ export const RadialMeter = Chart.controllers.bar.extend({
 			const centerY = canvas.height / 2;
 			const radius = Math.max(Math.min(canvas.height / 2 - 10, canvas.width / 2 - 10), 115);
 
-			let minValue = chartMeterData.visualMinValue;
-			let maxValue = chartMeterData.visualMaxValue;
-
-			if (minValue == null) {
-				minValue = Math.min(...this.chart.options.chartMeterOptions.levels.map(value => value.minValue));
-			}
-			if (maxValue == null) {
-				maxValue = Math.max(...this.chart.options.chartMeterOptions.levels.map(value => value.maxValue));
-			}
-
-			const increment = Math.fround(Number((maxValue - minValue) / 11));
+			const increment = Math.fround(Number((chartMeterData.maxValue - chartMeterData.minValue) / 11));
 
 			this.drawBackground(context, centerX, centerY, radius);
-			this.drawLevels(context, radius, minValue, maxValue);
-			this.drawTicksAndLabels(context, radius, increment, minValue, maxValue, chartMeterData.numberFormat, chartMeterData.fractionDigits);
+			this.drawLevels(context, radius, chartMeterData.minValue, chartMeterData.maxValue);
+			this.drawTicksAndLabels(context, radius, increment, chartMeterData.minValue, chartMeterData.maxValue, chartMeterData.numberFormat, chartMeterData.fractionDigits);
 
 			const textBackgroundColor = getTextBackgroundColor(this.chart.options.chartMeterOptions.levels, this._data[this._data.length - 1]);
 			const width = radius * 2 * .44;
 			const linearGradient = context.createLinearGradient(0, 0, 0, 75);
 
+			linearGradient.addColorStop(0, '#ffffff');
 			linearGradient.addColorStop(1, textBackgroundColor);
-			linearGradient.addColorStop(0, 'white');
 			drawTextPanel(context, chartMeterData.text, linearGradient, -width / 2, (radius / 5) - 5, width, radius / 5, getTextColor(textBackgroundColor));
-			this.drawNeedle(context, radius, this._data[this._data.length - 1], minValue, maxValue);
+			this.drawNeedle(context, radius, this._data[this._data.length - 1], chartMeterData.minValue, chartMeterData.maxValue);
 
 			context.restore();
 			context.translate(-centerX, -centerY);
@@ -67,8 +57,8 @@ export const RadialMeter = Chart.controllers.bar.extend({
 		context.beginPath();
 		context.arc(centerX, centerY, radius - 15, 0, Math.PI * 2, true);
 		const gradients = context.createRadialGradient(centerX, centerY, radius - 15, centerX, centerY, radius - getRadius(radius));
-		gradients.addColorStop(0, 'darkgray');
-		gradients.addColorStop(1, 'white');
+		gradients.addColorStop(0, '#a9a9a9');
+		gradients.addColorStop(1, '#ffffff');
 
 		context.fillStyle = gradients;
 		context.fill();
@@ -99,7 +89,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 	},
 	drawTicksAndLabels:    function(context, radius, increment, minValue, maxValue, numberFormat, fractionDigits) {
 		context.beginPath();
-		context.strokeStyle = 'black';
+		context.strokeStyle = '#000000';
 		context.font = '12px Helvetica';
 
 		for (let index = -28; index <= 28; index++) {
@@ -136,7 +126,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 				const divider = index < 5 ? 3 : 2.5 - (fractionDigits * 0.1);
 				const wPointX = mySineAngle * (radius - radius / divider);
 				const wPointY = myCoosAngle * (radius - radius / 3);
-				context.fillStyle = 'black';
+				context.fillStyle = '#000000';
 
 				context.fillText(textValue, wPointX - 4, wPointY + 4);
 
@@ -152,12 +142,12 @@ export const RadialMeter = Chart.controllers.bar.extend({
 				iPointX = mySineAngle * (radius - radius / 4);
 				iPointY = myCoosAngle * (radius - radius / 4);
 				context.beginPath();
-				context.fillStyle = 'darkgray';
+				context.fillStyle = '#a9a9a9';
 				context.arc(iPointX, iPointY, 8, 0, 2 * Math.PI, false);
 				context.fill();
 				context.closePath();
 				context.beginPath();
-				context.fillStyle = 'lightgray';
+				context.fillStyle = '#d3d3d3';
 				context.arc(iPointX, iPointY, 6, 0, 2 * Math.PI, false);
 				context.fill();
 				context.closePath();
@@ -185,7 +175,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 		const pointY = cosAngle * (3 / 4 * radius);
 
 		context.beginPath();
-		context.strokeStyle = 'black';
+		context.strokeStyle = '#000000';
 		context.lineWidth = 6;
 		context.lineCap = 'round';
 		context.lineJoin = 'round';
@@ -196,7 +186,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
 
 		context.beginPath();
 		context.strokeStyle = '#000000';
-		context.fillStyle = 'darkgray';
+		context.fillStyle = '#a9a9a9';
 		context.arc(0, 0, this.getNeedleRadius(context.canvas.width), 0, 2 * Math.PI, true);
 		context.fill();
 		context.closePath();

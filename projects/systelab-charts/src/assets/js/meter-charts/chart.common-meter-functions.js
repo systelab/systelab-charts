@@ -10,24 +10,8 @@ export const ChartMeterData = class {
 		this.levelMaxValue = Math.max(...chartMeterOptions.levels.map(value => value.maxValue));
 		this.dataValue = dataArray[dataArray.length - 1];
 
-		this.minValue = this.visualMinValue != null ? Math.min(this.visualMinValue, this.levelMinValue) : this.levelMinValue;
-		this.maxValue = this.visualMaxValue != null ? Math.max(this.visualMaxValue, this.levelMaxValue) : this.levelMaxValue;
-
-		if (this.dataValue === 0) {
-			if (this.dataValue <= this.minValue) {
-				this.minValue = -0.5;
-			}
-			if (this.dataValue >= this.maxValue) {
-				this.maxValue = 0.5;
-			}
-		} else {
-			while (this.dataValue <= this.minValue) {
-				this.minValue -= Math.abs(this.dataValue * 0.8);
-			}
-			while (this.dataValue >= this.maxValue) {
-				this.maxValue += Math.abs(this.dataValue * 0.8);
-			}
-		}
+		this.minValue = this.visualMinValue ?? this.levelMinValue;
+		this.maxValue = this.visualMaxValue ?? this.levelMaxValue;
 
 		if (chartMeterOptions.numberFormat && chartMeterOptions.numberFormat.lastIndexOf('.') > 0) {
 			if (chartMeterOptions.numberFormat.toLowerCase()
@@ -107,6 +91,24 @@ export const hideGoalsAndTooltips = (chartInstance) => {
 	}
 };
 
+export const drawRoundedRect = (context, x, y, width, height, radius, lineWidth, lineColor) => {
+	context.beginPath();
+	context.moveTo(x, y + radius);
+	context.lineTo(x, y + height - radius);
+	context.arcTo(x, y + height, x + radius, y + height, radius);
+	context.lineTo(x + width - radius, y + height);
+	context.arcTo(x + width, y + height, x + width, y + height - radius, radius);
+	context.lineTo(x + width, y + radius);
+	context.arcTo(x + width, y, x + width - radius, y, radius);
+	context.lineTo(x + radius, y);
+	context.arcTo(x, y, x, y + radius, radius);
+	context.lineWidth = lineWidth;
+	context.strokeStyle = lineColor;
+	context.stroke();
+	context.closePath();
+	context.restore();
+}
+
 export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWidth, rectHeight, textColor, frameColor) => {
 	const originalFont = context.font;
 	context.font = getFontSized(54, rectHeight, 'digital-font');
@@ -118,12 +120,12 @@ export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWi
 		frameColorHeight = 4;
 		// Set rectangle and corner values
 		context.fillStyle = backgroundColor;
-		context.lineWidth = 12;
+		context.lineWidth = 18;
 
 		// Change origin and dimensions to match true size (a stroke makes the shape a bit larger)
 		context.beginPath();
 		context.strokeStyle = frameColor;
-		context.strokeRect(xPos, yPos, rectWidth, rectHeight);
+		context.strokeRect(xPos - 4, yPos - 4, rectWidth + 8, rectHeight + 8);
 		context.closePath();
 	}
 
@@ -131,7 +133,7 @@ export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWi
 	context.lineWidth = 3;
 	context.fillStyle = backgroundColor;
 	context.fillRect(xPos + 4, yPos + frameColorHeight, rectWidth - 8, rectHeight - frameColorHeight * 2);
-	context.strokeStyle = 'darkgray';
+	context.strokeStyle = '#a9a9a9';
 	context.strokeRect(xPos + 4, yPos + frameColorHeight, rectWidth - 8, rectHeight - frameColorHeight * 2);
 	context.closePath();
 	if (text) {
@@ -165,10 +167,9 @@ export const getRadius = (radius) => {
 	return 0.22 * radius;
 };
 
-export const applyFractionDigits = (number, fractionDigits) => {
-	return Number(number)
-		.toFixed(fractionDigits);
-}
+export const getScaledWidthOrHeightValue = (value, baseValue, baseOutputValue) => {
+	return value * baseOutputValue / baseValue;
+};
 
 export const getTextBackgroundColor = (levels, currentValue) => {
 
@@ -275,7 +276,7 @@ export const getTextColor = (color) => {
 
 	const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
 
-	if (luma < 55) {
+	if (luma < 65) {
 		return '#FFF';
 	}
 	return '#174967';
