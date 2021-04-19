@@ -171,6 +171,51 @@ export const getScaledWidthOrHeightValue = (value, baseValue, baseOutputValue) =
 	return value * baseOutputValue / baseValue;
 };
 
+export const getResponsiveWidthBasedOnAvailableCanvasHeight = (availableCanvasHeight, yStartPosition, minWidthValue, startWidthValue, baseHeightValue, baseOutputHeightValue) => {
+	let width = startWidthValue;
+	let calculatedHeight = getScaledWidthOrHeightValue(width, baseHeightValue, baseOutputHeightValue);
+
+	while (calculatedHeight + yStartPosition > availableCanvasHeight && width > minWidthValue) {
+		width -= width * .05;
+		calculatedHeight = getScaledWidthOrHeightValue(width, baseHeightValue, baseOutputHeightValue);
+	}
+
+	return width < minWidthValue ? minWidthValue : width;
+};
+
+//adapted from https://blog.poettner.de/2011/06/09/simple-statistics-with-php/
+export const median = (data) => {
+	return quartile_50(data);
+}
+
+export const quartile_25 = (data) => {
+	return quartile(data, 0.25);
+}
+
+export const quartile_50 = (data) => {
+	return quartile(data, 0.5);
+}
+
+export const quartile_75 = (data) => {
+	return quartile(data, 0.75);
+}
+
+export const quartile = (data, q) => {
+	data = Array_Sort_Numbers(data);
+	const pos = ((data.length) - 1) * q;
+	const base = Math.floor(pos);
+	const rest = pos - base;
+	if ((data[base + 1] !== undefined)) {
+		return data[base] + rest * (data[base + 1] - data[base]);
+	} else {
+		return data[base];
+	}
+}
+export const Array_Sort_Numbers = (inputarray) => {
+	return inputarray.sort(function(a, b) {
+		return a - b;
+	});
+}
 export const getTextBackgroundColor = (levels, currentValue) => {
 
 	const level = levels.filter(value => value.minValue <= currentValue && currentValue <= value.maxValue);
