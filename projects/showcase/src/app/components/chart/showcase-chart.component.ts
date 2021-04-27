@@ -239,7 +239,7 @@ export class ShowcaseChartComponent {
 
 	public generateChartGadgetConfiguration(): ChartMeterConfiguration {
 		const chartMeterConfiguration = new ChartMeterConfiguration();
-		chartMeterConfiguration.unitFormat = '#.##';
+		chartMeterConfiguration.numberFormat = '#.##';
 		chartMeterConfiguration.betterValues = 'higher';
 		chartMeterConfiguration.chartColour = 'green';
 		chartMeterConfiguration.goalColour = 'blue';

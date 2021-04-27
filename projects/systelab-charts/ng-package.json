@@ -5,7 +5,10 @@
     "./README.md",
     "./sass/**/*.scss",
     "./assets/fonts/**/*.otf",
-    "./src/assets/js/meter-charts/**/*.js"
+    "./assets/fonts/**/*.txt",
+    "./src/assets/js/meter-charts/**/*.js",
+    "./src/assets/js/**/*.js",
+    "./src/assets/js/**/*.txt"
   ],
   "lib": {
     "entryFile": "src/public-api.ts"

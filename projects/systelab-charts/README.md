@@ -5,17 +5,17 @@ Component to show a Chart
 ## Using the component
 
 ```html
-   <systelab-chart [labels]="labels" [data]="data" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="type"
-                (action)="doAction($event)" [isBackgroundGrid]="isBackgroundGrid" [isHorizontal]="isHorizontal" [lineTension]="lineTension" 
-                [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [annotations]="annotations" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" 
-                [tooltipSettings]="tooltipSettings" [isStacked]="isStacked" [customLegend]="customLegend" 
+
+<systelab-chart [labels]="labels" [data]="data" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="type"
+                (action)="doAction($event)" [isBackgroundGrid]="isBackgroundGrid" [isHorizontal]="isHorizontal" [lineTension]="lineTension"
+                [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [annotations]="annotations" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis"
+                [tooltipSettings]="tooltipSettings" [isStacked]="isStacked" [customLegend]="customLegend"
                 [chartMeterConfiguration]="chartMeterConfiguration"></systelab-chart>
 ```
 
+This component use the **Chart.js** library, and is able to display different chart types in an easy way.
 
-This component use the **Chart.js** library, and is able to display different chart types in a easy way.
-
-Set **type** with the chart type that you want to display. You can chose between the following charts types
+Set **type** with the chart type that you want to display. You can choose between the following charts types
 
 - Bar
 - Line
@@ -28,14 +28,16 @@ Set **type** with the chart type that you want to display. You can chose between
 - Radial Meter
 - Linear Meter (horizontal / vertical)
 
-Also, you can show together different chart types (less the meter ones); for example a Bar chart with Line chart. In order to do this, you should define the chart type in the properties of the data that you provide to the component. 
+Also, you can show together different chart types (less the meter ones); for example a Bar chart with Line chart. In order to do this, you should define the chart type in the properties of the data that you provide to the component.
 
 Single example:
+
 ```javascript
     this.dataLine.push(new chartItem('Only Line', [13, 20, 21, 15], '', '', false, true, false, 3));
 ```
 
 Multiple charts example:
+
 ```javascript
     this.dataLineBar.push(new chartItem('Line', [13, 20, 21, 15], '', '', false, true, true, 3, 'line'));
 ```
@@ -77,7 +79,7 @@ Multiple charts example:
 | isGradient | boolean | false | Set to true if you want to use a gradient colours |
 | borderWidth | string |  | Define the width of the border |
 | chartType | string |  | Define different chart type to mix charts |
-| chartTooltipItem | ChartTooltipItem |  | Define what you want to display in the tooltip of this raw data |
+| chartTooltipItem | ChartTooltipItem or Array<ChartTooltipItem> |  | Define what you want to display in the tooltip of this raw data or a custom tooltip for each point of this raw data. |
 | pointRadius | number | 3 | The radius of the point shape. If set to 0, the point is not rendered. |
 | yAxisID | string |  | Define the ID of the y axis to plot this dataset on. |
 | legendType | string |  | Define legend type, it can be 'bar,' 'line' or 'dots'. It is only used if the [customLegend] property is true |
@@ -96,25 +98,28 @@ Multiple charts example:
 | ticks | Ticks | | Define the values and steps for the axis |
 
 ### GridLine
+
 | Name | Type | Default | Description | 
 | ---- |:----:|:------: | --------- |
 | display | boolean | true | Set true if you want to see the grid lines |
 | drawBorder | boolean | true | Set true if you want to see a border around the grid| 
 
 ### ScaleLabel
+
 | Name | Type | Default | Description | 
 | ---- |:----:|:------: | --------- |
 | display | boolean | true | Show the label |
 | labelString | string | | Set a text to be shown in the axis | 
- 
+
 ### Ticks
+
 | Name | Type | Default | Description | 
 | ---- |:----:|:------: | --------- |
 | min | number | | Min value for the axis |
 | max | number | | Max value for the axis | 
 | stepSize | number | | Set the steps between axis values | 
 | display | boolean | true | Set to false if you do not want to see the ticks on the axis | 
- 
+
 ### Annotations
 
 You can define two types of annotations, line or box type annotations.
@@ -122,6 +127,7 @@ You can define two types of annotations, line or box type annotations.
 **annotations** is an array of annotations. Depending on the annotations that you want you show, use the **chartBoxAnnotation** structure or **chartLineAnnotation**.
 
 #### chartBoxAnnotation
+
 | Name | Type | Default | Description |
 | ---- |:----:|:-------:| ----------- |
 | drawTime | string| | Set to draw 'afterDatasetsDraw' or 'beforeDatasetsDraw' |
@@ -133,7 +139,6 @@ You can define two types of annotations, line or box type annotations.
 | backgroundColor | string | | Define the color of the box area |
 | borderColor | string |  | Define the width of the border |
 | borderWidth | string |  | Define the color of the box |
-
 
 #### chartLineAnnotation
 
@@ -149,7 +154,6 @@ You can define two types of annotations, line or box type annotations.
 | borderWidth | string |  | Define the width of the border |
 | endValue | number |  | Define a end value of the line, drawing a diagonal line |
 
-
 #### chartLabelAnnotation
 
 | Name | Type | Default | Description |
@@ -159,7 +163,6 @@ You can define two types of annotations, line or box type annotations.
 | backgroundColor | string |  | Define the color of the background |
 | fontStyle | string |  | Define the styles of the text |
 | fontColor | string |  | Define the color of the label |
-
 
 ### Tooltips
 
@@ -175,9 +178,7 @@ You can configure the content of the tooltips and the style.
 | borderColor | string | 'rgba(0,0,0,0)' | Tooltip border color |
 | borderWidth | number | 0 | Tooltip border width |
 
-
 #### ChartTooltipItem
-
 
 | Name | Type | Default | Description |
 | ---- |:----:|:-------:| ----------- |
@@ -188,7 +189,7 @@ You can configure the content of the tooltips and the style.
 
 ```javascript
 this.dataLine.push(new ChartItem('Only Line', [13, 20, 21, 15], '', '', false, true, false, 3, '',
-		new ChartTooltipItem('title', 'label', 'afterlabel', true)));
+	new ChartTooltipItem('title', 'label', 'afterlabel', true)));
 ```
 
 #### Tooltips for the Bubble charts
@@ -196,7 +197,7 @@ this.dataLine.push(new ChartItem('Only Line', [13, 20, 21, 15], '', '', false, t
 There is the option to display the label that you want instead of the coordinates (by default defined). Set the variable **t** in the data parameter and the system will consider it as the tooltip label.
 
 ```javascript
-[{ x: 13, y: 13, r: 4, t: 'Tooltip label' }, { x: 1, y: 2, r: 3 }]
+[{x: 13, y: 13, r: 4, t: 'Tooltip label'}, {x: 1, y: 2, r: 3}]
 ```
 
 ### Chart labels
@@ -216,30 +217,38 @@ whose needs to receive a ChartLabelSettings object.
 | formatter | (value: any, context: any) => string| | A function that given a value and chart context returns the value as a formatted string
 
 Example of use: let's assume that we have the following code in a component
+
 ```javascript
-		this.pieChartLabelSettings = new ChartLabelSettings();
-		this.pieChartLabelSettings.position = new ChartLabelPosition();
-		this.pieChartLabelSettings.position.clip = false; // to avoid showing part of the label, set clip = true
+        this.pieChartLabelSettings = new ChartLabelSettings();
+this.pieChartLabelSettings.position = new ChartLabelPosition();
+this.pieChartLabelSettings.position.clip = false; // to avoid showing part of the label, set clip = true
 
-		this.pieChartLabelSettings.position.display = 'auto';
-		this.pieChartLabelSettings.labelColors = new ChartLabelColor(undefined, 'black', undefined, 5, 1, 0.8);
-		const fontFamily = 'Courier, Arial Unicode MS, Arial, sans-serif';
-		this.pieChartLabelSettings.chartLabelFont = new ChartLabelFont(undefined, fontFamily, 16, undefined, 'bold', 0.8);
-		this.pieChartLabelSettings.chartLabelPadding = new ChartLabelPadding(undefined, 1, 1, 1, 1);
+this.pieChartLabelSettings.position.display = 'auto';
+this.pieChartLabelSettings.labelColors = new ChartLabelColor(undefined, 'black', undefined, 5, 1, 0.8);
+const fontFamily = 'Courier, Arial Unicode MS, Arial, sans-serif';
+this.pieChartLabelSettings.chartLabelFont = new ChartLabelFont(undefined, fontFamily, 16, undefined, 'bold', 0.8);
+this.pieChartLabelSettings.chartLabelPadding = new ChartLabelPadding(undefined, 1, 1, 1, 1);
 
-		const myPieLabelFormatter = (value: any, context: any): string => {
-			let dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
-			return (value * 100 / arraySum(dataArr)).toFixed(0) + '%';
-		}
+const myPieLabelFormatter = (value: any, context: any
+):
+string => {
+	let dataArr: Array<number> = (context.chart.data.datasets[0].data
+	as
+	Array < number >
+)
+	;
+	return (value * 100 / arraySum(dataArr)).toFixed(0) + '%';
+}
 
-		this.pieChartLabelSettings.formatter = myPieLabelFormatter;
+this.pieChartLabelSettings.formatter = myPieLabelFormatter;
 ```
+
 Then we can use systelab-chart with the "chartLabelSettings" attribute among others:
 
             <systelab-chart [labels]="labels" [data]="dataPie" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="'pie'" (action)="doAction($event)"
                             [isBackgroundGrid]="isBackgroundGrid" [chartLabelSettings]="pieChartLabelSettings"></systelab-chart>
 
-The auxiliary classes (ChartLabelPosition, ChartLabelColor, etc) constructors  are defined as follows:
+The auxiliary classes (ChartLabelPosition, ChartLabelColor, etc) constructors are defined as follows:
 
 ##### ChartLabelPosition
 
@@ -271,13 +280,19 @@ The auxiliary classes (ChartLabelPosition, ChartLabelColor, etc) constructors  a
 Example of specifiying the "display" property as a function:
 
 ```javascript
-const displayFunction = (context: any): boolean => {
+const displayFunction = (context: any)
+:
+boolean => {
 
-let dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
+	let dataArr: Array<number> = (context.chart.data.datasets[0].data
+	as
+	Array < number >
+)
+	;
 
-const currentPercentage = context.dataset.data[context.dataIndex] * 100 / arraySum(dataArr);
+	const currentPercentage = context.dataset.data[context.dataIndex] * 100 / arraySum(dataArr);
 
-return currentPercentage >= 5;
+	return currentPercentage >= 5;
 }
 this.pieChartLabelSettings.position.display = displayFunction;
 ```
@@ -307,12 +322,13 @@ this.pieChartLabelSettings.position.display = displayFunction;
 Definition of the font parameter as an object:
 
 ```javascript
-type Font = {
-	family?: string,
-	lineHeight?: string | number,
-	size?: number,
-	style?: 'normal' | 'italic' | 'oblique',
-	weight?: 'normal' | 'bold' | 'bolder' | 'lighter' | number
+type
+Font = {
+	family    ? : string,
+	lineHeight? : string | number,
+	size      ? : number,
+	style     ? : 'normal' | 'italic' | 'oblique',
+	weight    ? : 'normal' | 'bold' | 'bolder' | 'lighter' | number
 };
 ```
 
@@ -329,11 +345,12 @@ type Font = {
 Definition of the padding parameter as an object:
 
 ```javascript
-type Padding = number | {
-	top?: number,
-	right?: number,
-	bottom?: number,
-	left?: number
+type
+Padding = number | {
+	top   ? : number,
+	right ? : number,
+	bottom? : number,
+	left  ? : number
 };
 ```
 
@@ -353,13 +370,12 @@ type Padding = number | {
 | textShadowBlur | number | null | Blur of the labels' text stroke|
 | textShadowColor | string | null | Color for the labels' text shadow|
 
-
 ##### ChartMeterConfiguration
 
 | Name | Type | Default | Description |
 | ---- |:----:|:-------:| ----------- |
 | borderColor | string |'#007bff'| The border color applied to the graph |
-| unitFormat | string | | The format value to apply the values | 
+| numberFormat | string | | The number format to apply the values | 
 | chartColour | string | | The color for the bars in the history chart |
 | goalColour | string | | The color for the goal values in the history chart |
 | betterValues | string | | Pending description |
@@ -378,10 +394,11 @@ type Padding = number | {
 Definition of a level parameter as an object:
 
 ```javascript
-type Levels = { 
-    levelColor: string, 
-    minValue: number, 
-    maxValue: number 
+type
+Levels = {
+	levelColor: string,
+	minValue:   number,
+	maxValue:   number
 };
 ```
 
@@ -390,10 +407,11 @@ Use the next @font-face declaration in your scss in order to use the digital fon
 ```scss
 @font-face {
   font-family: 'digital-font';
-  src: url('systelab-charts/assets/fonts/Segment7Standard.otf') format('opentype');
+  src: url('~systelab-charts/assets/fonts/Segment7Standard.otf') format('opentype');
   font-style: normal;
 }
 ```
+
 ## Events
 
 | Name | Parameters | Description |
@@ -407,4 +425,5 @@ Use the next @font-face declaration in your scss in order to use the digital fon
 | ---- |:----------:| ------------|
 | getResizedBase64Image | number?, number? | Get the base64 png string image scaled based on the height and width parameters (if provided).|
 | doResizeChart | string, string | Perform a chart resize based on the height and width parameters (in pixels).|
+
 **Note**: _responsive_ and _maintainAspectRatio_ parameters must be set to _**false**_.
