@@ -1,5 +1,5 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e20387044bae4723b400f30df8c973f9)](https://app.codacy.com/app/alfonsserra/systelab-charts?utm_source=github.com&utm_medium=referral&utm_content=systelab/systelab-charts&utm_campaign=badger)
-[![Build Status](https://travis-ci.org/systelab/systelab-charts.svg?branch=master)](https://travis-ci.org/systelab/systelab-charts)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/f34f559cc4ef4afe84448d15fb674f30)](https://www.codacy.com/gh/systelab/systelab-charts/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=systelab/systelab-charts&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://travis-ci.com/systelab/systelab-charts.svg?branch=master)](https://travis-ci.com/systelab/systelab-charts)
 [![npm version](https://badge.fury.io/js/systelab-charts.svg)](https://badge.fury.io/js/systelab-charts)
 [![Known Vulnerabilities](https://snyk.io/test/github/systelab/systelab-charts/badge.svg?targetFile=package.json)](https://snyk.io/test/github/systelab/systelab-charts?targetFile=package.json)
 

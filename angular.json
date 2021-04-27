@@ -30,14 +30,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/systelab-charts/tsconfig.lib.json",
-              "projects/systelab-charts/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/systelab-charts/**/*.ts",
+              "projects/systelab-charts/**/*.html"
             ]
           }
         }
@@ -57,6 +54,11 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "chart.js",
+              "chartjs-plugin-datalabels",
+              "chartjs-plugin-annotation"
+            ],
             "outputPath": "dist/showcase",
             "index": "projects/showcase/src/index.html",
             "main": "projects/showcase/src/main.ts",
@@ -138,15 +140,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/showcase/tsconfig.app.json",
-              "projects/showcase/tsconfig.spec.json",
-              "projects/showcase/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/showcase/**/*.ts",
+              "projects/showcase/**/*.html"
             ]
           }
         },
