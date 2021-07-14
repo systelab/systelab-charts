@@ -30,7 +30,7 @@ npm publish
 
 ## Documentation
 
-Read the [provided documentation](https://github.com/systelab/systelab-charts/blob/master/projects/systelab-charts/README.md) to use the library 
+Read the [provided documentation](https://github.com/systelab/systelab-charts/blob/master/projects/systelab-charts/README.md) to use the library
 
 # Breaking changes
 
@@ -45,6 +45,16 @@ The following steps should be consider when migrating from version 5.
 ```
 2. When importing services and modules import them from systelab-charts root. In WebStorm, replace in path:
 ```
-- from 'systelab-charts/lib.+ 
+- from 'systelab-charts/lib.+
 - from 'systelab-charts';
 ```
+
+## Version 9 - Angular 12
+
+Added chartjs dependencies from peerDependencies to dependencies, now no need to add it in app package that uses the library.
+
+IE11 support has been deprecated due to the upgrade to Angular 12
+
+Use of [Ivy](https://angular.io/guide/ivy), applications that uses this library have to use Angular 12 and Ivy rendering.
+
+Added --noImplicitOverride flag to allow override methods and get error for unintentionally overrides https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-3.html#override-and-the---noimplicitoverride-flag
