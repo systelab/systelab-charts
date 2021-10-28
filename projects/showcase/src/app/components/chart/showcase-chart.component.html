@@ -56,9 +56,9 @@
                             [lineTension]="0.4"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">
-            <showcase-title [href]="'chart'">Line Chart with Annotation (Lines)</showcase-title>
-            <systelab-chart [labels]="labelLineAnnotations" [data]="dataLineAnnotation" [showLegend]="legendOff" [type]="'line'"
-                            [yMaxValue]="yMaxValue"
+            <showcase-title [href]="'chart'">Line Chart with Annotation (Lines) Legend without color box</showcase-title>
+            <systelab-chart [labels]="labelLineAnnotations" [data]="dataLineAnnotation" [showLegend]="legend" [type]="'line'"
+                            [yMaxValue]="yMaxValue" [legendWithoutBox]="true"
                             [yMinValue]="yMinValue" [annotations]="chartLineAnnotations" [xAutoSkip]="false"></systelab-chart>
         </div>
         <div class="col-md-6  p-2">

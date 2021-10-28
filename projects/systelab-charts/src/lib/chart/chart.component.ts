@@ -208,6 +208,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() multipleYAxisScales: Array<ChartMultipleYAxisScales>;
 	@Input() customLegend = false;
 	@Input() chartMeterConfiguration: ChartMeterConfiguration;
+	@Input() legendWithoutBox = false;
 
 	private dataset: Array<any> = [];
 
@@ -315,7 +316,11 @@ export class ChartComponent implements AfterViewInit {
 					display:             true,
 					legend:              {
 						display:  this.showLegend,
-						position: this.legendPosition
+						position: this.legendPosition,
+						...this.legendWithoutBox ? {
+							labels: {
+								boxWidth: 0
+						}} : {}
 					},
 					legendCallback:      function(chart) {
 						const text = [];
