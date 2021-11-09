@@ -838,6 +838,7 @@ export class ChartComponent implements AfterViewInit {
 		this.setAxisVisibility();
 
 		this.dataset = [];
+		this._annotations = [];
 		this.setData(cx);
 		this.addAnnotations();
 		this.drawChart(cx);
