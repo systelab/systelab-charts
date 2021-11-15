@@ -209,6 +209,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() customLegend = false;
 	@Input() chartMeterConfiguration: ChartMeterConfiguration;
 	@Input() legendWithoutBox = false;
+	@Input() hideInitialAndFinalTick = false;
 
 	private dataset: Array<any> = [];
 
@@ -362,7 +363,10 @@ export class ChartComponent implements AfterViewInit {
 								ticks:      {
 									min:     this.yMinValue,
 									max:     this.yMaxValue,
-									display: this.axesVisible
+									display: this.axesVisible,
+									...this.hideInitialAndFinalTick ? {
+										callback: this.removeInitialAndFinalTick
+									} : {}
 								},
 								gridLines:  {
 									display:    this.isBackgroundGrid,
@@ -379,7 +383,10 @@ export class ChartComponent implements AfterViewInit {
 								min:      this.xMinValue,
 								max:      this.xMaxValue,
 								display:  this.axesVisible,
-								autoSkip: this.xAutoSkip
+								autoSkip: this.xAutoSkip,
+								...this.hideInitialAndFinalTick ? {
+									callback: this.removeInitialAndFinalTick
+								} : {}
 							},
 							gridLines:  {
 								display:    this.isBackgroundGrid,
@@ -537,6 +544,10 @@ export class ChartComponent implements AfterViewInit {
 
 			this.chart = new Chart(cx, definition);
 		}
+	}
+
+	private removeInitialAndFinalTick(value, index, values): string {
+		return index === 0 || index === values.length - 1 ? '' : value;
 	}
 
 	private initDatalabelsFontProperties(chartLabelText: ChartLabelFont): object {
