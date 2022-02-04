@@ -31,6 +31,12 @@ export class ChartLineAnnotation extends Annotation {
 	}
 }
 
+export class ChartLine {
+	constructor(public xMinValue: number, public yMinValue: number, public xMaxValue: number, public yMaxValue: number,
+		public borderColor?: string, public borderWidth?: number) {
+	}
+}
+
 export class ChartBoxAnnotation extends Annotation {
 	constructor(drawTime: string, public xMin: number, public xMax: number, public yMin: number, public yMax: number,
 				type: string, public backgroundColor?: string, borderColor?: string, borderWidth?: number) {
@@ -210,6 +216,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() chartMeterConfiguration: ChartMeterConfiguration;
 	@Input() legendWithoutBox = false;
 	@Input() hideInitialAndFinalTick = false;
+	@Input() chartLine: ChartLine;
 
 	private dataset: Array<any> = [];
 
@@ -297,8 +304,13 @@ export class ChartComponent implements AfterViewInit {
 				},
 
 				options: {
-					animation:           {
-						duration: this.animationDuration
+					animation: {
+						duration: this.animationDuration,
+						onComplete: (chartData) => {
+							if (this.chartLine) {
+								this.drawLine(chartData, this.chartLine);
+							}
+						}
 					},
 					responsive:          this.responsive,
 					maintainAspectRatio: this.maintainAspectRatio,
@@ -885,5 +897,38 @@ export class ChartComponent implements AfterViewInit {
 			}
 			chart.update();
 		}
+	}
+
+	public drawLine(chartData, chartLine: ChartLine) {
+		const scales = (chartData.chart as any).scales;
+
+		let cx: CanvasRenderingContext2D;
+		if (this.canvas.nativeElement) {
+			cx = this.canvas.nativeElement.getContext('2d');
+		}
+
+		let xScale: any;
+		let yScale: any;
+		Object.keys(scales)
+			.forEach(
+				k => (k[0] === 'x' && (xScale = scales[k])) || (yScale = scales[k])
+			);
+
+		const getXY = (x: number, y: number) => ({
+			x: xScale.getPixelForValue(x, undefined, undefined, true),
+			y: yScale.getPixelForValue(y)
+		});
+
+		const initPoint = getXY(chartLine.xMinValue, chartLine.yMinValue);
+		const endPoint = getXY(chartLine.xMaxValue, chartLine.yMaxValue);
+
+		cx.beginPath();
+		cx.lineWidth = chartLine.borderWidth || 1;
+		cx.moveTo(initPoint.x, initPoint.y);
+		cx.lineTo(endPoint.x, endPoint.y);
+		cx.strokeStyle = chartLine.borderColor || 'black';
+		cx.stroke();
+		cx.closePath();
+		cx.restore();
 	}
 }

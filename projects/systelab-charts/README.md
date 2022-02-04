@@ -99,26 +99,26 @@ Multiple charts example:
 
 ### GridLine
 
-| Name | Type | Default | Description | 
+| Name | Type | Default | Description |
 | ---- |:----:|:------: | --------- |
 | display | boolean | true | Set true if you want to see the grid lines |
-| drawBorder | boolean | true | Set true if you want to see a border around the grid| 
+| drawBorder | boolean | true | Set true if you want to see a border around the grid|
 
 ### ScaleLabel
 
-| Name | Type | Default | Description | 
+| Name | Type | Default | Description |
 | ---- |:----:|:------: | --------- |
 | display | boolean | true | Show the label |
-| labelString | string | | Set a text to be shown in the axis | 
+| labelString | string | | Set a text to be shown in the axis |
 
 ### Ticks
 
-| Name | Type | Default | Description | 
+| Name | Type | Default | Description |
 | ---- |:----:|:------: | --------- |
 | min | number | | Min value for the axis |
-| max | number | | Max value for the axis | 
-| stepSize | number | | Set the steps between axis values | 
-| display | boolean | true | Set to false if you do not want to see the ticks on the axis | 
+| max | number | | Max value for the axis |
+| stepSize | number | | Set the steps between axis values |
+| display | boolean | true | Set to false if you do not want to see the ticks on the axis |
 
 ### Annotations
 
@@ -163,6 +163,19 @@ You can define two types of annotations, line or box type annotations.
 | backgroundColor | string |  | Define the color of the background |
 | fontStyle | string |  | Define the styles of the text |
 | fontColor | string |  | Define the color of the label |
+
+
+#### ChartLine
+Draw a simple line
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| xMinValue | any | 0 | Min value of the axis X |
+| yMinValue | any | 0 | Min value of the axis Y |
+| xMaxValue | any | 0 | Max value of the axis X |
+| yMaxValue | any | 0 | Max value of the axis Y |
+| borderColor | string | black | Define the color of the line |
+| borderWidth | string |  | Define the width of the line |
 
 ### Tooltips
 
@@ -314,7 +327,7 @@ this.pieChartLabelSettings.position.display = displayFunction;
 | ---- |:----:|:-------:| ----------- |
 | font | object | null| An object that can be used as a shorthand to specify the family, size, style, weight and lineHeight parameters, see object's definition below. Usually, if this parameter is defined the rest of the parameters, family, size, etc are set as undefined. But if they don't, their values will substituted the ones defined in "font" |
 | family | string | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"| Font family for the text of all the labels|
-| size | number | 12| Labels' font size|   
+| size | number | 12| Labels' font size|
 | style | string | 'normal'| Labels' font style. The possible values are 'italic', 'oblique' and 'normal'|
 | weight | string or number | 'normal'| Labels' font weight. The possible values are 'bold', 'bolder', 'lighter', 'normal' and a number (e.g. 100, 200, etc|
 | lineHeight | string or number | 1.2| Defines the space between each line in the labels' text (if the need more than one line)|
@@ -375,7 +388,7 @@ Padding = number | {
 | Name | Type | Default | Description |
 | ---- |:----:|:-------:| ----------- |
 | borderColor | string |'#007bff'| The border color applied to the graph |
-| numberFormat | string | | The number format to apply the values | 
+| numberFormat | string | | The number format to apply the values |
 | chartColour | string | | The color for the bars in the history chart |
 | goalColour | string | | The color for the goal values in the history chart |
 | betterValues | string | | Pending description |

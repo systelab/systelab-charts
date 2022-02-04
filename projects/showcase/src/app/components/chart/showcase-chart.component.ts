@@ -1,8 +1,9 @@
-import { Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
+
 import {
 	Annotation, ChartBoxAnnotation, ChartComponent, ChartItem, ChartLabelAnnotation, ChartLabelColor,
 	ChartLabelFont, ChartLabelPadding, ChartLabelPosition, ChartLabelSettings, ChartLineAnnotation, ChartMultipleYAxisScales,
-	ChartTooltipItem, ChartTooltipSettings, ChartMeterConfiguration
+	ChartTooltipItem, ChartTooltipSettings, ChartMeterConfiguration, ChartLine
 } from 'systelab-charts';
 
 @Component({
@@ -65,6 +66,7 @@ export class ShowcaseChartComponent {
 	public defaultResizeWidth = 1280;
 	public defaultResizeHeight = 900;
 	public resizedImage: string;
+	public chartLine: ChartLine;
 
 	private static randomIntFromInterval(min, max) {
 		return Math.floor(Math.random() * (max - min + 1) + min);
@@ -206,7 +208,10 @@ export class ShowcaseChartComponent {
 			4, undefined, undefined, undefined, undefined, 'dots'));
 		this.dataLineCustomLegend.push(new ChartItem('Line and Area', [12, 41, 1, 21], '', '', true, true,
 			false, 3, undefined, undefined, undefined, undefined, 'bar'));
-	}
+
+			this.chartLine = new ChartLine(0.5, 5, 2.5, 20, null, null);
+
+		}
 
 	public doAction(event: any) {
 		const xValue = this.labels[this.itemSelected._index];
