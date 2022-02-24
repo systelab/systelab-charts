@@ -123,13 +123,18 @@ export class ChartMultipleYAxisScales {
 				public scaleLabel?: { display: boolean, labelString: string }) {
 	}
 
-	public getScaleDefinition() {
+	public getScaleDefinition(callbackFunction?: (value, index, values) => string) {
 		return {
 			id:         this.id,
 			type:       this.type,
 			position:   this.position,
 			stacked:    this.stacked,
-			ticks:      this.ticks,
+			ticks: {
+				...this.ticks,
+				...callbackFunction ? {
+					callback: callbackFunction
+				} : {}
+			},
 			gridLines:  this.gridLines,
 			scaleLabel: this.scaleLabel
 		};
@@ -216,6 +221,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() chartMeterConfiguration: ChartMeterConfiguration;
 	@Input() legendWithoutBox = false;
 	@Input() hideInitialAndFinalTick = false;
+	@Input() hideFinalTick = false;
 	@Input() chartLine: ChartLine;
 
 	private dataset: Array<any> = [];
@@ -369,7 +375,8 @@ export class ChartComponent implements AfterViewInit {
 						return text.join('');
 					},
 					scales:              {
-						yAxes: this.multipleYAxisScales ? this.multipleYAxisScales.map(yAxis => yAxis.getScaleDefinition()) : [
+						yAxes: this.multipleYAxisScales ? this.multipleYAxisScales.map(yAxis => yAxis.getScaleDefinition(
+							this.hideInitialAndFinalTick ? this.removeInitialAndFinalTick : this.hideFinalTick ? this.removeFinalTick : null)) : [
 							{
 								stacked:    this.isStacked,
 								ticks:      {
@@ -378,6 +385,9 @@ export class ChartComponent implements AfterViewInit {
 									display: this.axesVisible,
 									...this.hideInitialAndFinalTick ? {
 										callback: this.removeInitialAndFinalTick
+									} : {},
+									...this.hideFinalTick ? {
+										callback: this.removeFinalTick
 									} : {}
 								},
 								gridLines:  {
@@ -398,6 +408,9 @@ export class ChartComponent implements AfterViewInit {
 								autoSkip: this.xAutoSkip,
 								...this.hideInitialAndFinalTick ? {
 									callback: this.removeInitialAndFinalTick
+								} : {},
+								...this.hideFinalTick ? {
+									callback: this.removeFinalTick
 								} : {}
 							},
 							gridLines:  {
@@ -560,6 +573,10 @@ export class ChartComponent implements AfterViewInit {
 
 	private removeInitialAndFinalTick(value, index, values): string {
 		return index === 0 || index === values.length - 1 ? '' : value;
+	}
+
+	private removeFinalTick(value, index, values): string {
+		return index === 0 ? '' : value;
 	}
 
 	private initDatalabelsFontProperties(chartLabelText: ChartLabelFont): object {

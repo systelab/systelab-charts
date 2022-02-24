@@ -65,6 +65,8 @@ Multiple charts example:
 | data | Array<ChartItem> |  | List of data |
 | multipleYAxisScales | Array<ChartMultipleYAxisScales> |  | List of Y axis scales |
 | customLegend | boolean | false | Define if you want a custom Legend (remember set legendType in chartItem) |
+| hideInitialAndFinalTick | boolean | false | Remove the first and last tick in every axis|
+| hideFinalTick | boolean | false | Remove the last tick in every axis|
 
 #### ChartItem
 
