@@ -13,6 +13,7 @@ Component to show a Chart
                 [chartMeterConfiguration]="chartMeterConfiguration"
                 [timeScale]="isTimeScaleChart"
                 [timeUnit]="'month'"
+                [tooltipTimeFormat]="'d, MMMM yyyy'"
 ></systelab-chart>
 ```
 
@@ -72,7 +73,7 @@ Multiple charts example:
 | hideFinalTick | boolean | false | Remove the last tick in every axis|
 | timeScale | boolean | false | Define the chart as a time line chart|
 | timeUnit | string | day | Define the unit that will be showed the data in Axis X (the format is the same as defined in [Chart.js](https://www.chartjs.org/docs/2.9.4/axes/cartesian/time.html#display-formats)) |
-| tooltipTimeFormat | string | DD/MM/YYYY | Define the time format that will be showed in tooltips (the format is the same as defined in the [Moment.js](https://momentjs.com/docs/#/displaying/format/)) |
+| tooltipTimeFormat | string | d/M/yyyy | Define the time format that will be showed in tooltips (the format is the same as defined in the [date-fns](https://date-fns.org/v2.28.0/docs/format/)) |
 
 #### ChartItem
 

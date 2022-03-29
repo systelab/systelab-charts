@@ -19,7 +19,7 @@
         <div class="col-md-6  p-2">
             <showcase-title [href]="'chart'">Line Chart with timeline</showcase-title>
             <systelab-chart #timelineChart [timeScale]="true" [data]="dataTimeLine" [showLegend]="legend" [type]="'line'"
-                            [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings" [timeUnit]="'month'" [tooltipTimeFormat]="'dddd, MMMM Do YYYY'"></systelab-chart>
+                            [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings" [timeUnit]="'month'" [tooltipTimeFormat]="'d, MMMM yyyy'"></systelab-chart>
             <button class="btn btn-primary btn-sm" (click)="randomizeTimeLineChart();">Random TimeLine Chart Values</button>
         </div>
 

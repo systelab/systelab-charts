@@ -1,13 +1,13 @@
 import { AfterViewInit, ApplicationRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import * as Chart from 'chart.js';
+import { Chart } from 'chart.js/dist/Chart.js'
 import { RadialMeter } from '../../assets/js/meter-charts/chart.radial-meter';
 import { DigitalMeter } from '../../assets/js/meter-charts/chart.digital-meter';
 import { LinearMeter } from '../../assets/js/meter-charts/chart.linear-meter';
 import { drawRegionsPlugin } from '../../assets/js/meter-charts/chart.common-meter-functions';
 import { DecimalFormat } from '../../assets/js/decimalFormat';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+import * as ChartDataLabels from 'chartjs-plugin-datalabels';
+import { format } from 'date-fns/esm'
 import 'chartjs-plugin-annotation';
-import * as moment from 'moment';
 
 export class ChartItem {
 
@@ -220,7 +220,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() multipleYAxisScales: Array<ChartMultipleYAxisScales>;
 	@Input() timeScale = false;
 	@Input() timeUnit = 'day';
-	@Input() tooltipTimeFormat = 'DD/MM/YYYY';
+	@Input() tooltipTimeFormat = 'd/M/yyyy';
 	@Input() customLegend = false;
 	@Input() chartMeterConfiguration: ChartMeterConfiguration;
 	@Input() legendWithoutBox = false;
@@ -380,6 +380,9 @@ export class ChartComponent implements AfterViewInit {
 						return text.join('');
 					},
 					scales:              {
+						adapters: {
+							date: 'date-fns',
+						} ,
 						yAxes: this.multipleYAxisScales ? this.multipleYAxisScales.map(yAxis => yAxis.getScaleDefinition(
 							this.hideInitialAndFinalTick ? this.removeInitialAndFinalTick : this.hideFinalTick ? this.removeFinalTick : null)) : [
 							{
@@ -405,11 +408,13 @@ export class ChartComponent implements AfterViewInit {
 								}
 							}],
 						xAxes: [{
-							type:       this.timeScale ? 'time' : undefined,
-							time:            this.timeScale ? {
-								unit: this.timeUnit,
-								minUnit: 'minute',
-							} : undefined,
+							...this.timeScale ? {
+								type: 'time',
+								time: {
+									unit: this.timeUnit,
+									minUnit: 'minute'
+								}
+							} : {},
 							stacked:    this.isStacked,
 							ticks:      {
 								min:      this.xMinValue,
@@ -463,8 +468,7 @@ export class ChartComponent implements AfterViewInit {
 									if (val.t) {
 										if(val.t instanceof Date){
 											let dataValue = '(' + (val.x ? val.x + ',' : '') + val.y + ')';
-											rt = moment(val.t)
-												.format(tooltipTimeFormatConstant) + dataValue;
+											rt = format(val.t , tooltipTimeFormatConstant) + dataValue;
 										} else {
 											rt = val.t;
 										}
