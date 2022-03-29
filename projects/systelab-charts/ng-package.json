@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "whitelistedNonPeerDependencies": ["chart.js", "chartjs-plugin-annotation", "chartjs-plugin-datalabels"],
+  "whitelistedNonPeerDependencies": ["chart.js", "chartjs-plugin-annotation", "chartjs-plugin-datalabels", "moment"],
   "dest": "../../dist/systelab-charts",
   "assets": [
     "./README.md",
