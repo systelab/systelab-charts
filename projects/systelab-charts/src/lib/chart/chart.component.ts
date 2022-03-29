@@ -7,6 +7,7 @@ import { drawRegionsPlugin } from '../../assets/js/meter-charts/chart.common-met
 import { DecimalFormat } from '../../assets/js/decimalFormat';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import 'chartjs-plugin-annotation';
+import * as moment from 'moment';
 
 export class ChartItem {
 
@@ -217,6 +218,9 @@ export class ChartComponent implements AfterViewInit {
 	@Input() minValueForRadar: number;
 	@Input() maxValueForRadar: number;
 	@Input() multipleYAxisScales: Array<ChartMultipleYAxisScales>;
+	@Input() timeScale = false;
+	@Input() timeUnit = 'day';
+	@Input() tooltipTimeFormat = 'DD/MM/YYYY';
 	@Input() customLegend = false;
 	@Input() chartMeterConfiguration: ChartMeterConfiguration;
 	@Input() legendWithoutBox = false;
@@ -300,6 +304,7 @@ export class ChartComponent implements AfterViewInit {
 	}
 
 	private drawChart(cx: CanvasRenderingContext2D) {
+		const tooltipTimeFormatConstant = this.tooltipTimeFormat;
 		/* Draw the chart */
 		if (this.canvas.nativeElement) {
 			const definition: any = {
@@ -400,6 +405,11 @@ export class ChartComponent implements AfterViewInit {
 								}
 							}],
 						xAxes: [{
+							type:       this.timeScale ? 'time' : undefined,
+							time:            this.timeScale ? {
+								unit: this.timeUnit,
+								minUnit: 'minute',
+							} : undefined,
 							stacked:    this.isStacked,
 							ticks:      {
 								min:      this.xMinValue,
@@ -451,7 +461,14 @@ export class ChartComponent implements AfterViewInit {
 								let rtVal: number;
 								if (val instanceof Object) {
 									if (val.t) {
-										rt = val.t;
+										if(val.t instanceof Date){
+											let dataValue = '(' + (val.x ? val.x + ',' : '') + val.y + ')';
+											rt = moment(val.t)
+												.format(tooltipTimeFormatConstant) + dataValue;
+										} else {
+											rt = val.t;
+										}
+
 									} else {
 										rt = '(' + val.x + ',' + val.y + ')';
 									}
@@ -566,7 +583,6 @@ export class ChartComponent implements AfterViewInit {
 					}
 				};
 			}
-
 			this.chart = new Chart(cx, definition);
 		}
 	}
