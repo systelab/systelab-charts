@@ -17,6 +17,7 @@ export class ShowcaseChartComponent {
 	@ViewChild('horizontalLinearMeterChart') horizontalLinearMeterChart: ChartComponent;
 	@ViewChild('verticalLinearMeterChart') verticalLinearMeterChart: ChartComponent;
 	@ViewChild('lineChart') lineChart: ChartComponent;
+	@ViewChild('timelineChart') timelineChart: ChartComponent;
 	@ViewChild('lineChartMultipleAxis') lineChartMultipleAxis: ChartComponent;
 	@ViewChild('lineChartLegend') lineChartLegend: ChartComponent;
 	@ViewChild('resizableCChart') resizableChart: ChartComponent;
@@ -25,6 +26,7 @@ export class ShowcaseChartComponent {
 	public itemSelected: any;
 	public legend: boolean;
 	public dataLine: Array<ChartItem> = [];
+	public dataTimeLine: Array<ChartItem> = [];
 	public dataLineMultipleAxis: Array<ChartItem> = [];
 	public dataBar: Array<ChartItem> = [];
 	public radialDataChartMeterGadget: Array<ChartItem> = [];
@@ -96,6 +98,38 @@ export class ShowcaseChartComponent {
 
 		this.dataLine.push(new ChartItem('Only Dots', [11, 18, 4, 3], '', '', false, false, false, 4));
 		this.dataLine.push(new ChartItem('Line and Area', [12, 41, 1, 21], '', '', true, true, false, 3));
+
+		this.dataTimeLine.push(new ChartItem('Label', [
+			{
+				t: new Date(2021, 5, 15),
+				y: 3
+			},
+			{
+				t: new Date(2022, 1, 12),
+				y: 1
+			}, {
+				t: new Date(2022, 2, 5),
+				y: 10
+			},
+		], '', '', false, true, false, 3, ''));
+		this.dataTimeLine.push(new ChartItem('Label 2', [
+			{
+				t: new Date(2022, 1, 1),
+				y: 2
+			},
+			{
+				t: new Date(2022, 1, 20),
+				y: 4
+			}, {
+				t: new Date(2022, 2, 14),
+				y: 8
+			}, {
+				t: new Date(2022, 3, 7),
+				y: 10
+			},
+
+		], '', '', false, true, false, 3, ''));
+
 
 		this.dataBar.push(new ChartItem('Only Line', [12, 41, 1, 21], '', '', false, false, false, 3));
 		this.dataBar.push(new ChartItem('Line and Area', [13, 20, 21, 15], '', '', true, true, false, 3));
@@ -211,7 +245,7 @@ export class ShowcaseChartComponent {
 
 			this.chartLine = new ChartLine(0.5, 5, 2.5, 20, null, null);
 
-		}
+	}
 
 	public doAction(event: any) {
 		const xValue = this.labels[this.itemSelected._index];
@@ -235,6 +269,29 @@ export class ShowcaseChartComponent {
 			this.dataLine.push(new ChartItem('Line ' + h, dataRnd, '', '', fill, true, false, 3));
 		}
 		this.lineChart.doUpdate();
+	}
+
+	public randomizeTimeLineChart() {
+		this.dataTimeLine = [];
+		const rnd = ShowcaseChartComponent.randomIntFromInterval(1, 4);
+		for (let h = 1; h <= rnd; h++) {
+			const dataRnd: Array<any> = [];
+			for (let i = 1; i <= 4; i++) {
+				let item = {
+					t: new Date(ShowcaseChartComponent.randomIntFromInterval(2020, 2022),
+						ShowcaseChartComponent.randomIntFromInterval(1, 11),
+						ShowcaseChartComponent.randomIntFromInterval(1, 20)),
+					y: ShowcaseChartComponent.randomIntFromInterval(1, 35)
+				};
+				dataRnd.push(item);
+			}
+			let fill = false;
+			if (ShowcaseChartComponent.randomIntFromInterval(0, 1) === 1) {
+				fill = true;
+			}
+			this.dataTimeLine.push(new ChartItem('Line ' + h, dataRnd, '', '', fill, true, false, 3));
+		}
+		this.timelineChart.doUpdate();
 	}
 
 	public updateMultipleAxisExample(): void {

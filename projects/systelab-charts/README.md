@@ -10,7 +10,11 @@ Component to show a Chart
                 (action)="doAction($event)" [isBackgroundGrid]="isBackgroundGrid" [isHorizontal]="isHorizontal" [lineTension]="lineTension"
                 [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [annotations]="annotations" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis"
                 [tooltipSettings]="tooltipSettings" [isStacked]="isStacked" [customLegend]="customLegend"
-                [chartMeterConfiguration]="chartMeterConfiguration"></systelab-chart>
+                [chartMeterConfiguration]="chartMeterConfiguration"
+                [timeScale]="isTimeScaleChart"
+                [timeUnit]="'month'"
+                [tooltipTimeFormat]="'d, MMMM yyyy'"
+></systelab-chart>
 ```
 
 This component use the **Chart.js** library, and is able to display different chart types in an easy way.
@@ -67,6 +71,9 @@ Multiple charts example:
 | customLegend | boolean | false | Define if you want a custom Legend (remember set legendType in chartItem) |
 | hideInitialAndFinalTick | boolean | false | Remove the first and last tick in every axis|
 | hideFinalTick | boolean | false | Remove the last tick in every axis|
+| timeScale | boolean | false | Define the chart as a time line chart|
+| timeUnit | string | day | Define the unit that will be showed the data in Axis X (the format is the same as defined in [Chart.js](https://www.chartjs.org/docs/2.9.4/axes/cartesian/time.html#display-formats)) |
+| tooltipTimeFormat | string | d/M/yyyy | Define the time format that will be showed in tooltips (the format is the same as defined in the [date-fns](https://date-fns.org/v2.28.0/docs/format/)) |
 
 #### ChartItem
 
