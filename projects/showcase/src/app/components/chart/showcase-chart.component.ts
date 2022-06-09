@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 import {
 	Annotation, ChartBoxAnnotation, ChartComponent, ChartItem, ChartLabelAnnotation, ChartLabelColor,
@@ -301,7 +301,7 @@ export class ShowcaseChartComponent {
 
 	public generateChartGadgetConfiguration(): ChartMeterConfiguration {
 		const chartMeterConfiguration = new ChartMeterConfiguration();
-		chartMeterConfiguration.numberFormat = '#.##';
+		chartMeterConfiguration.numberFormat = '#.####';
 		chartMeterConfiguration.betterValues = 'higher';
 		chartMeterConfiguration.chartColour = 'green';
 		chartMeterConfiguration.goalColour = 'blue';
@@ -413,7 +413,6 @@ export class ShowcaseChartComponent {
 
 	public doResizeChart() {
 		this.resizedImage = this.resizableChart.getResizedBase64Image(this.defaultResizeHeight, this.defaultResizeWidth);
-		// this.resizableChart.doResizeChart(this.defaultResizeHeight, this.defaultResizeWidth);
 	}
 
 	public doUpdateChart() {
