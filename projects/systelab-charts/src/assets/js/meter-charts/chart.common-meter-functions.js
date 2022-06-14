@@ -123,7 +123,7 @@ export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWi
 
     if (rectWidth > externalPanelWidth) {
         rectWidth = originalRectWidth;
-        dotsText = '...';
+        dotsText = '..';
         context.font = dotFont;
         text = getDottedFormattedText(context, text, rectWidth - context.measureText(dotsText).width / 3, false);
         context.font = digitalFont;
@@ -158,11 +158,12 @@ export const drawTextPanel = (context, text, backgroundColor, xPos, yPos, rectWi
         if (Number.isNaN(actualBoundingBoxAscent)) {
             actualBoundingBoxAscent = rectHeight * 4.2 / 30;
         }
-        context.fillText(text, (xPos + rectWidth) - context.measureText(text).width - 10, yPos + rectHeight - actualBoundingBoxAscent);
+        const xPosValue = dotsText ? xPos + 10 : (xPos + rectWidth) - context.measureText(text).width - 10;
+        context.fillText(text, xPosValue, yPos + rectHeight - actualBoundingBoxAscent);
         if (dotsText) {
             context.font = dotFont;
             actualBoundingBoxAscent = context.measureText(dotsText).actualBoundingBoxAscent / 5;
-            context.fillText(dotsText, xPos + 10, yPos + rectHeight - actualBoundingBoxAscent - 5);
+            context.fillText(dotsText, xPos + context.measureText(text).width + 15, yPos + rectHeight - actualBoundingBoxAscent - 5);
         }
     }
     context.font = originalFont;
@@ -364,20 +365,20 @@ const invlerp = (x, y, a) => clamp((a - x) / (y - x));
 export const range = (x1, y1, x2, y2, a) => lerp(x2, y2, invlerp(x1, y1, a));
 
 export const getDottedFormattedText = (context, text, frameSize, addDots, inverseDots) => {
-    const stringArray = text.replace('-', '').split('').reverse();
+    const stringArray = text.replace('-', '').split('');
     let returnText = '';
 
     for (let index of stringArray) {
         if ((context.measureText(returnText + index).width + 30) > frameSize) {
             break;
         } else {
-            returnText = index + returnText;
+            returnText = returnText + index;
         }
     }
-
+    console.log(`OriginalText: ${text} - ${returnText} ---- StringArray: ${stringArray}`);
     if ('0' === returnText || !addDots) {
         return returnText;
     } else if (addDots) {
-        return inverseDots ? returnText + '...' : '...' + returnText;
+        return inverseDots ? '..' + returnText : returnText + '..';
     }
 }

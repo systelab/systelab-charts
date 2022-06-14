@@ -35,7 +35,7 @@ export const RadialMeter = Chart.controllers.bar.extend({
             linearGradient.addColorStop(1, textBackgroundColor);
 
             drawTextPanel(context, textValue, linearGradient, -width / 2, (radius / 5) - 5, width, radius / 5, getTextColor(textBackgroundColor),
-                undefined, radius * 0.8, true);
+                undefined, radius , true);
 
             this.drawNeedle(context, radius, this._data[this._data.length - 1], chartMeterData.minValue, chartMeterData.maxValue);
 
