@@ -375,7 +375,7 @@ export const getDottedFormattedText = (context, text, frameSize, addDots, invers
             returnText = returnText + index;
         }
     }
-    console.log(`OriginalText: ${text} - ${returnText} ---- StringArray: ${stringArray}`);
+
     if ('0' === returnText || !addDots) {
         return returnText;
     } else if (addDots) {

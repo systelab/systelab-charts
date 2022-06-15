@@ -250,8 +250,6 @@ export class ShowcaseChartComponent {
 	public doAction(event: any) {
 		const xValue = this.labels[this.itemSelected._index];
 		const yValue = this.dataPie[0].data[this.itemSelected._index];
-		console.log(xValue);
-		console.log(yValue);
 	}
 
 	public doChange() {
@@ -306,8 +304,8 @@ export class ShowcaseChartComponent {
 		chartMeterConfiguration.chartColour = 'green';
 		chartMeterConfiguration.goalColour = 'blue';
 		chartMeterConfiguration.defaultGoalValue = 8;
-		chartMeterConfiguration.minVisualValue = 0;
-		chartMeterConfiguration.maxVisualValue = 18;
+		chartMeterConfiguration.minVisualValue = -2213124102.2132321;
+		chartMeterConfiguration.maxVisualValue = 123456789.2903232;
 		chartMeterConfiguration.levels.push({levelColor: '#ff0000', minValue: 0, maxValue: 2});
 		chartMeterConfiguration.levels.push({levelColor: '#FFFF00AA', minValue: 3, maxValue: 5});
 		chartMeterConfiguration.levels.push({levelColor: '#00FF00AA', minValue: 6, maxValue: 10});
