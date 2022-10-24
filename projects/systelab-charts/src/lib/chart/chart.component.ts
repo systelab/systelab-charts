@@ -586,6 +586,12 @@ export class ChartComponent implements AfterViewInit {
 						textShadowColor: this.chartLabelSettings.chartLabelText.textShadowColor
 					}
 				};
+			} else {
+				definition.options.plugins = {
+					datalabels: {
+							display: false
+						}
+					};
 			}
 			this.chart = new Chart(cx, definition);
 		}
