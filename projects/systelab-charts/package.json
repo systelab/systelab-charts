@@ -1,6 +1,6 @@
 {
   "name": "systelab-charts",
-  "version": "14.0.1",
+  "version": "15.0.0",
   "license": "MIT",
   "keywords": [
     "Angular",
@@ -22,7 +22,7 @@
     "chartjs-adapter-date-fns": "^2.0.0"
   },
   "peerDependencies": {
-    "@angular/common": ">=14.0.0 <15.0.0",
-    "@angular/core": ">=14.0.0 <15.0.0"
+    "@angular/common": ">=15.0.0 <16.0.0",
+    "@angular/core": ">=15.0.0 <16.0.0"
   }
 }
