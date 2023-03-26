@@ -198,8 +198,8 @@ export class ChartComponent implements AfterViewInit {
 	@Input() data: Array<ChartItem> = [];
 	@Input() annotations: Array<Annotation | ChartLineAnnotation | ChartBoxAnnotation> = [];
 	@Input() showLegend = true;
-	@Input() intersectionSettings: ChartIntersectionSettings = new ChartIntersectionSettings();
 	@Input() legendPosition = 'top';
+	@Input() intersectionSettings: ChartIntersectionSettings = new ChartIntersectionSettings();
 	@Input() isHorizontal = false;
 	@Input() yMinValue: any;
 	@Input() yMaxValue: any;
