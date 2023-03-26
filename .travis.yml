@@ -2,8 +2,14 @@ sudo: required
 dist: jammy
 language: node_js
 node_js:
-  - '14.20.1'
+  - '18.12.1'
 addons:
+  apt:
+    update: true
+    sources:
+      - google-chrome
+    packages:
+      - dpkg
   chrome: stable
 
 services:
