@@ -1,16 +1,14 @@
 import { AfterViewInit, ApplicationRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { Chart, registerables } from 'chart.js';
+import { Chart, InteractionMode, registerables } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { DecimalFormat } from '../../assets/js/decimalFormat';
 import { format } from 'date-fns/esm';
 import 'chartjs-plugin-annotation';
-// import { drawRegionsPlugin } from '../../assets/js/meter-charts/chart.common-meter-functions';
 import { arrayToObject } from '../utils';
 
 Chart.register(...registerables, ChartDataLabels, annotationPlugin);
-Chart.defaults.interaction.intersect = false;
 
 interface MultipleAxis {
 	id:         string;
@@ -176,6 +174,16 @@ export class ChartMultipleYAxisScales {
 	}
 }
 
+export class ChartIntersectionSettings {
+	public intersect: boolean;
+	public mode: string;
+
+	constructor(intersect = false, mode: InteractionMode = 'index') {
+		this.intersect = intersect;
+		this.mode = mode;
+	}
+}
+
 @Component({
 	selector:    'systelab-chart',
 	templateUrl: './chart.component.html'
@@ -190,6 +198,7 @@ export class ChartComponent implements AfterViewInit {
 	@Input() data: Array<ChartItem> = [];
 	@Input() annotations: Array<Annotation | ChartLineAnnotation | ChartBoxAnnotation> = [];
 	@Input() showLegend = true;
+	@Input() intersectionSettings: ChartIntersectionSettings = new ChartIntersectionSettings();
 	@Input() legendPosition = 'top';
 	@Input() isHorizontal = false;
 	@Input() yMinValue: any;
@@ -247,7 +256,11 @@ export class ChartComponent implements AfterViewInit {
 	private yAxisLabelVisible = false;
 	private xAxisLabelVisible = false;
 
-	constructor(private readonly appRef: ApplicationRef) {}
+	constructor(private readonly appRef: ApplicationRef) {
+		Chart.defaults.interaction.intersect = this.intersectionSettings.intersect;
+		// @ts-ignore
+		Chart.defaults.interaction.mode = this.intersectionSettings.mode;
+	}
 
 	@Input()
 	get itemSelected(): any {
@@ -464,22 +477,22 @@ export class ChartComponent implements AfterViewInit {
 							events:      ['click'],
 							annotations: arrayToObject(this._annotations, item => item.id),
 						},
+						tooltips:            {
+							position:        this.type === 'bar' ? 'nearest' : 'average',
+							callbacks:       {
+								title: (tooltipItem, data) => this.tooltipTitle(tooltipItem, data),
+								label: (tooltipItem, data) => this.tooltipLabel(tooltipItem, tooltipTimeFormatConstant, data),
+								afterLabel: (tooltipItem, data) => this.tooltipAfterLabel(tooltipItem, data),
+							},
+							backgroundColor: this.tooltipSettings.backgroundColor,
+							titleFontSize:   this.tooltipSettings.titleFontSize,
+							titleFontColor:  this.tooltipSettings.titleFontColor,
+							bodyFontColor:   this.tooltipSettings.bodyFontColor,
+							bodyFontSize:    this.tooltipSettings.bodyFontSize,
+							borderColor:     this.tooltipSettings.borderColor,
+							borderWidth:     this.tooltipSettings.borderWidth
+						}
 					},
-					tooltips:            {
-						position:        this.type === 'bar' ? 'nearest' : 'average',
-						callbacks:       {
-							title: (tooltipItem, data) => this.tooltipTitle(tooltipItem, data),
-							label: (tooltipItem, data) => this.tooltipLabel(tooltipItem, tooltipTimeFormatConstant, data),
-							afterLabel: (tooltipItem, data) => this.tooltipAfterLabel(tooltipItem, data),
-						},
-						backgroundColor: this.tooltipSettings.backgroundColor,
-						titleFontSize:   this.tooltipSettings.titleFontSize,
-						titleFontColor:  this.tooltipSettings.titleFontColor,
-						bodyFontColor:   this.tooltipSettings.bodyFontColor,
-						bodyFontSize:    this.tooltipSettings.bodyFontSize,
-						borderColor:     this.tooltipSettings.borderColor,
-						borderWidth:     this.tooltipSettings.borderWidth
-					}
 				},
 			};
 
