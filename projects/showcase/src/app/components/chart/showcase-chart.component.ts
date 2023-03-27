@@ -242,7 +242,6 @@ export class ShowcaseChartComponent {
 				fill = true;
 			}
 			this.dataLine.push(new ChartItem('Line ' + h, dataRnd, '', '', fill, true, false, 3));
-			console.log({rnd, dataRnd});
 		}
 		this.lineChart.doUpdate();
 	}

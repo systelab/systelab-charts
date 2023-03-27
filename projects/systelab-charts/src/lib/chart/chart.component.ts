@@ -274,12 +274,6 @@ export class ChartComponent implements AfterViewInit {
 	public ngAfterViewInit(): void {
 		let cx: CanvasRenderingContext2D;
 
-		if (this.type === 'bar') {
-			if (this.isHorizontal) {
-				// this.type = 'horizontalBar';
-			}
-		}
-
 		if (!this.tooltipSettings) {
 			this.tooltipSettings = new ChartTooltipSettings();
 		}
@@ -414,10 +408,8 @@ export class ChartComponent implements AfterViewInit {
 	private buildCustomLegend() {
 		let legendItems = [];
 		if (this.legendPosition === 'top') {
-			//this.topLegend.nativeElement.innerHTML = this.chart.generateLegend();
 			legendItems = this.topLegend.nativeElement.getElementsByTagName('li');
 		} else {
-			//this.bottomLegend.nativeElement.innerHTML = this.chart.generateLegend();
 			legendItems = this.bottomLegend.nativeElement.getElementsByTagName('li');
 		}
 		for (let i = 0; i < legendItems.length; i += 1) {
