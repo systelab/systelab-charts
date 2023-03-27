@@ -1,27 +1,53 @@
 import { AfterViewInit, ApplicationRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { Chart } from 'chart.js/dist/Chart.js'
-import { RadialMeter } from '../../assets/js/meter-charts/chart.radial-meter';
-import { DigitalMeter } from '../../assets/js/meter-charts/chart.digital-meter';
-import { LinearMeter } from '../../assets/js/meter-charts/chart.linear-meter';
-import { drawRegionsPlugin } from '../../assets/js/meter-charts/chart.common-meter-functions';
+import { Chart, InteractionMode, registerables } from 'chart.js';
+import 'chartjs-adapter-date-fns';
+import annotationPlugin from 'chartjs-plugin-annotation';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { DecimalFormat } from '../../assets/js/decimalFormat';
-import * as ChartDataLabels from 'chartjs-plugin-datalabels';
-import { format } from 'date-fns/esm'
+import { format } from 'date-fns/esm';
 import 'chartjs-plugin-annotation';
+import { arrayToObject } from '../utils';
+
+Chart.register(...registerables, ChartDataLabels, annotationPlugin);
+
+interface MultipleAxis {
+	id:         string;
+	type:       string;
+	position:   string;
+	stacked:    boolean;
+	max: number;
+	min: number;
+	ticks: {
+		min: number;
+		max: number;
+		stepSize?: number;
+		display?: boolean;
+		callbackFunction? (any): any;
+	};
+	grid: {
+		display: boolean;
+		drawBorder: boolean;
+	};
+	title: {
+		text: string;
+	};
+}
+
 
 export class ChartItem {
 
-	constructor(public label: string, public data: Array<any>, public borderColor?: string, public backgroundColor?: string,
-				public fill?: boolean, public showLine?: boolean, public isGradient?: boolean, public borderWidth?: number,
-				public chartType?: string, public chartTooltipItem?: ChartTooltipItem | Array<ChartTooltipItem>, public pointRadius?: number,
-				public yAxisID?: string, public legendType?: string, public labelBorderColors?: Array<number[]>,
-				public labelBackgroundColors?: Array<number[]>) {
+	constructor(public label: string, public data: Array<any>, public borderColor?: string,
+				public backgroundColor?: string, public fill?: boolean, public showLine?: boolean,
+				public isGradient?: boolean, public borderWidth?: number,
+				public chartType?: string, public chartTooltipItem?: ChartTooltipItem | Array<ChartTooltipItem>,
+				public pointRadius?: number, public yAxisID?: string, public legendType?: string,
+				public labelBorderColors?: Array<number[]>, public labelBackgroundColors?: Array<number[]>) {
 	}
 }
 
 export class Annotation {
 	constructor(public drawTime: string, public type: string, public borderColor?: string, public borderWidth?: number,
-				public scaleId = 'y-axis-0') {
+				public scaleId = 'yAxis') {
 	}
 }
 
@@ -85,7 +111,8 @@ export class ChartLabelSettings {
 
 export class ChartLabelPosition {
 	constructor(public align?: string | number, public anchor?: string, public clamp?: boolean, public clip?: boolean,
-				public display?: ((context: any) => (boolean | string)) | boolean | string, public offset?: number, public rotation?: number) {
+				public display?: ((context: any) => (boolean | string)) | boolean | string, public offset?: number,
+				public rotation?: number) {
 	}
 }
 
@@ -104,7 +131,8 @@ export class ChartLabelFont {
 }
 
 export class ChartLabelPadding {
-	constructor(public padding?: number | object, public top?: number, public right?: number, public bottom?: number, public left?: number) {
+	constructor(public padding?: number | object, public top?: number, public right?: number, public bottom?: number,
+				public left?: number) {
 
 	}
 }
@@ -119,44 +147,40 @@ export class ChartLabelText {
 export class ChartMultipleYAxisScales {
 	constructor(public id?: string, public type?: string, public position?: string,
 				public stacked = false,
-				public ticks?: { min: number, max: number, stepSize?: number, display?: boolean },
-				public gridLines?: { display: boolean, drawBorder: boolean },
-				public scaleLabel?: { display: boolean, labelString: string }) {
+				public ticks?: { min: number; max: number; stepSize?: number; display?: boolean },
+				public gridLines?: { display: boolean; drawBorder: boolean },
+				public scaleLabel?: { display: boolean; labelString: string }) {
 	}
 
-	public getScaleDefinition(callbackFunction?: (value, index, values) => string) {
+	public getScaleDefinition(callbackFunction?: (value, index, values) => string): MultipleAxis {
 		return {
 			id:         this.id,
 			type:       this.type,
 			position:   this.position,
 			stacked:    this.stacked,
+			max: this.ticks.max,
+			min: this.ticks.min,
 			ticks: {
 				...this.ticks,
 				...callbackFunction ? {
 					callback: callbackFunction
 				} : {}
 			},
-			gridLines:  this.gridLines,
-			scaleLabel: this.scaleLabel
+			grid:  this.gridLines,
+			title: {
+				text: this.scaleLabel.labelString,
+			}
 		};
 	}
 }
 
-export class ChartMeterConfiguration {
-	public borderColor = '#007bff';
-	public numberFormat: string;
-	public chartColour: string;
-	public goalColour: string;
-	public betterValues: string | 'higher' | 'lower';
-	public markerForGoal: string | 'circle' | 'cross' | 'crossRot' | 'dash' | 'line' | 'rect' | 'rectRounded'
-		| 'rectRot' | 'star' | 'triangle' = 'circle';
-	public defaultGoalValue: number;
-	public minVisualValue: number;
-	public maxVisualValue: number;
-	public showHistory = false;
-	public levels: Array<{ levelColor: string, minValue: number, maxValue: number }> = [];
+export class ChartIntersectionSettings {
+	public intersect: boolean;
+	public mode: string;
 
-	constructor() {
+	constructor(intersect = false, mode: InteractionMode = 'index') {
+		this.intersect = intersect;
+		this.mode = mode;
 	}
 }
 
@@ -165,39 +189,17 @@ export class ChartMeterConfiguration {
 	templateUrl: './chart.component.html'
 })
 export class ChartComponent implements AfterViewInit {
-	private defaultColors: Array<number[]> = [
-		[255, 99, 132],
-		[54, 162, 235],
-		[255, 206, 86],
-		[75, 192, 192],
-		[220, 220, 220],
-		[247, 70, 74],
-		[70, 191, 189],
-		[253, 180, 92],
-		[148, 159, 177],
-		[151, 187, 205],
-		[231, 233, 237],
-		[77, 83, 96]];
-	public chart: Chart;
-	private _itemSelected: any;
 
-	@Input()
-	get itemSelected(): any {
-		return this._itemSelected;
-	}
-
-	@Output() itemSelectedChange = new EventEmitter();
-
-	set itemSelected(value: any) {
-		this._itemSelected = value;
-		this.itemSelectedChange.emit(this._itemSelected);
-	}
+	@ViewChild('canvas', {static: true}) canvas: ElementRef;
+	@ViewChild('topLegend', {static: false}) topLegend: ElementRef;
+	@ViewChild('bottomLegend', {static: false}) bottomLegend: ElementRef;
 
 	@Input() labels: Array<any> = [];
 	@Input() data: Array<ChartItem> = [];
 	@Input() annotations: Array<Annotation | ChartLineAnnotation | ChartBoxAnnotation> = [];
 	@Input() showLegend = true;
 	@Input() legendPosition = 'top';
+	@Input() intersectionSettings: ChartIntersectionSettings = new ChartIntersectionSettings();
 	@Input() isHorizontal = false;
 	@Input() yMinValue: any;
 	@Input() yMaxValue: any;
@@ -217,17 +219,36 @@ export class ChartComponent implements AfterViewInit {
 	@Input() animationDuration = 1000;
 	@Input() minValueForRadar: number;
 	@Input() maxValueForRadar: number;
-	@Input() multipleYAxisScales: Array<ChartMultipleYAxisScales>;
+	@Input() multipleYAxisScales: ChartMultipleYAxisScales[];
 	@Input() timeScale = false;
 	@Input() timeUnit = 'day';
 	@Input() tooltipTimeFormat = 'd/M/yyyy';
 	@Input() customLegend = false;
-	@Input() chartMeterConfiguration: ChartMeterConfiguration;
 	@Input() legendWithoutBox = false;
 	@Input() hideInitialAndFinalTick = false;
 	@Input() hideFinalTick = false;
 	@Input() chartLine: ChartLine;
 
+	@Output() itemSelectedChange = new EventEmitter();
+	@Output() action = new EventEmitter();
+
+	public chart: Chart;
+	public chartResized = false;
+
+	private defaultColors: Array<number[]> = [
+		[255, 99, 132],
+		[54, 162, 235],
+		[255, 206, 86],
+		[75, 192, 192],
+		[220, 220, 220],
+		[247, 70, 74],
+		[70, 191, 189],
+		[253, 180, 92],
+		[148, 159, 177],
+		[151, 187, 205],
+		[231, 233, 237],
+		[77, 83, 96]];
+	private _itemSelected: any;
 	private dataset: Array<any> = [];
 
 	private _annotations: Array<any> = [];
@@ -235,32 +256,23 @@ export class ChartComponent implements AfterViewInit {
 	private yAxisLabelVisible = false;
 	private xAxisLabelVisible = false;
 
-	@Output() action = new EventEmitter();
-
-	@ViewChild('canvas', {static: true}) canvas: ElementRef;
-	@ViewChild('topLegend', {static: false}) topLegend: ElementRef;
-	@ViewChild('bottomLegend', {static: false}) bottomLegend: ElementRef;
-	public chartResized = false;
-
 	constructor(private readonly appRef: ApplicationRef) {
-		Chart.defaults.radialMeter = Chart.defaults.bar;
-		Chart.defaults.digitalMeter = Chart.defaults.bar;
-		Chart.defaults.linearMeter = Chart.defaults.bar;
-		Chart.controllers.radialMeter = RadialMeter;
-		Chart.controllers.digitalMeter = DigitalMeter;
-		Chart.controllers.linearMeter = LinearMeter;
-		Chart.pluginService.register(drawRegionsPlugin);
+		Chart.defaults.interaction.intersect = this.intersectionSettings.intersect;
+		// @ts-ignore
+		Chart.defaults.interaction.mode = this.intersectionSettings.mode;
+	}
+
+	@Input()
+	get itemSelected(): any {
+		return this._itemSelected;
+	}
+	set itemSelected(value: any) {
+		this._itemSelected = value;
+		this.itemSelectedChange.emit(this._itemSelected);
 	}
 
 	public ngAfterViewInit(): void {
-		Chart.plugins.unregister(ChartDataLabels);
 		let cx: CanvasRenderingContext2D;
-
-		if (this.type === 'bar') {
-			if (this.isHorizontal) {
-				this.type = 'horizontalBar';
-			}
-		}
 
 		if (!this.tooltipSettings) {
 			this.tooltipSettings = new ChartTooltipSettings();
@@ -285,6 +297,110 @@ export class ChartComponent implements AfterViewInit {
 		}
 	}
 
+	public rgba(colour: Array<number>, alpha: number): string {
+		return 'rgba(' + colour.concat(alpha)
+			.join(',') + ')';
+	}
+
+	public getResizedBase64Image(height?: number, width?: number): string {
+		let base64ImageString: string;
+		if (this.chart) {
+			if (width || height) {
+
+				const canvasOffsetHeight = this.chart.canvas.parentElement.offsetHeight;
+				const canvasOffsetWidth = this.chart.canvas.parentElement.offsetWidth;
+				const originalAspectRatio = this.maintainAspectRatio;
+				const originalResponsive = this.responsive;
+				this.responsive = false;
+				this.maintainAspectRatio = false;
+				this.chart.resize();
+				if (this.doResizeChart(height, width)) {
+					this.appRef.tick();
+
+					this.chart.resize();
+					base64ImageString = this.chart.toBase64Image();
+					this.maintainAspectRatio = originalAspectRatio;
+					this.responsive = originalResponsive;
+					this.chartResized = false;
+					this.doResizeChart(canvasOffsetHeight, canvasOffsetWidth);
+					this.doUpdate();
+
+				}
+			} else {
+				base64ImageString = this.chart.toBase64Image();
+			}
+			return base64ImageString;
+		}
+		return undefined;
+	}
+
+	public doResizeChart(height: number, width: number): boolean {
+		const elementToResize = this.chart.canvas.parentElement;
+		let doResize = false;
+		if (height) {
+			doResize = true;
+			elementToResize.style.height = height + 'px';
+		}
+		if (width) {
+			doResize = true;
+			elementToResize.style.width = width + 'px';
+		}
+		this.chartResized = doResize;
+		return doResize;
+	}
+
+	public doUpdate(): void {
+		let cx: CanvasRenderingContext2D;
+		if (this.canvas.nativeElement) {
+			cx = this.canvas.nativeElement.getContext('2d');
+		}
+		this.chart.destroy();
+
+		this.setAxisVisibility();
+
+		this.dataset = [];
+		this._annotations = [];
+		this.setData(cx);
+		this.addAnnotations();
+		this.drawChart(cx);
+		if (this.customLegend && this.data.filter(obj => obj.legendType != null).length === this.data.length) {
+			this.buildCustomLegend();
+		}
+	}
+
+	public drawLine(chartData, chartLine: ChartLine) {
+		const scales = (chartData.chart as any).scales;
+
+		let cx: CanvasRenderingContext2D;
+		if (this.canvas.nativeElement) {
+			cx = this.canvas.nativeElement.getContext('2d');
+		}
+
+		let xScale: any;
+		let yScale: any;
+		Object.keys(scales)
+			.forEach(
+				k => (k[0] === 'x' && (xScale = scales[k])) || (yScale = scales[k])
+			);
+
+		const getXY = (x: number, y: number) => ({
+			x: xScale.getPixelForValue(x, undefined, undefined, true),
+			y: yScale.getPixelForValue(y)
+		});
+
+		const initPoint = getXY(chartLine.xMinValue, chartLine.yMinValue);
+		const endPoint = getXY(chartLine.xMaxValue, chartLine.yMaxValue);
+
+		cx.beginPath();
+		cx.lineWidth = chartLine.borderWidth || 1;
+		cx.moveTo(initPoint.x, initPoint.y);
+		cx.lineTo(endPoint.x, endPoint.y);
+		cx.strokeStyle = chartLine.borderColor || 'black';
+		cx.stroke();
+		cx.closePath();
+		cx.restore();
+	}
+
 	private initCustomLegend() {
 		this.showLegend = false;
 	}
@@ -292,10 +408,8 @@ export class ChartComponent implements AfterViewInit {
 	private buildCustomLegend() {
 		let legendItems = [];
 		if (this.legendPosition === 'top') {
-			this.topLegend.nativeElement.innerHTML = this.chart.generateLegend();
 			legendItems = this.topLegend.nativeElement.getElementsByTagName('li');
 		} else {
-			this.bottomLegend.nativeElement.innerHTML = this.chart.generateLegend();
 			legendItems = this.bottomLegend.nativeElement.getElementsByTagName('li');
 		}
 		for (let i = 0; i < legendItems.length; i += 1) {
@@ -316,7 +430,9 @@ export class ChartComponent implements AfterViewInit {
 
 				options: {
 					animation: {
-						duration: this.animationDuration,
+						active: {
+							duration: this.animationDuration,
+						},
 						onComplete: (chartData) => {
 							if (this.chartLine) {
 								this.drawLine(chartData, this.chartLine);
@@ -346,199 +462,35 @@ export class ChartComponent implements AfterViewInit {
 								boxWidth: 0
 						}} : {}
 					},
-					legendCallback:      function(chart) {
-						const text = [];
-						text.push('<ul class="' + chart.id + '-legend">');
-						const data = chart.data;
-						const dataSets = data.datasets;
-						if (dataSets.length) {
-							for (let i = 0; i < dataSets.length; i++) {
-								text.push('<li>');
-								if (dataSets[i].legendType) {
-									if (dataSets[i].borderColor && dataSets[i].backgroundColor) {
-										if (dataSets[i].backgroundColor === 'transparent') {
-											text.push('<span class="' + dataSets[i].legendType + '" style="background-color:' + dataSets[i].borderColor + '; ' +
-												'border-color:' + dataSets[i].borderColor + '"></span>');
-										} else if (dataSets[i].borderColor === 'transparent') {
-											text.push('<span class="' + dataSets[i].legendType + '" style="background-color:' + dataSets[i].backgroundColor + '; ' +
-												'border-color:' + dataSets[i].backgroundColor + '"></span>');
-										} else {
-											text.push('<span class="' + dataSets[i].legendType + '" style="background-color:' + dataSets[i].backgroundColor + ';' +
-												' border-color:' + dataSets[i].borderColor + '"></span>');
-										}
-									} else if (dataSets[i].borderColor) {
-										text.push('<span class="' + dataSets[i].legendType + '" style="border-color:' + dataSets[i].borderColor + '"></span>');
-									} else if (dataSets[i].backgroundColor) {
-										text.push('<span class="' + dataSets[i].legendType + '" style="background-color:' + dataSets[i].backgroundColor + '"></span>');
-									}
-								}
-								text.push(dataSets[i].label);
-								text.push('</li>');
-							}
-						}
-						text.push('</ul>');
-						return text.join('');
-					},
-					scales:              {
-						adapters: {
-							date: 'date-fns',
-						} ,
-						yAxes: this.multipleYAxisScales ? this.multipleYAxisScales.map(yAxis => yAxis.getScaleDefinition(
-							this.hideInitialAndFinalTick ? this.removeInitialAndFinalTick : this.hideFinalTick ? this.removeFinalTick : null)) : [
-							{
-								stacked:    this.isStacked,
-								ticks:      {
-									min:     this.yMinValue,
-									max:     this.yMaxValue,
-									display: this.axesVisible,
-									...this.hideInitialAndFinalTick ? {
-										callback: this.removeInitialAndFinalTick
-									} : {},
-									...this.hideFinalTick ? {
-										callback: this.removeFinalTick
-									} : {}
-								},
-								gridLines:  {
-									display:    this.isBackgroundGrid,
-									drawBorder: this.axesVisible
-								},
-								scaleLabel: {
-									display:     this.yAxisLabelVisible,
-									labelString: this.yLabelAxis
-								}
-							}],
-						xAxes: [{
-							...this.timeScale ? {
-								type: 'time',
-								time: {
-									unit: this.timeUnit,
-									minUnit: 'minute'
-								}
-							} : {},
-							stacked:    this.isStacked,
-							ticks:      {
-								min:      this.xMinValue,
-								max:      this.xMaxValue,
-								display:  this.axesVisible,
-								autoSkip: this.xAutoSkip,
-								...this.hideInitialAndFinalTick ? {
-									callback: this.removeInitialAndFinalTick
-								} : {},
-								...this.hideFinalTick ? {
-									callback: this.removeFinalTick
-								} : {}
-							},
-							gridLines:  {
-								display:    this.isBackgroundGrid,
-								drawBorder: this.axesVisible
-							},
-							scaleLabel: {
-								display:     this.xAxisLabelVisible,
-								labelString: this.xLabelAxis
-							}
-						}]
-					},
-					annotation:          {
-						events:      ['click'],
-						annotations: this._annotations
-					},
-					tooltips:            {
-						position:        this.type === 'bar' ? 'nearest' : 'average',
-						callbacks:       {
-							title:      function(tooltipItem, data) {
-								const item = data.datasets[tooltipItem[0].datasetIndex];
-
-								if (item.chartTooltipItem) {
-									const chartTooltipItem = item.chartTooltipItem instanceof Array ? item.chartTooltipItem[tooltipItem[0].index] : item.chartTooltipItem;
-									if (chartTooltipItem.title) {
-										return chartTooltipItem.title;
-									}
-								}
-							},
-							label:      function(tooltipItem, data) {
-								const item = data.datasets[tooltipItem.datasetIndex];
-								let label = data.datasets[tooltipItem.datasetIndex].label;
-								if (!label) {
-									label = data.labels[tooltipItem.index];
-								}
-								const val = item.data[tooltipItem.index];
-								let rt = '';
-								let rtVal: number;
-								if (val instanceof Object) {
-									if (val.t) {
-										if(val.t instanceof Date){
-											let dataValue = '(' + (val.x ? val.x + ',' : '') + val.y + ')';
-											rt = format(val.t , tooltipTimeFormatConstant) + dataValue;
-										} else {
-											rt = val.t;
-										}
-
-									} else {
-										rt = '(' + val.x + ',' + val.y + ')';
-									}
-								} else {
-									rt = val;
-									rtVal = val;
-								}
-								if (item.chartTooltipItem) {
-									const chartTooltipItem = item.chartTooltipItem instanceof Array ? item.chartTooltipItem[tooltipItem.index] : item.chartTooltipItem;
-
-									if (!isNaN(rtVal) && chartTooltipItem.numberFormat) {
-										rt = new DecimalFormat(chartTooltipItem.numberFormat).format(val);
-									}
-
-									if (chartTooltipItem.label) {
-										label = chartTooltipItem.label;
-									}
-									if (!chartTooltipItem.valueInAfterLabel) {
-										label += ': ' + rt;
-									}
-								} else {
-									label += ': ' + rt;
-								}
-								return label;
-							},
-							afterLabel: function(tooltipItem, data) {
-								const item = data.datasets[tooltipItem.datasetIndex];
-								let afterLabel = '';
-
-								if (item.chartTooltipItem) {
-									const chartTooltipItem = item.chartTooltipItem instanceof Array ? item.chartTooltipItem[tooltipItem.index] : item.chartTooltipItem;
-									if (chartTooltipItem.afterLabel) {
-										afterLabel = chartTooltipItem.afterLabel;
-									}
-									if (chartTooltipItem.valueInAfterLabel) {
-										const val = data[tooltipItem.index];
-										let rt = '';
-										if (val instanceof Object) {
-											if (val.t) {
-												rt = val.t;
-											} else {
-												rt = '(' + val.x + ',' + val.y + ')';
-											}
-										} else {
-											if (!isNaN(val) && chartTooltipItem.numberFormat) {
-												rt = new DecimalFormat(chartTooltipItem.numberFormat).format(val);
-											} else {
-												rt = val;
-											}
-										}
-										afterLabel += ' (' + rt + ')';
-									}
-								}
-								return afterLabel;
-							}
+					legendCallback: (chart) => this.legendCallback(chart),
+					scales: this.type !== 'pie' ? this.scales() : {},
+					plugins: {
+						annotation:          {
+							events:      ['click'],
+							annotations: arrayToObject(this._annotations, item => item.id),
 						},
-						backgroundColor: this.tooltipSettings.backgroundColor,
-						titleFontSize:   this.tooltipSettings.titleFontSize,
-						titleFontColor:  this.tooltipSettings.titleFontColor,
-						bodyFontColor:   this.tooltipSettings.bodyFontColor,
-						bodyFontSize:    this.tooltipSettings.bodyFontSize,
-						borderColor:     this.tooltipSettings.borderColor,
-						borderWidth:     this.tooltipSettings.borderWidth
-					}
-				}
+						tooltips:            {
+							position:        this.type === 'bar' ? 'nearest' : 'average',
+							callbacks:       {
+								title: (tooltipItem, data) => this.tooltipTitle(tooltipItem, data),
+								label: (tooltipItem, data) => this.tooltipLabel(tooltipItem, tooltipTimeFormatConstant, data),
+								afterLabel: (tooltipItem, data) => this.tooltipAfterLabel(tooltipItem, data),
+							},
+							backgroundColor: this.tooltipSettings.backgroundColor,
+							titleFontSize:   this.tooltipSettings.titleFontSize,
+							titleFontColor:  this.tooltipSettings.titleFontColor,
+							bodyFontColor:   this.tooltipSettings.bodyFontColor,
+							bodyFontSize:    this.tooltipSettings.bodyFontSize,
+							borderColor:     this.tooltipSettings.borderColor,
+							borderWidth:     this.tooltipSettings.borderWidth
+						}
+					},
+				},
 			};
+
+			if (this.type === 'bar' && this.isHorizontal) {
+				definition.options.indexAxis = 'y';
+			}
 
 			if (this.type === 'radar') {
 				definition.options.scale = {
@@ -548,60 +500,265 @@ export class ChartComponent implements AfterViewInit {
 					}
 				};
 			}
-			if (this.type.endsWith('Meter')) {
-				definition.options.chartMeterOptions = this.chartMeterConfiguration;
-				definition.data.datasets[0].pointStyle = this.chartMeterConfiguration.markerForGoal;
-				definition.data.datasets.forEach((dataSet) => {
-					dataSet.categoryPercentage = 0.8;
-					dataSet.barPercentage = 0.9;
-				});
-				definition.options.scales.xAxes[0].offset = true;
-				definition.options.isHorizontal = this.isHorizontal;
-			}
 
 			if (this.chartLabelSettings) {
-				definition.plugins = [ChartDataLabels];
-				definition.options.plugins = {
-					datalabels: {
-						align:           this.chartLabelSettings.position.align,
-						anchor:          this.chartLabelSettings.position.anchor,
-						backgroundColor: this.chartLabelSettings.labelColors.backgroundColor,
-						borderColor:     this.chartLabelSettings.labelColors.borderColor,
-						borderRadius:    this.chartLabelSettings.labelColors.borderRadius,
-						borderWidth:     this.chartLabelSettings.labelColors.borderWidth,
-						clamp:           this.chartLabelSettings.position.clamp,
-						clip:            this.chartLabelSettings.position.clip,
-						color:           this.chartLabelSettings.labelColors.color,
-						display:         this.chartLabelSettings.position.display,
-						font:            this.initDatalabelsFontProperties(this.chartLabelSettings.chartLabelFont),
-						formatter:       this.chartLabelSettings.formatter,
-						offset:          this.chartLabelSettings.position.offset,
-						opacity:         this.chartLabelSettings.labelColors.opacity,
-						padding:         this.initDatalabelsPaddingProperties(this.chartLabelSettings.chartLabelPadding),
-						rotation:        this.chartLabelSettings.position.rotation,
-						textAlign:       this.chartLabelSettings.chartLabelText.textAlign,
-						textStrokeColor: this.chartLabelSettings.chartLabelText.textStrokeColor,
-						textStrokeWidth: this.chartLabelSettings.chartLabelText.textStrokeWidth,
-						textShadowBlur:  this.chartLabelSettings.chartLabelText.textShadowBlur,
-						textShadowColor: this.chartLabelSettings.chartLabelText.textShadowColor
+				definition.options = {
+					...definition.options,
+					plugins: {
+						...definition.options.plugins,
+						datalabels: {
+							align:           this.chartLabelSettings.position.align,
+							anchor:          this.chartLabelSettings.position.anchor,
+							backgroundColor: this.chartLabelSettings.labelColors.backgroundColor,
+							borderColor:     this.chartLabelSettings.labelColors.borderColor,
+							borderRadius:    this.chartLabelSettings.labelColors.borderRadius,
+							borderWidth:     this.chartLabelSettings.labelColors.borderWidth,
+							clamp:           this.chartLabelSettings.position.clamp,
+							clip:            this.chartLabelSettings.position.clip,
+							color:           this.chartLabelSettings.labelColors.color,
+							display:         this.chartLabelSettings.position.display,
+							font:            this.initDatalabelsFontProperties(this.chartLabelSettings.chartLabelFont),
+							formatter:       this.chartLabelSettings.formatter,
+							offset:          this.chartLabelSettings.position.offset,
+							opacity:         this.chartLabelSettings.labelColors.opacity,
+							padding:         this.initDatalabelsPaddingProperties(this.chartLabelSettings.chartLabelPadding),
+							rotation:        this.chartLabelSettings.position.rotation,
+							textAlign:       this.chartLabelSettings.chartLabelText.textAlign,
+							textStrokeColor: this.chartLabelSettings.chartLabelText.textStrokeColor,
+							textStrokeWidth: this.chartLabelSettings.chartLabelText.textStrokeWidth,
+							textShadowBlur:  this.chartLabelSettings.chartLabelText.textShadowBlur,
+							textShadowColor: this.chartLabelSettings.chartLabelText.textShadowColor
+						}
 					}
 				};
 			} else {
-				definition.options.plugins = {
-					datalabels: {
-							display: false
+				definition.options = {
+					...definition.options,
+					plugins: {
+						...definition.options.plugins,
+						datalabels: {
+							display: false,
 						}
-					};
+					}
+				};
 			}
 			this.chart = new Chart(cx, definition);
 		}
+	}
+
+	private legendCallback(chart) {
+		const text = [];
+		text.push('<ul class="' + chart.id + '-legend">');
+		const data = chart.data;
+		const dataSets = data.datasets;
+		if (dataSets.length) {
+			for (let i = 0; i < dataSets.length; i++) {
+				text.push('<li>');
+				if (dataSets[i].legendType) {
+					if (dataSets[i].borderColor && dataSets[i].backgroundColor) {
+						if (dataSets[i].backgroundColor === 'transparent') {
+							text.push(`<span class="${dataSets[i].legendType}" style="background-color: ${dataSets[i].borderColor};
+								border-color: ${dataSets[i].borderColor}"></span>`);
+						} else if (dataSets[i].borderColor === 'transparent') {
+							text.push(`<span class="${dataSets[i].legendType}" style="background-color: ${dataSets[i].backgroundColor};
+								border-color: ${dataSets[i].backgroundColor}"></span>`);
+						} else {
+							text.push(`<span class="${dataSets[i].legendType}" style="background-color: ${dataSets[i].backgroundColor};
+								border-color: ${dataSets[i].borderColor}"></span>`);
+						}
+					} else if (dataSets[i].borderColor) {
+						text.push(`<span class="${dataSets[i].legendType}" style="border-color: ${dataSets[i].borderColor}"></span>`);
+					} else if (dataSets[i].backgroundColor) {
+						text.push(`<span class="${dataSets[i].legendType}" 
+										 style="background-color: ${dataSets[i].backgroundColor}"></span>`);
+					}
+				}
+				text.push(dataSets[i].label);
+				text.push('</li>');
+			}
+		}
+		text.push('</ul>');
+		return text.join('');
+	}
+
+	private scales() {
+		const yAxisMultipleArray: MultipleAxis[] = this.multipleYAxisScales ?
+		 	this.multipleYAxisScales.map(y => y.getScaleDefinition(
+		 		this.hideInitialAndFinalTick ? this.removeInitialAndFinalTick : this.hideFinalTick ? this.removeFinalTick : null)
+			) : null;
+		const yAxisMultiple = this.multipleYAxisScales ? arrayToObject(yAxisMultipleArray, i => i.id) : null;
+		const yAxis = {
+			stacked:    this.isStacked,
+			ticks:      {
+				min:     this.yMinValue,
+				max:     this.yMaxValue,
+				display: this.axesVisible,
+				...this.hideInitialAndFinalTick ? {
+					callback: this.removeInitialAndFinalTick
+				} : {},
+				...this.hideFinalTick ? {
+					callback: this.removeFinalTick
+				} : {}
+			},
+			grid:  {
+				display:    this.isBackgroundGrid,
+				drawBorder: this.axesVisible
+			},
+			scaleLabel: {
+				display:     this.yAxisLabelVisible,
+				labelString: this.yLabelAxis
+			}
+		};
+		const timeScale = this.timeScale ? {
+			type: 'time',
+			distribution: 'linear',
+			time: {
+				unit: this.timeUnit,
+				minUnit: 'minute'
+			}
+		} : {};
+		const xAxis = {
+			stacked:    this.isStacked,
+			ticks:      {
+				min:      this.xMinValue,
+				max:      this.xMaxValue,
+				display:  this.axesVisible,
+				autoSkip: this.xAutoSkip,
+				...this.hideInitialAndFinalTick ? {
+					callback: this.removeInitialAndFinalTick
+				} : {},
+				...this.hideFinalTick ? {
+					callback: this.removeFinalTick
+				} : {}
+			},
+			grid:  {
+				display:    this.isBackgroundGrid,
+				drawBorder: this.axesVisible
+			},
+			scaleLabel: {
+				display:     this.xAxisLabelVisible,
+				labelString: this.xLabelAxis
+			}
+		};
+
+		let scales = {
+			x: {
+				...timeScale,
+				...xAxis,
+			},
+			yAxis: undefined,
+		};
+
+		if (this.multipleYAxisScales) {
+			scales = {
+				...scales,
+				...yAxisMultiple,
+			};
+			delete scales.yAxis;
+		} else {
+			scales = {
+				...scales,
+				yAxis,
+			};
+		}
+
+		return scales;
+	}
+
+	private tooltipTitle(tooltipItem, data) {
+		const item = data.datasets[tooltipItem[0].datasetIndex];
+
+		if (item.chartTooltipItem) {
+			const chartTooltipItem = item.chartTooltipItem instanceof Array ?
+				item.chartTooltipItem[tooltipItem[0].index] : item.chartTooltipItem;
+			if (chartTooltipItem.title) {
+				return chartTooltipItem.title;
+			}
+		}
+	}
+
+	private tooltipLabel(tooltipItem, tooltipTimeFormatConstant, data) {
+		const item = data.datasets[tooltipItem.datasetIndex];
+		let label = data.datasets[tooltipItem.datasetIndex].label;
+		if (!label) {
+			label = data.labels[tooltipItem.index];
+		}
+		const val = item.data[tooltipItem.index];
+		let rt;
+		let rtVal: number;
+		if (val instanceof Object) {
+			if (val.t) {
+				if(val.t instanceof Date){
+					const dataValue = '(' + (val.x ? val.x + ',' : '') + val.y + ')';
+					rt = format(val.t , tooltipTimeFormatConstant) + dataValue;
+				} else {
+					rt = val.t;
+				}
+
+			} else {
+				rt = '(' + val.x + ',' + val.y + ')';
+			}
+		} else {
+			rt = val;
+			rtVal = val;
+		}
+		if (item.chartTooltipItem) {
+			const chartTooltipItem = item.chartTooltipItem instanceof Array ?
+				item.chartTooltipItem[tooltipItem.index] : item.chartTooltipItem;
+
+			if (!isNaN(rtVal) && chartTooltipItem.numberFormat) {
+				rt = new DecimalFormat(chartTooltipItem.numberFormat).format(val);
+			}
+
+			if (chartTooltipItem.label) {
+				label = chartTooltipItem.label;
+			}
+			if (!chartTooltipItem.valueInAfterLabel) {
+				label += ': ' + rt;
+			}
+		} else {
+			label += ': ' + rt;
+		}
+		return label;
+	}
+
+	private tooltipAfterLabel(tooltipItem, data) {
+		const item = data.datasets[tooltipItem.datasetIndex];
+		let afterLabel = '';
+
+		if (item.chartTooltipItem) {
+			const chartTooltipItem = item.chartTooltipItem instanceof Array ?
+				item.chartTooltipItem[tooltipItem.index] : item.chartTooltipItem;
+			if (chartTooltipItem.afterLabel) {
+				afterLabel = chartTooltipItem.afterLabel;
+			}
+			if (chartTooltipItem.valueInAfterLabel) {
+				const val = data[tooltipItem.index];
+				let rt;
+				if (val instanceof Object) {
+					if (val.t) {
+						rt = val.t;
+					} else {
+						rt = '(' + val.x + ',' + val.y + ')';
+					}
+				} else {
+					if (!isNaN(val) && chartTooltipItem.numberFormat) {
+						rt = new DecimalFormat(chartTooltipItem.numberFormat).format(val);
+					} else {
+						rt = val;
+					}
+				}
+				afterLabel += ' (' + rt + ')';
+			}
+		}
+		return afterLabel;
 	}
 
 	private removeInitialAndFinalTick(value, index, values): string {
 		return index === 0 || index === values.length - 1 ? '' : value;
 	}
 
-	private removeFinalTick(value, index, values): string {
+	private removeFinalTick(value, index): string {
 		return index === 0 ? '' : value;
 	}
 
@@ -744,11 +901,16 @@ export class ChartComponent implements AfterViewInit {
 		if (this.annotations) {
 			for (let i = 0; i < this.annotations.length; i++) {
 				if (this.annotations[i] instanceof ChartLineAnnotation) {
-					this.addLineAnnotation(<ChartLineAnnotation>this.annotations[i], this.rgba(this.defaultColors[this.getColorNumber(i)], 1),
+					this.addLineAnnotation(
+						this.annotations[i] as ChartLineAnnotation,
+						this.rgba(this.defaultColors[this.getColorNumber(i)], 1),
 						this.rgba(this.defaultColors[this.getColorNumber(i) + 1], 1));
 				}
 				if (this.annotations[i] instanceof ChartBoxAnnotation) {
-					this.addBoxAnnotation(<ChartBoxAnnotation>this.annotations[i], this.rgba(this.defaultColors[this.getColorNumber(i)], 1));
+					this.addBoxAnnotation(
+						this.annotations[i] as ChartBoxAnnotation,
+						this.rgba(this.defaultColors[this.getColorNumber(i)], 1)
+					);
 
 				}
 			}
@@ -778,28 +940,35 @@ export class ChartComponent implements AfterViewInit {
 				lineAnnotation.label.fontStyle = 'normal';
 			}
 		}
-		let scaleId = lineAnnotation.scaleId;
-		if (lineAnnotation.orientation === 'vertical') {
-			scaleId = 'x-axis-0';
-		}
-		this._annotations.push({
-			drawTime:    lineAnnotation.drawTime, id: 'annotation' + (this._annotations.length + 1),
+		const annotations = {
+			drawTime:    lineAnnotation.drawTime,
+			id: 		 'annotation' + (this._annotations.length + 1),
 			type:        lineAnnotation.type,
-			mode:        lineAnnotation.orientation,
-			scaleID:     scaleId,
-			value:       lineAnnotation.value,
-			borderColor: lineAnnotation.borderColor,
+			value:		 lineAnnotation.orientation === 'vertical' ? lineAnnotation.value.toString(): lineAnnotation.value,
 			endValue:    lineAnnotation.endValue,
+			borderColor: lineAnnotation.borderColor,
 			borderWidth: lineAnnotation.borderWidth,
 			borderDash:  lineAnnotation.borderDash,
-			label:       {
-				backgroundColor: lineAnnotation.label.backgroundColor,
-				position:        lineAnnotation.label.position,
-				content:         lineAnnotation.label.text,
-				fontColor:       lineAnnotation.label.fontColor,
-				enabled:         true,
-				fontStyle:       lineAnnotation.label.fontStyle
-			}
+			scaleID:     lineAnnotation.orientation === 'vertical' ? 'x' : lineAnnotation.scaleId,
+		};
+
+		let label = {};
+		if (lineAnnotation.label) {
+			label = {
+				display:         true,
+					backgroundColor: lineAnnotation.label.backgroundColor,
+					position:        'start',
+					content:         lineAnnotation.label.text,
+					font: {
+					color: lineAnnotation.label.fontColor,
+						style: lineAnnotation.label.fontStyle,
+				},
+			};
+		}
+
+		this._annotations.push({
+			...annotations,
+			label,
 		});
 	}
 
@@ -836,81 +1005,10 @@ export class ChartComponent implements AfterViewInit {
 			xMax:            boxAnnotation.xMax,
 			yMin:            boxAnnotation.yMin,
 			yMax:            boxAnnotation.yMax,
-			xScaleID:        'x-axis-0',
+			xScaleID:        'x',
 			yScaleID:        boxAnnotation.scaleId
 		});
 
-	}
-
-	public rgba(colour: Array<number>, alpha: number): string {
-		return 'rgba(' + colour.concat(alpha)
-			.join(',') + ')';
-	}
-
-	public getResizedBase64Image(height?: number, width?: number): string {
-		let base64ImageString: string;
-		if (this.chart) {
-			if (width || height) {
-
-				const canvasOffsetHeight = this.chart.canvas.parentElement.offsetHeight;
-				const canvasOffsetWidth = this.chart.canvas.parentElement.offsetWidth;
-				const originalAspectRatio = this.maintainAspectRatio;
-				const originalResponsive = this.responsive;
-				this.responsive = false;
-				this.maintainAspectRatio = false;
-				this.chart.resize();
-				if (this.doResizeChart(height, width)) {
-					this.appRef.tick();
-
-					this.chart.resize();
-					base64ImageString = this.chart.toBase64Image();
-					this.maintainAspectRatio = originalAspectRatio;
-					this.responsive = originalResponsive;
-					this.chartResized = false;
-					this.doResizeChart(canvasOffsetHeight, canvasOffsetWidth);
-					this.doUpdate();
-
-				}
-			} else {
-				base64ImageString = this.chart.toBase64Image();
-			}
-			return base64ImageString;
-		}
-		return undefined;
-	}
-
-	public doResizeChart(height: number, width: number): boolean {
-		const elementToResize = this.chart.canvas.parentElement;
-		let doResize = false;
-		if (height) {
-			doResize = true;
-			elementToResize.style.height = height + 'px';
-		}
-		if (width) {
-			doResize = true;
-			elementToResize.style.width = width + 'px';
-		}
-		this.chartResized = doResize;
-		return doResize;
-	}
-
-	public doUpdate(): void {
-		let cx: CanvasRenderingContext2D;
-		if (this.canvas.nativeElement) {
-			cx = this.canvas.nativeElement.getContext('2d');
-		}
-		this.chart.destroy();
-
-		this.setAxisVisibility();
-
-		this.dataset = [];
-		this._annotations = [];
-		this.setData(cx);
-		this.addAnnotations();
-		this.drawChart(cx);
-		if (this.customLegend && this.data.filter(obj => obj.legendType != null).length === this.data.length) {
-			this.buildCustomLegend();
-		}
 	}
 
 	private setAxisVisibility(): void {
@@ -940,38 +1038,5 @@ export class ChartComponent implements AfterViewInit {
 			}
 			chart.update();
 		}
-	}
-
-	public drawLine(chartData, chartLine: ChartLine) {
-		const scales = (chartData.chart as any).scales;
-
-		let cx: CanvasRenderingContext2D;
-		if (this.canvas.nativeElement) {
-			cx = this.canvas.nativeElement.getContext('2d');
-		}
-
-		let xScale: any;
-		let yScale: any;
-		Object.keys(scales)
-			.forEach(
-				k => (k[0] === 'x' && (xScale = scales[k])) || (yScale = scales[k])
-			);
-
-		const getXY = (x: number, y: number) => ({
-			x: xScale.getPixelForValue(x, undefined, undefined, true),
-			y: yScale.getPixelForValue(y)
-		});
-
-		const initPoint = getXY(chartLine.xMinValue, chartLine.yMinValue);
-		const endPoint = getXY(chartLine.xMaxValue, chartLine.yMaxValue);
-
-		cx.beginPath();
-		cx.lineWidth = chartLine.borderWidth || 1;
-		cx.moveTo(initPoint.x, initPoint.y);
-		cx.lineTo(endPoint.x, endPoint.y);
-		cx.strokeStyle = chartLine.borderColor || 'black';
-		cx.stroke();
-		cx.closePath();
-		cx.restore();
 	}
 }

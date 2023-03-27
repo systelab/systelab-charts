@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-	selector: 'showcase-title',
+	selector: 'app-showcase-title',
 	template: `
 	          <div class="pl-2 pt-2 pb-2">
                 <h4 class="d-inline"><ng-content></ng-content></h4>
@@ -11,7 +11,7 @@ import { Component, Input } from '@angular/core';
                 </a>
             </div>
 	          `,
-	styles: [`		
+	styles: [`
 	img {
       position: relative;
 			top: -4px;

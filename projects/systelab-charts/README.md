@@ -28,11 +28,8 @@ Set **type** with the chart type that you want to display. You can choose betwee
 - Bubble
 - Radar
 - Polar Area
-- Digital Meter
-- Radial Meter
-- Linear Meter (horizontal / vertical)
 
-Also, you can show together different chart types (less the meter ones); for example a Bar chart with Line chart. In order to do this, you should define the chart type in the properties of the data that you provide to the component.
+Also, you can show together different chart types; for example a Bar chart with Line chart. In order to do this, you should define the chart type in the properties of the data that you provide to the component.
 
 Single example:
 
@@ -54,6 +51,7 @@ Multiple charts example:
 | **itemSelected** | any | | is used to notify which item is clicked |
 | showLegend | boolean | true | Define the visibility of the legend |
 | legendPosition | string | 'top' | Define the position of the legend |
+ | intersectionSettings | ChartIntersectionSettings | | Define the intersection behaviour |
 | isBackgroundGrid | boolean | true | Define if you want a grid background or not |
 | lineTension | number | 0 | Define the tension of the line |
 | yMinValue | any | 0 | Min value of the axis Y |
@@ -105,6 +103,13 @@ Multiple charts example:
 | gridLines | GridLine |  | Display the grid lines |
 | scaleLabel | ScaleLabel | | Show an axis label |
 | ticks | Ticks | | Define the values and steps for the axis |
+
+
+### ChartIntersectionSettings
+| Name |  Type   | Default | Description                                                           |
+| ---- |:-------:|:-------:|-----------------------------------------------------------------------|
+| intersect | boolean |  false  | Enable show tooltip only when pointer is exactly over an intersection |
+ | mode | string | index | The mode for showing information |
 
 ### GridLine
 
@@ -369,10 +374,10 @@ Definition of the padding parameter as an object:
 ```javascript
 type
 Padding = number | {
-	top   ? : number,
-	right ? : number,
-	bottom? : number,
-	left  ? : number
+	top?: number,
+	right?: number,
+	bottom?: number,
+	left?: number
 };
 ```
 
@@ -422,16 +427,6 @@ Levels = {
 	minValue:   number,
 	maxValue:   number
 };
-```
-
-Use the next @font-face declaration in your scss in order to use the digital font in the meter graphs:
-
-```scss
-@font-face {
-  font-family: 'digital-font';
-  src: url('~systelab-charts/assets/fonts/Segment7Standard.otf') format('opentype');
-  font-style: normal;
-}
 ```
 
 ## Events

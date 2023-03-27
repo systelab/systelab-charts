@@ -7,36 +7,36 @@
 
 export function DecimalFormat(formatStr) {
 	/**
-	 * @fieldOf DecimalFormat
+	 * @fieldOf decimalFormat
 	 * @type String
 	 */
 	this.prefix = '';
 	/**
-	 * @fieldOf DecimalFormat
+	 * @fieldOf decimalFormat
 	 * @type String
 	 */
 	this.suffix = '';
 	/**
 	 * @description Grouping size
-	 * @fieldOf DecimalFormat
+	 * @fieldOf decimalFormat
 	 * @type String
 	 */
 	this.comma = 0;
 	/**
 	 * @description Minimum integer digits to be displayed
-	 * @fieldOf DecimalFormat
+	 * @fieldOf decimalFormat
 	 * @type Number
 	 */
 	this.minInt = 1;
 	/**
 	 * @description Minimum fractional digits to be displayed
-	 * @fieldOf DecimalFormat
+	 * @fieldOf decimalFormat
 	 * @type String
 	 */
 	this.minFrac = 0;
 	/**
 	 * @description Maximum fractional digits to be displayed
-	 * @fieldOf DecimalFormat
+	 * @fieldOf decimalFormat
 	 * @type String
 	 */
 	this.maxFrac = 0;
@@ -85,7 +85,7 @@ export function DecimalFormat(formatStr) {
 
 /**
  * @description Formats given value
- * @methodOf DecimalFormat
+ * @methodOf decimalFormat
  * @param {String} numberStr
  * @return {String} Formatted number
  * @author Oskan Savli
@@ -202,7 +202,7 @@ DecimalFormat.prototype.format = function(numStr) { // 1223.06 --> $1,223.06
 
 /**
  * @description Converts formatted value back to non-formatted value
- * @methodOf DecimalFormat
+ * @methodOf decimalFormat
  * @param {String} fNumberStr Formatted number
  * @return {String} Original number
  * @author Oskan Savli
@@ -238,7 +238,7 @@ DecimalFormat.prototype.formatBack = function(fNumStr) { // $1,223.06 --> 1223.0
  * However, using only Number(str) is not enough, because it omits . in big numbers
  * like 23423423423342234.34 => 23423423423342236 . There's a conflict in cases
  * 6143 and 6541.
- * @methodOf DecimalFormat
+ * @methodOf decimalFormat
  * @param {String} str Numberic string
  * @return {String} Corrected numeric string
  * @author Serdar Bicer
