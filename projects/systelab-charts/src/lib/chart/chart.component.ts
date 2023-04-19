@@ -604,9 +604,9 @@ export class ChartComponent implements AfterViewInit {
 				display:    this.isBackgroundGrid,
 				drawBorder: this.axesVisible
 			},
-			scaleLabel: {
+			title: {
 				display:     this.yAxisLabelVisible,
-				labelString: this.yLabelAxis
+				text: this.yLabelAxis
 			}
 		};
 		const timeScale = this.timeScale ? {
@@ -635,9 +635,9 @@ export class ChartComponent implements AfterViewInit {
 				display:    this.isBackgroundGrid,
 				drawBorder: this.axesVisible
 			},
-			scaleLabel: {
+			title: {
 				display:     this.xAxisLabelVisible,
-				labelString: this.xLabelAxis
+				text: this.xLabelAxis
 			}
 		};
 
