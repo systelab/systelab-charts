@@ -587,9 +587,9 @@ export class ChartComponent implements AfterViewInit {
 		const yAxisMultiple = this.multipleYAxisScales ? arrayToObject(yAxisMultipleArray, i => i.id) : null;
 		const yAxis = {
 			stacked:    this.isStacked,
+			min:     this.yMinValue,
+			max:     this.yMaxValue,
 			ticks:      {
-				min:     this.yMinValue,
-				max:     this.yMaxValue,
 				display: this.axesVisible,
 				...this.hideInitialAndFinalTick ? {
 					callback: this.removeInitialAndFinalTick
@@ -617,9 +617,9 @@ export class ChartComponent implements AfterViewInit {
 		} : {};
 		const xAxis = {
 			stacked:    this.isStacked,
+			min:      this.xMinValue,
+			max:      this.xMaxValue,
 			ticks:      {
-				min:      this.xMinValue,
-				max:      this.xMaxValue,
 				display:  this.axesVisible,
 				autoSkip: this.xAutoSkip,
 				...this.hideInitialAndFinalTick ? {
