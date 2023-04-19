@@ -430,9 +430,7 @@ export class ChartComponent implements AfterViewInit {
 
 				options: {
 					animation: {
-						active: {
-							duration: this.animationDuration,
-						},
+						duration: this.animationDuration,
 						onComplete: (chartData) => {
 							if (this.chartLine) {
 								this.drawLine(chartData, this.chartLine);
