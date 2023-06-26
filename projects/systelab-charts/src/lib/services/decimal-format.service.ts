@@ -1,11 +1,9 @@
-/**
- * @class DecimalFormat
- * @constructor
- * @param {String} formatStr
- * @author Oskan Savli
- */
+import { Injectable } from '@angular/core';
 
-export class DecimalFormat {
+@Injectable({
+	providedIn: 'root',
+})
+export class DecimalFormatService {
 
 	/**
 	 * @fieldOf decimalFormat
@@ -42,18 +40,17 @@ export class DecimalFormat {
 	 */
 	maxFrac = 0;
 
-	constructor(formatStr: string) {
-		this.execute(formatStr);
-	}
-
 	/**
 	 * @description Formats given value
 	 * @methodOf decimalFormat
 	 * @param numStr
+	 * @param formatStr
 	 * @return Formatted number
 	 * @author Oskan Savli
 	 */
-	public format(numStr) { // 1223.06 --> $1,223.06
+	public execute(numStr, formatStr: string) {
+		this.configureService(formatStr);
+		// 1223.06 --> $1,223.06
 		// remove prefix, suffix and commas
 		let numberStr = this.formatBack(numStr)
 			.toLowerCase();
@@ -166,7 +163,7 @@ export class DecimalFormat {
 		return formattedValue;
 	}
 
-	private execute(formatStr: string) {
+	private configureService(formatStr: string) {
 		// get prefix
 		for (let i = 0; i < formatStr.length; i++) {
 			if (formatStr.charAt(i) === '#' || formatStr.charAt(i) === '0') {

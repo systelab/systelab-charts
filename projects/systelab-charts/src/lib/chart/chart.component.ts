@@ -3,10 +3,10 @@ import { Chart, InteractionMode, registerables } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { DecimalFormat } from '../../assets/js/decimalFormat';
+import { DecimalFormatService } from '../services/decimal-format.service';
 import { format } from 'date-fns/esm';
 import 'chartjs-plugin-annotation';
-import { arrayToObject } from '../utils';
+import { arrayToObject } from '../utils/array-to-object.util';
 
 Chart.register(...registerables, ChartDataLabels, annotationPlugin);
 
@@ -264,7 +264,7 @@ export class ChartComponent implements AfterViewInit {
 	private yAxisLabelVisible = false;
 	private xAxisLabelVisible = false;
 
-	constructor(private readonly appRef: ApplicationRef) {
+	constructor(private readonly appRef: ApplicationRef, private readonly decimalFormatService: DecimalFormatService) {
 		Chart.defaults.interaction.intersect = this.intersectionSettings.intersect;
 		// @ts-ignore
 		Chart.defaults.interaction.mode = this.intersectionSettings.mode;
@@ -717,7 +717,7 @@ export class ChartComponent implements AfterViewInit {
 				item.chartTooltipItem[tooltipItem.index] : item.chartTooltipItem;
 
 			if (!isNaN(rtVal) && chartTooltipItem.numberFormat) {
-				rt = new DecimalFormat(chartTooltipItem.numberFormat).format(val);
+				rt = this.decimalFormatService.execute(val, chartTooltipItem.numberFormat);
 			}
 
 			if (chartTooltipItem.label) {
@@ -753,7 +753,7 @@ export class ChartComponent implements AfterViewInit {
 					}
 				} else {
 					if (!isNaN(val) && chartTooltipItem.numberFormat) {
-						rt = new DecimalFormat(chartTooltipItem.numberFormat).format(val);
+						rt = this.decimalFormatService.execute(val, chartTooltipItem.numberFormat);
 					} else {
 						rt = val;
 					}
