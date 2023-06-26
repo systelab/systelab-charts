@@ -438,9 +438,7 @@ export class ChartComponent implements AfterViewInit {
 
 				options: {
 					animation: {
-						active: {
-							duration: this.animationDuration,
-						},
+						duration: this.animationDuration,
 						onComplete: (chartData) => {
 							if (this.chartLine) {
 								this.drawLine(chartData, this.chartLine);
@@ -597,9 +595,9 @@ export class ChartComponent implements AfterViewInit {
 		const yAxisMultiple = this.multipleYAxisScales ? arrayToObject(yAxisMultipleArray, i => i.id) : null;
 		const yAxis = {
 			stacked:    this.isStacked,
+			min:     this.yMinValue,
+			max:     this.yMaxValue,
 			ticks:      {
-				min:     this.yMinValue,
-				max:     this.yMaxValue,
 				display: this.axesVisible,
 				...this.hideInitialAndFinalTick ? {
 					callback: this.removeInitialAndFinalTick
@@ -614,9 +612,9 @@ export class ChartComponent implements AfterViewInit {
 			grid:  {
 				display:    this.isBackgroundGrid,
 			},
-			scaleLabel: {
+			title: {
 				display:     this.yAxisLabelVisible,
-				labelString: this.yLabelAxis
+				text: this.yLabelAxis
 			}
 		};
 		const timeScale = this.timeScale ? {
@@ -629,9 +627,9 @@ export class ChartComponent implements AfterViewInit {
 		} : {};
 		const xAxis = {
 			stacked:    this.isStacked,
+			min:      this.xMinValue,
+			max:      this.xMaxValue,
 			ticks:      {
-				min:      this.xMinValue,
-				max:      this.xMaxValue,
 				display:  this.axesVisible,
 				autoSkip: this.xAutoSkip,
 				...this.hideInitialAndFinalTick ? {
@@ -647,9 +645,9 @@ export class ChartComponent implements AfterViewInit {
 			grid:  {
 				display:    this.isBackgroundGrid,
 			},
-			scaleLabel: {
+			title: {
 				display:     this.xAxisLabelVisible,
-				labelString: this.xLabelAxis,
+				text: this.xLabelAxis
 			}
 		};
 
