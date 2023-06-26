@@ -10,7 +10,6 @@ Component to show a Chart
                 (action)="doAction($event)" [isBackgroundGrid]="isBackgroundGrid" [isHorizontal]="isHorizontal" [lineTension]="lineTension"
                 [yMinValue]="yMinValue" [yMaxValue]="yMaxValue" [annotations]="annotations" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis"
                 [tooltipSettings]="tooltipSettings" [isStacked]="isStacked" [customLegend]="customLegend"
-                [chartMeterConfiguration]="chartMeterConfiguration"
                 [timeScale]="isTimeScaleChart"
                 [timeUnit]="'month'"
                 [tooltipTimeFormat]="'d, MMMM yyyy'"

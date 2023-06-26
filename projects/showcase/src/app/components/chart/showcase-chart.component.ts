@@ -12,9 +12,6 @@ import {
 })
 export class ShowcaseChartComponent {
 
-	@ViewChild('digitalMeterChart') digitalMeterChart: ChartComponent;
-	@ViewChild('horizontalLinearMeterChart') horizontalLinearMeterChart: ChartComponent;
-	@ViewChild('verticalLinearMeterChart') verticalLinearMeterChart: ChartComponent;
 	@ViewChild('lineChart') lineChart: ChartComponent;
 	@ViewChild('timelineChart') timelineChart: ChartComponent;
 	@ViewChild('lineChartMultipleAxis') lineChartMultipleAxis: ChartComponent;
@@ -43,7 +40,6 @@ export class ShowcaseChartComponent {
 	public chartBubbleAnnotations: Array<Annotation> = [];
 	public labels: Array<string> = [];
 	public labelsTimeLine: Array<Date> = [];
-	public labelsChartMeterGadget: Array<string> = [];
 	public labelsMultipleAxis: Array<string> = [];
 	public labelLineAnnotations: Array<number> = [];
 	public isBackgroundGrid = false;
@@ -67,7 +63,6 @@ export class ShowcaseChartComponent {
 		this.legend = true;
 		this.labels = ['January', 'February', 'March', 'April'];
 		this.labelsMultipleAxis = ['1', '2', '3', '4'];
-		this.labelsChartMeterGadget = ['06/05/2020', '06/06/2020', '06/07/2020', '06/08/2020', '06/09/2020', '06/10/2020'];
 
 		this.tooltipSettings.backgroundColor = '#ffffff';
 		this.tooltipSettings.borderColor = '#0066ff';
@@ -227,7 +222,7 @@ export class ShowcaseChartComponent {
 		return Math.floor(Math.random() * (max - min + 1) + min);
 	}
 
-	public doAction(event: any) {}
+	public doAction() {}
 
 	public doChange() {
 		this.dataLine = [];
