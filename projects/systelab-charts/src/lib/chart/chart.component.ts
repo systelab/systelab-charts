@@ -24,9 +24,11 @@ interface MultipleAxis {
 		display?: boolean;
 		callbackFunction? (any): any;
 	};
+	border: {
+		drawBorder: boolean;
+	};
 	grid: {
 		display: boolean;
-		drawBorder: boolean;
 	};
 	title: {
 		text: string;
@@ -153,6 +155,7 @@ export class ChartMultipleYAxisScales {
 	}
 
 	public getScaleDefinition(callbackFunction?: (value, index, values) => string): MultipleAxis {
+		const {display, drawBorder} = this.gridLines;
 		return {
 			id:         this.id,
 			type:       this.type,
@@ -166,7 +169,12 @@ export class ChartMultipleYAxisScales {
 					callback: callbackFunction
 				} : {}
 			},
-			grid:  this.gridLines,
+			border: {
+				drawBorder,
+			},
+			grid: {
+				display,
+			},
 			title: {
 				text: this.scaleLabel.labelString,
 			}
@@ -598,9 +606,11 @@ export class ChartComponent implements AfterViewInit {
 					callback: this.removeFinalTick
 				} : {}
 			},
+			border: {
+				drawBorder: this.axesVisible,
+			},
 			grid:  {
 				display:    this.isBackgroundGrid,
-				drawBorder: this.axesVisible
 			},
 			title: {
 				display:     this.yAxisLabelVisible,
@@ -612,7 +622,7 @@ export class ChartComponent implements AfterViewInit {
 			distribution: 'linear',
 			time: {
 				unit: this.timeUnit,
-				minUnit: 'minute'
+				minUnit: 'minute',
 			}
 		} : {};
 		const xAxis = {
@@ -629,9 +639,11 @@ export class ChartComponent implements AfterViewInit {
 					callback: this.removeFinalTick
 				} : {}
 			},
+			border: {
+				drawBorder: this.axesVisible,
+			},
 			grid:  {
 				display:    this.isBackgroundGrid,
-				drawBorder: this.axesVisible
 			},
 			title: {
 				display:     this.xAxisLabelVisible,

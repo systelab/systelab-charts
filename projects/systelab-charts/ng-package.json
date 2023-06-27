@@ -7,9 +7,7 @@
     "./sass/**/*.scss",
     "./assets/fonts/**/*.otf",
     "./assets/fonts/**/*.txt",
-    "./src/assets/js/meter-charts/**/*.js",
-    "./src/assets/js/**/*.js",
-    "./src/assets/js/**/*.txt"
+    "./src/assets/js/**/*.js"
   ],
   "lib": {
     "entryFile": "src/public-api.ts"
