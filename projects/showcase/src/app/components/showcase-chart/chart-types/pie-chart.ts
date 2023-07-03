@@ -11,4 +11,17 @@ export const pieChart = {
             }]
         }
     ],
+    options: {
+        datalabels: {
+            display: (context): boolean => {
+                const dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
+                const currentPercentage = context.dataset.data[context.dataIndex] * 100 / dataArr.reduce((a, b) => a + b);
+                return currentPercentage >= 5;
+            },
+            formatter: (value, context): string => {
+                const dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
+                return (value * 100 / dataArr.reduce((a, b) => a + b)).toFixed(0) + '%';
+            }
+        }
+    }
 };

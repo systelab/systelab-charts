@@ -6,6 +6,10 @@ export interface BaseDataset {
     backgroundColor?: string[];
     fill?: boolean;
     yAxisID?: string;
+    datalabels?: {
+        align: string;
+        anchor: string;
+    };
 }
 
 export interface LineDataset extends BaseDataset {

@@ -38,8 +38,21 @@ export interface ChartConfiguration {
             intersect: boolean;
             mode: InteractionMode; // default index
         };
+        datalabels?: {
+            display: boolean | DatalabelsDisplayFunction;
+            formatter: DatalabelsFormatterFunction;
+            font?: {
+                color: string;
+                weight: string;
+            };
+        };
     };
 }
+
+export type ChartJSContext = string | CanvasRenderingContext2D | HTMLCanvasElement |
+    ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement>;
+export type DatalabelsFormatterFunction = (value, context: ChartJSContext) => number | string;
+export type DatalabelsDisplayFunction = (context: ChartJSContext) => boolean;
 
 export interface BorderStyle {
     width?: number;

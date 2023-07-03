@@ -32,7 +32,7 @@ export class ChartService {
             ...configuration
         };
 
-        const { options:{line}} = chartConfiguration;
+        const { options:{line, datalabels}} = chartConfiguration;
         return {
             type: chartConfiguration.type,
             data: {
@@ -43,6 +43,12 @@ export class ChartService {
                 elements: {
                     line: {
                         tension: line?.tension ?? 0,
+                    }
+                },
+                plugins: {
+                    datalabels: {
+                        display: datalabels?.display ?? false,
+                        formatter: datalabels?.formatter ?? null,
                     }
                 }
             }
