@@ -10,6 +10,7 @@ import { pieChart } from './chart-types/pie-chart';
 import { doughnutChart } from './chart-types/doughnut-chart';
 import { bubbleChart } from './chart-types/bubble-chart';
 import { polarAreaChart } from './chart-types/polar-area-chart';
+import { lineBarChart } from './chart-types/line-bar-chart';
 
 @Component({
   selector: 'app-showcase-chart',
@@ -28,5 +29,6 @@ export class ShowcaseChartComponent {
   public doughnutChartData: ChartConfiguration = doughnutChart;
   public bubbleChartData: ChartConfiguration = bubbleChart;
   public polarAreaChartData: ChartConfiguration = polarAreaChart;
+  public lineBarChartData: ChartConfiguration = lineBarChart;
   constructor() {}
 }
