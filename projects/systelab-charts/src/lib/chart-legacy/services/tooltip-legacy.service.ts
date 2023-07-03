@@ -24,29 +24,29 @@ export class ChartTooltipSettings {
 @Injectable({
     providedIn: 'root',
 })
-export class TooltipsService {
+export class TooltipLegacyService {
     constructor(private readonly decimalFormatService: DecimalFormatService) {
     }
 
-    public title(tooltipItem, data) {
-        const item = data.datasets[tooltipItem[0].datasetIndex];
+    public title(tooltipItems) {
+        const item = tooltipItems[0].dataset;
 
         if (item.chartTooltipItem) {
             const chartTooltipItem = item.chartTooltipItem instanceof Array ?
-                item.chartTooltipItem[tooltipItem[0].index] : item.chartTooltipItem;
+                item.chartTooltipItem[tooltipItems[0].index] : item.chartTooltipItem;
             if (chartTooltipItem.title) {
                 return chartTooltipItem.title;
             }
         }
     }
 
-    public tooltipLabel(tooltipItem, tooltipTimeFormatConstant, data) {
-        const item = data.datasets[tooltipItem.datasetIndex];
-        let label = data.datasets[tooltipItem.datasetIndex].label;
-        if (!label) {
-            label = data.labels[tooltipItem.index];
-        }
-        const val = item.data[tooltipItem.index];
+    public tooltipLabel(tooltipItem, tooltipTimeFormatConstant) {
+        const item = tooltipItem.dataset;
+        let label = item.label;
+        // if (!label) {
+        //     label = data.labels[tooltipItem.index];
+        // }
+        const val = item.data[tooltipItem.dataIndex];
         let rt;
         let rtVal: number;
         if (val instanceof Object) {
@@ -67,7 +67,7 @@ export class TooltipsService {
         }
         if (item.chartTooltipItem) {
             const chartTooltipItem = item.chartTooltipItem instanceof Array ?
-                item.chartTooltipItem[tooltipItem.index] : item.chartTooltipItem;
+                item.chartTooltipItem[tooltipItem.dataIndex] : item.chartTooltipItem;
 
             if (!isNaN(rtVal) && chartTooltipItem.numberFormat) {
                 rt = this.decimalFormatService.execute(val, chartTooltipItem.numberFormat);
@@ -85,8 +85,8 @@ export class TooltipsService {
         return label;
     }
 
-    public tooltipAfterLabel(tooltipItem, data) {
-        const item = data.datasets[tooltipItem.datasetIndex];
+    public tooltipAfterLabel(tooltipItem) {
+        const item = tooltipItem.dataset;
         let afterLabel = '';
 
         if (item.chartTooltipItem) {
@@ -96,7 +96,7 @@ export class TooltipsService {
                 afterLabel = chartTooltipItem.afterLabel;
             }
             if (chartTooltipItem.valueInAfterLabel) {
-                const val = data[tooltipItem.index];
+                const val = item.data[tooltipItem.dataIndex];
                 let rt;
                 if (val instanceof Object) {
                     if (val.t) {
