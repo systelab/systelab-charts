@@ -1,27 +1,31 @@
 import { Injectable } from '@angular/core';
-import { ChartConfiguration } from '../interfaces';
+import { ChartConfiguration, ChartJSContext } from '../interfaces';
 import { chartDefaultValues } from '../chart-default-values';
 import { AxesService } from './axes.service';
+import * as ChartJS from 'chart.js';
+import { DatasetService } from './dataset.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ChartService {
+    private _cx: ChartJSContext;
 
-    constructor(private readonly axesService: AxesService) {
+    constructor(private readonly axesService: AxesService, private readonly datasetService: DatasetService) {
     }
 
-    public mapConfiguration(configuration: ChartConfiguration) {
+    public mapConfiguration(configuration: ChartConfiguration, cx: ChartJSContext): ChartJS.ChartConfiguration {
+        this._cx = cx;
         const outputConfiguration = this.mapBasicInformation(configuration);
         const axes = this.axesService.mapConfiguration(configuration.axes);
-        const indexAxis = configuration.axes ? configuration.axes.mainAxis : null;
+        const indexAxis: 'x' | 'y' = configuration.axes ? configuration.axes.mainAxis : 'x';
         return {
             ...outputConfiguration,
             options: {
                 ...outputConfiguration.options,
                 indexAxis,
-                scales: axes,
-            },
+                scales: axes as any,
+            } as any,
         };
     }
 
@@ -33,11 +37,12 @@ export class ChartService {
         };
 
         const { options:{line, datalabels}} = chartConfiguration;
+        const datasets = this.datasetService.mapDatasets(chartConfiguration.type, chartConfiguration.datasets, this._cx);
         return {
             type: chartConfiguration.type,
             data: {
                 labels: chartConfiguration.labels,
-                datasets: chartConfiguration.datasets,
+                datasets,
             },
             options: {
                 elements: {

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { ChartConfiguration } from './interfaces/chart-configuration';
+import { ChartConfiguration } from './interfaces';
 import * as ChartJS from 'chart.js';
 import { ChartService } from './services/chart.service';
 
@@ -20,17 +20,14 @@ export class ChartComponent implements AfterViewInit {
   constructor(private readonly chartService: ChartService) {}
 
   public ngAfterViewInit(): void {
-    const chartConfiguration = this.chartService.mapConfiguration(this.config);
-
-    this.drawChart(chartConfiguration);
+    if (this.chartCanvas.nativeElement) {
+      const cx: CanvasRenderingContext2D = this.chartCanvas.nativeElement.getContext('2d');
+      const chartConfiguration = this.chartService.mapConfiguration(this.config, cx);
+      this.drawChart(chartConfiguration, cx);
+    }
   }
 
-  private drawChart(chartConfiguration) {
-    let cx: CanvasRenderingContext2D;
-
-    if (this.chartCanvas.nativeElement) {
-      cx = this.chartCanvas.nativeElement.getContext('2d');
-    }
-      this.chart = new ChartJS.Chart(cx, chartConfiguration);
+  private drawChart(chartConfiguration, cx) {
+    this.chart = new ChartJS.Chart(cx, chartConfiguration);
   }
 }

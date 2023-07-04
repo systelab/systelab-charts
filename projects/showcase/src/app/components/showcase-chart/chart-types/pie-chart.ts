@@ -6,8 +6,10 @@ export const pieChart = {
     datasets: [
         {
             data: [36, 4, 42, 52],
+            backgroundColor: [[119, 136, 153]],
+            fill: true,
             border: [{
-                width: 3,
+                width: 0,
             }]
         }
     ],

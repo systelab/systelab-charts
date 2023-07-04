@@ -7,7 +7,7 @@ import { Legend } from './legend';
 export interface ChartConfiguration {
     type: ChartType;
     labels?: (string | Date)[];
-    datasets: (LineDataset | BarDataset | BubbleDataset | TimeDataset)[];
+    datasets: Dataset[];
     annotations?: (LineAnnotation | BoxAnnotation)[];
     tooltips?: Tooltip;
     legend?: Legend;
@@ -49,14 +49,14 @@ export interface ChartConfiguration {
     };
 }
 
-export type ChartJSContext = string | CanvasRenderingContext2D | HTMLCanvasElement |
-    ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement>;
+export type Dataset = LineDataset | BarDataset | BubbleDataset | TimeDataset;
+export type ChartJSContext = CanvasRenderingContext2D;
 export type DatalabelsFormatterFunction = (value, context: ChartJSContext) => number | string;
 export type DatalabelsDisplayFunction = (context: ChartJSContext) => boolean;
 
 export interface BorderStyle {
     width?: number;
-    color?: string;
+    color?: string | number[];
     radius?: number;
     dash?: number[];
 }

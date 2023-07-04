@@ -1,6 +1,6 @@
 export interface Axes {
     isHorizontal?: boolean;
-    mainAxis?: string; // default x
+    mainAxis?: 'x' | 'y'; // default x
     dataAxes?: Axis;
 }
 
@@ -22,7 +22,7 @@ export interface Axis {
         max?: number;
         ticks?: Ticks;
         border?: {
-            drawBorder: boolean;
+            drawBorder?: boolean;
         };
         grid?: {
             display: boolean;
