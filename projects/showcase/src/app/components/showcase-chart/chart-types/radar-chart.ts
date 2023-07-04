@@ -1,6 +1,6 @@
-import { ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
+import { ChartConfiguration, ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
 
-export const radarChart = {
+export const radarChartConfiguration: ChartConfiguration = {
     type: ChartType.radar,
     labels: ['January', 'February', 'March', 'April'],
     datasets: [

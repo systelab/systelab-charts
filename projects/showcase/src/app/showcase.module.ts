@@ -14,14 +14,14 @@ import { ShowcaseChartComponent } from './components/showcase-chart/showcase-cha
 		BrowserModule,
 		BrowserAnimationsModule,
 		FormsModule,
-		SystelabChartsModule
+		SystelabChartsModule,
 	],
 	declarations: [
 		ShowcaseComponent,
 		ShowcaseTitleComponent,
 		ShowcaseChartLegacyComponent,
 		ShowcaseChartsComponent,
-  ShowcaseChartComponent
+  		ShowcaseChartComponent,
 	],
 	bootstrap:    [ShowcaseComponent]
 })

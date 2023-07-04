@@ -1,6 +1,6 @@
-import { ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
+import { ChartConfiguration, ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
 
-export const lineChart = {
+export const lineChartConfiguration: ChartConfiguration = {
     type: ChartType.line,
     labels: ['January', 'February', 'March', 'April'],
     datasets: [

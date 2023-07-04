@@ -1,6 +1,6 @@
-import { ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
+import { ChartConfiguration, ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
 
-export const barChartHorizontal = {
+export const barChartHorizontalConfiguration: ChartConfiguration = {
     type: ChartType.bar,
     labels: ['January', 'February', 'March', 'April'],
     datasets: [
@@ -19,7 +19,7 @@ export const barChartHorizontal = {
         },
     ],
     axes: {
-        mainAxis: 'y',
+        mainAxis: 'y' as ('x' | 'y'),
     },
     options: {
         line: {

@@ -11,7 +11,7 @@ const labelsTimeLine = [
     new Date(2022, 3, 7),
 ];
 
-export const lineChartWithTimeline: ChartConfiguration = {
+export const lineChartWithTimelineConfiguration: ChartConfiguration = {
     type: ChartType.line,
     labels: labelsTimeLine,
     datasets: [

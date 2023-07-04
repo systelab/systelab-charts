@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BorderStyle, ChartJSContext, ChartType, Dataset } from '../interfaces';
+import { BorderStyle, ChartType, Dataset } from '../interfaces';
 
 @Injectable({
     providedIn: 'root',
@@ -21,7 +21,7 @@ export class DatasetService {
         [77, 83, 96]
     ];
 
-    public mapDatasets(chartType: ChartType, datasets: Dataset[], cx: ChartJSContext): any[] {
+    public mapDatasets(chartType: ChartType, datasets: Dataset[], cx: CanvasRenderingContext2D): any[] {
         let borderColors: any;
         let backgroundColor: any;
         let colorNumber = 0;

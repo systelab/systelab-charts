@@ -1,6 +1,6 @@
-import { ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
+import { ChartConfiguration, ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
 
-export const bubbleChart= {
+export const bubbleChartConfiguration: ChartConfiguration = {
     type: ChartType.bubble,
     labels: ['January', 'February', 'March', 'April'],
     datasets: [

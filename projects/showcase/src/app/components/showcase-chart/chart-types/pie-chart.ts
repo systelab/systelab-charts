@@ -1,6 +1,6 @@
-import { ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
+import { ChartConfiguration, ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
 
-export const pieChart = {
+export const pieChartConfiguration: ChartConfiguration = {
     type: ChartType.pie,
     labels: ['January', 'February', 'March', 'April'],
     datasets: [
@@ -17,7 +17,7 @@ export const pieChart = {
         datalabels: {
             display: (context): boolean => {
                 const dataArr: Array<number> = (context.chart.data.datasets[0].data as Array<number>);
-                const currentPercentage = context.dataset.data[context.dataIndex] * 100 / dataArr.reduce((a, b) => a + b);
+                const currentPercentage = Number(context.dataset.data[context.dataIndex]) * 100 / dataArr.reduce((a, b) => a + b);
                 return currentPercentage >= 5;
             },
             formatter: (value, context): string => {

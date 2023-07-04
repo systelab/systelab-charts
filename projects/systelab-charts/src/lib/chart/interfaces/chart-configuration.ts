@@ -3,6 +3,7 @@ import { BarDataset, BubbleDataset, LineDataset, TimeDataset } from './dataset';
 import { BoxAnnotation, LineAnnotation } from './annotation';
 import { Tooltip } from './tooltip';
 import { Legend } from './legend';
+import { Context } from 'chartjs-plugin-datalabels';
 
 export interface ChartConfiguration {
     type: ChartType;
@@ -50,7 +51,7 @@ export interface ChartConfiguration {
 }
 
 export type Dataset = LineDataset | BarDataset | BubbleDataset | TimeDataset;
-export type ChartJSContext = CanvasRenderingContext2D;
+export type ChartJSContext = Context;
 export type DatalabelsFormatterFunction = (value, context: ChartJSContext) => number | string;
 export type DatalabelsDisplayFunction = (context: ChartJSContext) => boolean;
 

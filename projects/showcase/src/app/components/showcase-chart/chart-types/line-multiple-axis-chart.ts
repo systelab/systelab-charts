@@ -1,6 +1,6 @@
-import { ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
+import { ChartConfiguration, ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
 
-export const lineMultipleAxisChart = {
+export const lineMultipleAxisChartConfiguration: ChartConfiguration = {
     type: ChartType.line,
     labels: ['1', '2', '3', '4'],
     datasets: [

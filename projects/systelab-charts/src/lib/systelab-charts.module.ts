@@ -4,8 +4,6 @@ import { ChartLegacyComponent } from './chart-legacy/chart-legacy.component';
 import { FormsModule } from '@angular/forms';
 import { ChartComponent } from './chart/chart.component';
 
-
-
 @NgModule({
 	imports: [
 		CommonModule,

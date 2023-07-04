@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
 import { ChartConfiguration } from '../../../../../systelab-charts/src/lib/chart/interfaces';
-import { lineChart } from './chart-types/line-chart';
-import { lineMultipleAxisChart } from './chart-types/line-multiple-axis-chart';
-import { lineChartWithTimeline } from './chart-types/line-chart-with-timeline';
-import { barChart } from './chart-types/bar-chart';
-import { barChartHorizontal } from './chart-types/bar-chart-horizontal';
-import { radarChart } from './chart-types/radar-chart';
-import { pieChart } from './chart-types/pie-chart';
-import { doughnutChart } from './chart-types/doughnut-chart';
-import { bubbleChart } from './chart-types/bubble-chart';
-import { polarAreaChart } from './chart-types/polar-area-chart';
-import { lineBarChart } from './chart-types/line-bar-chart';
+import {
+  barChartConfiguration,
+  barChartHorizontalConfiguration,
+  bubbleChartConfiguration,
+  doughnutChartConfiguration,
+  lineBarChartConfiguration,
+  lineChartConfiguration,
+  lineChartWithTimelineConfiguration,
+  lineMultipleAxisChartConfiguration,
+  pieChartConfiguration,
+  polarAreaChartConfiguration,
+  radarChartConfiguration
+} from './chart-types';
 
 @Component({
   selector: 'app-showcase-chart',
@@ -19,16 +21,15 @@ import { lineBarChart } from './chart-types/line-bar-chart';
 export class ShowcaseChartComponent {
 
   // Charts configurations
-  public lineChartData: ChartConfiguration = lineChart;
-  public lineMultipleAxisChartData: ChartConfiguration = lineMultipleAxisChart;
-  public lineChartWithTimelineData: ChartConfiguration = lineChartWithTimeline;
-  public barChartData: ChartConfiguration = barChart;
-  public barChartHorizontalData: ChartConfiguration = barChartHorizontal;
-  public radarChartData: ChartConfiguration = radarChart;
-  public pieChartData: ChartConfiguration = pieChart;
-  public doughnutChartData: ChartConfiguration = doughnutChart;
-  public bubbleChartData: ChartConfiguration = bubbleChart;
-  public polarAreaChartData: ChartConfiguration = polarAreaChart;
-  public lineBarChartData: ChartConfiguration = lineBarChart;
-  constructor() {}
+  public lineChartConfiguration: ChartConfiguration = lineChartConfiguration;
+  public lineMultipleAxisChartConfiguration: ChartConfiguration = lineMultipleAxisChartConfiguration;
+  public lineChartWithTimelineConfiguration: ChartConfiguration = lineChartWithTimelineConfiguration;
+  public barChartConfiguration: ChartConfiguration = barChartConfiguration;
+  public barChartHorizontalConfiguration: ChartConfiguration = barChartHorizontalConfiguration;
+  public radarChartConfiguration: ChartConfiguration = radarChartConfiguration;
+  public pieChartConfiguration: ChartConfiguration = pieChartConfiguration;
+  public doughnutChartConfiguration: ChartConfiguration = doughnutChartConfiguration;
+  public bubbleChartConfiguration: ChartConfiguration = bubbleChartConfiguration;
+  public polarAreaChartConfiguration: ChartConfiguration = polarAreaChartConfiguration;
+  public lineBarChartConfiguration: ChartConfiguration = lineBarChartConfiguration;
 }

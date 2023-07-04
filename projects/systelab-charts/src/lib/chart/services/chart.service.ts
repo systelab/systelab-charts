@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ChartConfiguration, ChartJSContext } from '../interfaces';
+import { ChartConfiguration } from '../interfaces';
 import { chartDefaultValues } from '../chart-default-values';
 import { AxesService } from './axes.service';
 import * as ChartJS from 'chart.js';
@@ -9,12 +9,12 @@ import { DatasetService } from './dataset.service';
     providedIn: 'root',
 })
 export class ChartService {
-    private _cx: ChartJSContext;
+    private _cx: CanvasRenderingContext2D;
 
     constructor(private readonly axesService: AxesService, private readonly datasetService: DatasetService) {
     }
 
-    public mapConfiguration(configuration: ChartConfiguration, cx: ChartJSContext): ChartJS.ChartConfiguration {
+    public mapConfiguration(configuration: ChartConfiguration, cx: CanvasRenderingContext2D): ChartJS.ChartConfiguration {
         this._cx = cx;
         const outputConfiguration = this.mapBasicInformation(configuration);
         const axes = this.axesService.mapConfiguration(configuration.axes);
