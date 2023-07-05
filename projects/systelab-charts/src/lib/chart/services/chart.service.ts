@@ -34,7 +34,7 @@ export class ChartService {
         };
     }
 
-    private mapBasicInformation(configuration: ChartConfiguration) {
+    private mapBasicInformation(configuration: ChartConfiguration): ChartJS.ChartConfiguration {
         // Howto implement the fill flag
         const chartConfiguration = {
             ...chartDefaultConfiguration,
@@ -80,7 +80,7 @@ export class ChartService {
                     },
                     legend,
                     tooltip,
-                },
+                } as any,
             },
         };
     }
