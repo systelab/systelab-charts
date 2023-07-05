@@ -9,6 +9,9 @@ import {
 export const lineChartWithAnnotationLinesConfiguration: ChartConfiguration = {
     type: ChartType.line,
     labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'],
+    legend: {
+        enabled: false,
+    },
     datasets: [
         {
             label: 'Data Values',

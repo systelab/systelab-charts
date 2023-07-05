@@ -12,6 +12,7 @@ export interface BaseDataset {
         anchor: string;
     };
     border?: BorderStyle | BorderStyle[] | null;
+    pointRadius?: number;
 }
 
 export interface LineDataset extends BaseDataset {

@@ -17,6 +17,7 @@ export const lineMultipleAxisChartConfiguration: ChartConfiguration = {
             }]
         }, {
             label: 'Only Dots',
+            fill: true,
             type: ChartType.scatter,
             data: [11, 18, 4, 3],
             yAxisID: 'yAxis0',

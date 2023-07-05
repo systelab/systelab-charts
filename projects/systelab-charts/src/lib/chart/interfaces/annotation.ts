@@ -2,6 +2,7 @@ interface Annotation {
     type: AnnotationType;
     axisID?: string;
     drawTime?: LabelDrawTime;
+    backgroundColor?: string;
 }
 
 export interface LineAnnotation extends Annotation {
@@ -31,7 +32,6 @@ export interface BoxAnnotation extends Annotation {
             max: number;
         };
     };
-    backgroundColor?: string;
     xAxisID?: string;
     yAxisID?: string;
     border?: {

@@ -111,6 +111,7 @@ export class AnnotationService {
         return {
             type: 'line',
             scaleID: isVertical ? 'x' : annotation.axisID,
+            backgroundColor: annotation.backgroundColor ?? undefined,
             borderColor: annotation.border?.color ?? undefined,
             borderWidth: annotation.border?.width ?? 2,
             borderDash: annotation.border?.dash ? [5, 15] : undefined,

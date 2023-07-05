@@ -16,6 +16,7 @@ import {
 import { lineChartWithAnnotationLinesConfiguration } from './chart-types/line-chart-with-annotation-lines';
 import { bubbleChartWithAnnotationBoxConfiguration } from './chart-types/bubble-chart-with-annotation-box';
 import { bubbleChartWithAnnotationBoxLineConfiguration } from './chart-types/bubble-chart-with-annotation-box-line';
+import { lineChartWithLineLegendConfiguration } from './chart-types/line-chart-with-line-legend';
 
 @Component({
   selector: 'app-showcase-chart',
@@ -38,4 +39,5 @@ export class ShowcaseChartComponent {
   public lineChartWithAnnotationLinesConfiguration: ChartConfiguration = lineChartWithAnnotationLinesConfiguration;
   public bubbleChartWithAnnotationBoxConfiguration: ChartConfiguration = bubbleChartWithAnnotationBoxConfiguration;
   public bubbleChartWithAnnotationBoxLineConfiguration: ChartConfiguration = bubbleChartWithAnnotationBoxLineConfiguration;
+  public lineChartWithLineLegendConfiguration: ChartConfiguration = lineChartWithLineLegendConfiguration;
 }

@@ -5,6 +5,7 @@ import { AxesService } from './axes.service';
 import * as ChartJS from 'chart.js';
 import { DatasetService } from './dataset.service';
 import { AnnotationService } from './annotation.service';
+import { LegendService } from './legend.service';
 
 @Injectable({
     providedIn: 'root',
@@ -13,7 +14,7 @@ export class ChartService {
     private _cx: CanvasRenderingContext2D;
 
     constructor(private readonly axesService: AxesService, private readonly datasetService: DatasetService,
-                private readonly annotationService: AnnotationService) {
+                private readonly annotationService: AnnotationService, private readonly legendService: LegendService) {
     }
 
     public mapConfiguration(configuration: ChartConfiguration, cx: CanvasRenderingContext2D): ChartJS.ChartConfiguration {
@@ -53,6 +54,7 @@ export class ChartService {
         const { options:{line, datalabels}} = chartConfiguration;
         const datasets = this.datasetService.mapDatasets(chartConfiguration.type, chartConfiguration.datasets, this._cx);
         const annotations = this.annotationService.mapAnnotations(chartConfiguration.annotations);
+        const legend = this.legendService.mapLegend(chartConfiguration.legend);
         return {
             type: chartConfiguration.type,
             data: {
@@ -72,9 +74,10 @@ export class ChartService {
                     },
                     annotation: {
                         annotations,
-                    }
-                }
-            }
+                    },
+                    legend,
+                },
+            },
         };
     }
 }

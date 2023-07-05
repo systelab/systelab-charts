@@ -9,6 +9,9 @@ import {
 export const bubbleChartWithAnnotationBoxLineConfiguration: ChartConfiguration = {
     type: ChartType.bubble,
     labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'],
+    legend: {
+        enabled: false,
+    },
     datasets: [
         {
             label: 'Test 1',
@@ -40,14 +43,19 @@ export const bubbleChartWithAnnotationBoxLineConfiguration: ChartConfiguration =
                 dash: true,
             },
             value: 9,
-        }, {
+        },
+        {
             type: AnnotationType.line,
             orientation: LineAnnotationOrientation.horizontal,
+            backgroundColor: 'rgb(40, 122, 229)',
             label: {
                 display: true,
                 text: 'Label',
                 position: LabelPosition.start,
                 backgroundColor: 'rgb(40, 122, 229)',
+                border: {
+                    color: 'rgb(40, 122, 229)',
+                }
             },
             border: {
                 color: 'rgb(40, 122, 229)',
@@ -55,7 +63,8 @@ export const bubbleChartWithAnnotationBoxLineConfiguration: ChartConfiguration =
                 dash: true,
             },
             value: -1,
-        }, {
+        },
+        {
             type: AnnotationType.line,
             border: {
                 color: 'rgb(66, 244, 131)',

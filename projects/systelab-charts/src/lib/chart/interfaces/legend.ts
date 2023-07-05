@@ -15,7 +15,8 @@ export interface Legend {
         pointStyle: LegendPointStyle;
     };
     position?: LegendPosition;
-    type?: LegendType; // default ChartJs election
+    align?: LegendAlign;
+    disabledClickEvent?: boolean;
 }
 
 export enum LegendPointStyle {
@@ -38,6 +39,12 @@ export enum LegendPosition {
     bottom = 'bottom',
     left = 'left',
     chartArea = 'chartArea',
+}
+
+export enum LegendAlign {
+    start = 'start',
+    center = 'center',
+    end = 'end',
 }
 
 export enum LegendType {

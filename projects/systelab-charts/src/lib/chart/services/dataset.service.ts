@@ -45,11 +45,7 @@ export class DatasetService {
                     borderColors = this.toRGBA(this.defaultColors[colorNumber], 1);
                 }
                 if (!datasets[i].backgroundColor) {
-                    if (datasets[i].fill) {
-                        backgroundColor = this.toRGBA(this.defaultColors[colorNumber], 0.6);
-                    } else {
-                        backgroundColor = 'transparent';
-                    }
+                    backgroundColor = this.toRGBA(this.defaultColors[colorNumber], 0.8);
                 }
             }
 
@@ -63,6 +59,7 @@ export class DatasetService {
                 backgroundColor,
                 borderColor: borderColors,
                 borderWidth: ('border' in datasets[i]) ? (datasets[i].border as BorderStyle).width : 2,
+                pointRadius: datasets[i]?.pointRadius ?? 5,
             };
             delete dataset.border;
 
