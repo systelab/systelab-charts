@@ -9,7 +9,7 @@ export interface ChartConfiguration {
     type: ChartType;
     labels?: (string | Date)[];
     datasets: Dataset[];
-    annotations?: (LineAnnotation | BoxAnnotation)[];
+    annotations?: AnnotationType[];
     tooltips?: Tooltip;
     legend?: Legend;
     grid?: {
@@ -35,7 +35,7 @@ export interface ChartConfiguration {
         animations?: {
             duration: number;
         };
-        interactions?: {
+        interaction?: {
             intersect: boolean;
             mode: InteractionMode; // default index
         };
@@ -50,6 +50,7 @@ export interface ChartConfiguration {
     };
 }
 
+export type AnnotationType = LineAnnotation | BoxAnnotation;
 export type Dataset = LineDataset | BarDataset | BubbleDataset | TimeDataset;
 export type ChartJSContext = Context;
 export type DatalabelsFormatterFunction = (value, context: ChartJSContext) => number | string;

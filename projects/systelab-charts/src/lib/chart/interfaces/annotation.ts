@@ -1,18 +1,23 @@
 interface Annotation {
-    axisID: string; // default yAxis
     type: string;
-    drawTime: LabelDrawTime; // default afterDatasetsDraw
+    axisID?: string;
+    drawTime?: LabelDrawTime; // default afterDatasetsDraw
 }
 
 export interface LineAnnotation extends Annotation {
-    label: AnnotationLabel;
-    value: number;
+    label?: AnnotationLabel;
+    value: number | string;
     endValue?: number;
-    orientation: string; // enum
+    orientation?: LineAnnotationOrientation;
     border?: {
         width?: number;
         color?: string;
+        dash?: boolean;
     };
+}
+
+export interface LineAnnotationDefaultConfiguration extends Omit<LineAnnotation, 'value' | 'type' | 'label'> {
+    label?: Omit<AnnotationLabel, 'display' | 'text'>;
 }
 
 export interface BoxAnnotation extends Annotation {
@@ -39,11 +44,16 @@ export interface BoxAnnotation extends Annotation {
 export interface AnnotationLabel {
     display: boolean;
     text: string; // content
-    position: LabelPosition;
-    backgroundColor: string;
-    font: {
+    position?: LabelPosition;
+    backgroundColor?: string;
+    font?: {
         style: string;
         color: string;
+    };
+    border?: {
+        width?: number;
+        color?: string;
+        radius?: number;
     };
 }
 
@@ -58,4 +68,9 @@ export enum LabelDrawTime {
     afterDatasetsDraw = 'afterDatasetsDraw',
     beforeDraw = 'beforeDraw',
     beforeDatasetsDraw = 'beforeDatasetsDraw',
+}
+
+export enum LineAnnotationOrientation {
+    vertical = 'vertical',
+    horizontal = 'horizontal',
 }

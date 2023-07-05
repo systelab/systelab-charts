@@ -48,6 +48,20 @@ export const lineMultipleAxisChartConfiguration: ChartConfiguration = {
                 }
             }
     },
+    annotations: [
+        {
+            type: 'line',
+            label: {
+                display: true,
+                text: 'Label',
+            },
+            border: {
+                color: 'rgb(229, 60, 41)',
+                width: 2,
+            },
+            value: '3',
+        }
+    ],
     options: {
         line: {
             tension: 0.4,

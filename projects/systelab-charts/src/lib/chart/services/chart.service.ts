@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ChartConfiguration } from '../interfaces';
-import { chartDefaultValues } from '../chart-default-values';
+import { chartDefaultConfiguration } from '../chart-default-configuration';
 import { AxesService } from './axes.service';
 import * as ChartJS from 'chart.js';
 import { DatasetService } from './dataset.service';
+import { AnnotationService } from './annotation.service';
 
 @Injectable({
     providedIn: 'root',
@@ -11,7 +12,8 @@ import { DatasetService } from './dataset.service';
 export class ChartService {
     private _cx: CanvasRenderingContext2D;
 
-    constructor(private readonly axesService: AxesService, private readonly datasetService: DatasetService) {
+    constructor(private readonly axesService: AxesService, private readonly datasetService: DatasetService,
+                private readonly annotationService: AnnotationService) {
     }
 
     public mapConfiguration(configuration: ChartConfiguration, cx: CanvasRenderingContext2D): ChartJS.ChartConfiguration {
@@ -32,12 +34,25 @@ export class ChartService {
     private mapBasicInformation(configuration: ChartConfiguration) {
         // Howto implement the fill flag
         const chartConfiguration = {
-            ...chartDefaultValues,
-            ...configuration
+            ...chartDefaultConfiguration,
+            ...configuration,
+            options: {
+                ...chartDefaultConfiguration.options,
+                ...configuration.options ?? undefined,
+                interaction: {
+                    ...chartDefaultConfiguration.options.interaction,
+                    ...configuration.options?.interaction ?? undefined,
+                },
+                animations: {
+                    ...chartDefaultConfiguration.options.animations,
+                    ...configuration.options?.animations ?? undefined,
+                }
+            }
         };
 
         const { options:{line, datalabels}} = chartConfiguration;
         const datasets = this.datasetService.mapDatasets(chartConfiguration.type, chartConfiguration.datasets, this._cx);
+        const annotations = this.annotationService.mapAnnotations(chartConfiguration.annotations);
         return {
             type: chartConfiguration.type,
             data: {
@@ -54,6 +69,9 @@ export class ChartService {
                     datalabels: {
                         display: datalabels?.display ?? false,
                         formatter: datalabels?.formatter ?? null,
+                    },
+                    annotation: {
+                        annotations,
                     }
                 }
             }
