@@ -1,7 +1,7 @@
 interface Annotation {
     type: AnnotationType;
     axisID?: string;
-    drawTime?: LabelDrawTime;
+    drawTime?: AnnotationDrawTime;
     backgroundColor?: string;
 }
 
@@ -44,7 +44,7 @@ export interface BoxAnnotation extends Annotation {
 export interface AnnotationLabel {
     display: boolean;
     text: string; // content
-    position?: LabelPosition;
+    position?: AnnotationLabelLabelPosition;
     backgroundColor?: string;
     font?: {
         style: string;
@@ -62,13 +62,13 @@ export enum AnnotationType {
     box = 'box',
 }
 
-export enum LabelPosition {
+export enum AnnotationLabelLabelPosition {
     start = 'start',
     center = 'center',
     end = 'end',
 }
 
-export enum LabelDrawTime {
+export enum AnnotationDrawTime {
     afterDraw = 'afterDraw',
     afterDatasetsDraw = 'afterDatasetsDraw',
     beforeDraw = 'beforeDraw',

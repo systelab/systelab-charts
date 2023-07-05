@@ -1,8 +1,8 @@
 import {
+    AnnotationLabelLabelPosition,
     AnnotationType,
     ChartConfiguration,
     ChartType,
-    LabelPosition,
     LineAnnotationOrientation
 } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
 
@@ -51,7 +51,7 @@ export const bubbleChartWithAnnotationBoxLineConfiguration: ChartConfiguration =
             label: {
                 display: true,
                 text: 'Label',
-                position: LabelPosition.start,
+                position: AnnotationLabelLabelPosition.start,
                 backgroundColor: 'rgb(40, 122, 229)',
                 border: {
                     color: 'rgb(40, 122, 229)',

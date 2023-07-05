@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
+    AnnotationDrawTime,
+    AnnotationLabelLabelPosition,
     AnnotationTypes,
     BoxAnnotation,
-    LabelDrawTime,
-    LabelPosition,
     LineAnnotation,
     LineAnnotationDefaultConfiguration,
     LineAnnotationOrientation
@@ -13,7 +13,7 @@ const defaultAnnotationColor = 'rgb(229, 60, 41)';
 const defaultAnnotationFontColor = 'rgb(255,255,255)';
 const defaultLineAnnotationConfiguration: LineAnnotationDefaultConfiguration = {
     axisID: 'y',
-    drawTime: LabelDrawTime.afterDatasetsDraw,
+    drawTime: AnnotationDrawTime.afterDatasetsDraw,
     orientation: LineAnnotationOrientation.vertical,
     border: {
         width: 2,
@@ -30,7 +30,7 @@ const defaultLineAnnotationConfiguration: LineAnnotationDefaultConfiguration = {
             color: defaultAnnotationFontColor,
             style: 'normal',
         },
-        position: LabelPosition.center,
+        position: AnnotationLabelLabelPosition.center,
         backgroundColor: defaultAnnotationColor,
     }
 };

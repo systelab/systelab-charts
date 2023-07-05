@@ -1,8 +1,8 @@
 import {
+    AnnotationLabelLabelPosition,
     AnnotationType,
     ChartConfiguration,
     ChartType,
-    LabelPosition,
     LineAnnotationOrientation
 } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
 
@@ -40,7 +40,7 @@ export const lineChartWithAnnotationLinesConfiguration: ChartConfiguration = {
             label: {
                 display: true,
                 text: '-1 SD',
-                position: LabelPosition.start,
+                position: AnnotationLabelLabelPosition.start,
                 backgroundColor: 'rgb(229, 60, 41)',
             }
         }, {
@@ -54,7 +54,7 @@ export const lineChartWithAnnotationLinesConfiguration: ChartConfiguration = {
             label: {
                 display: true,
                 text: '+1 SD',
-                position: LabelPosition.start,
+                position: AnnotationLabelLabelPosition.start,
                 backgroundColor: 'rgb(229, 60, 41)',
             }
         }, {
@@ -68,7 +68,7 @@ export const lineChartWithAnnotationLinesConfiguration: ChartConfiguration = {
             label: {
                 display: true,
                 text: '+2 SD',
-                position: LabelPosition.start,
+                position: AnnotationLabelLabelPosition.start,
                 backgroundColor: 'rgb(40, 122, 229)',
                 border: {
                     color: 'rgb(40, 122, 229)',
@@ -85,7 +85,7 @@ export const lineChartWithAnnotationLinesConfiguration: ChartConfiguration = {
             label: {
                 display: true,
                 text: '-2 SD',
-                position: LabelPosition.start,
+                position: AnnotationLabelLabelPosition.start,
                 backgroundColor: 'rgb(40, 122, 229)',
                 border: {
                     color: 'rgb(40, 122, 229)',
