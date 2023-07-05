@@ -34,6 +34,15 @@ Read the [provided documentation](https://github.com/systelab/systelab-charts/bl
 
 # Breaking changes
 
+## Version 15.3.x - Interface-based configuration
+
+- Rebump of the library based on a totally new `systelab-chart` component:
+  - Interface based on a single @Input field with a typed configuration object
+  - Used ChartJS typings to minimize implementation errors
+  - Splitted implementation into several 'single-responsible' services
+- Kept old component, but renamed to `systelab-chart-legacy` and marked as "deprecated"
+- Updated showcase to show charts generated with both components, new and legacy
+
 ## Version 15.x.x - Angular 15
 
 [Angular 15 news](https://blog.angular.io/angular-v15-is-now-available-df7be7f2f4c8)
