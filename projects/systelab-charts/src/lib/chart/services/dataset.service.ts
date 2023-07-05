@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BorderStyle, ChartConfiguration, Dataset } from '../interfaces';
+import { ChartConfiguration, Dataset } from '../interfaces';
 
 @Injectable({
     providedIn: 'root',
@@ -65,7 +65,7 @@ export class DatasetService {
                 ...datasets[i],
                 backgroundColor,
                 borderColor: borderColors,
-                borderWidth: ('border' in datasets[i]) ? (datasets[i].border as BorderStyle).width : 2,
+                borderWidth: ('border' in datasets[i] && 'width' in datasets[i].border) ? (datasets[i].border as any).width : 2,
                 pointRadius: datasets[i]?.pointRadius ?? 5,
                 ...(pointStyleEnabled && pointStyle && {pointStyle}),
             };
