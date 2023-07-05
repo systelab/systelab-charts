@@ -11,7 +11,6 @@ export const lineChartWithLineLegendConfiguration: ChartConfiguration = {
     datasets: [
         {
             label: 'Line 1',
-            fill: true,
             data: [13, 20, 21, 15.5],
             border: {
                 width: 1,
@@ -19,7 +18,6 @@ export const lineChartWithLineLegendConfiguration: ChartConfiguration = {
             pointRadius: 0,
         }, {
             label: 'Line 2',
-            fill: true,
             data: [11, 18, 4, 3],
             border: {
                 width: 1,
@@ -27,7 +25,6 @@ export const lineChartWithLineLegendConfiguration: ChartConfiguration = {
             pointRadius: 0,
         }, {
             label: 'Line 3',
-            fill: true,
             data: [12, 41, 1, 21],
             border: {
                 width: 1,
