@@ -6,12 +6,14 @@ export const lineBarChartConfiguration: ChartConfiguration = {
     datasets: [
         {
             label: 'Line',
+            isGradient: true,
             data: [13, 20, 21, 15],
             border: [{
                 width: 3,
             }]
         }, {
             label: 'Bar',
+            fill: true,
             type: ChartType.bar,
             data: [10, 20, 10, 15],
             border: [{
