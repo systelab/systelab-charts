@@ -12,6 +12,16 @@ export class TooltipService {
         return {
             enabled: tooltip?.enabled ?? true,
             usePointStyle: pointStyleEnabled,
+            callbacks: {
+                title: (tooltipItems) => {
+                    let title = tooltip?.title?.text ?? undefined;
+                    const prefix = tooltip?.title?.prefix ?? undefined;
+                    if (!title) {
+                        title = tooltipItems[0].label;
+                    }
+                    return prefix ? `${prefix.trim()} ${title.trim()}` : title.trim();
+                }
+            }
         };
     }
 }

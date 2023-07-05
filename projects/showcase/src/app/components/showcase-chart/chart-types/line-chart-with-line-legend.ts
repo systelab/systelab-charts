@@ -45,6 +45,12 @@ export const lineChartWithLineLegendConfiguration: ChartConfiguration = {
             pointStyle: LegendPointStyle.line,
         }
     },
+    tooltip: {
+        enabled: true,
+        title: {
+            prefix: 'Time: ',
+        }
+    },
     options: {
         line: {
             tension: 0.4,
