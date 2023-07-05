@@ -1,3 +1,5 @@
+export type AnnotationTypes = LineAnnotation | BoxAnnotation;
+
 interface Annotation {
     type: AnnotationType;
     axisID?: string;

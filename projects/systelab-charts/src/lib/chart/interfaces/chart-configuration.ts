@@ -1,6 +1,6 @@
 import { Axes } from './axes';
 import { Dataset } from './dataset';
-import { BoxAnnotation, LineAnnotation } from './annotation';
+import { AnnotationTypes } from './annotation';
 import { Tooltip } from './tooltip';
 import { Legend } from './legend';
 import { Context } from 'chartjs-plugin-datalabels';
@@ -50,7 +50,7 @@ export interface ChartConfiguration {
     };
 }
 
-export type AnnotationTypes = LineAnnotation | BoxAnnotation;
+
 export type ChartJSContext = Context;
 export type DatalabelsFormatterFunction = (value, context: ChartJSContext) => number | string;
 export type DatalabelsDisplayFunction = (context: ChartJSContext) => boolean;
