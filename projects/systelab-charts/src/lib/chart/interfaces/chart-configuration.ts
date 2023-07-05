@@ -9,7 +9,7 @@ export interface ChartConfiguration {
     type: ChartType;
     labels?: (string | Date)[];
     datasets: Dataset[];
-    annotations?: AnnotationType[];
+    annotations?: AnnotationTypes[];
     tooltips?: Tooltip;
     legend?: Legend;
     grid?: {
@@ -50,7 +50,7 @@ export interface ChartConfiguration {
     };
 }
 
-export type AnnotationType = LineAnnotation | BoxAnnotation;
+export type AnnotationTypes = LineAnnotation | BoxAnnotation;
 export type Dataset = LineDataset | BarDataset | BubbleDataset | TimeDataset;
 export type ChartJSContext = Context;
 export type DatalabelsFormatterFunction = (value, context: ChartJSContext) => number | string;

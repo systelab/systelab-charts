@@ -1,4 +1,5 @@
 import {
+    AnnotationType,
     ChartConfiguration,
     ChartType,
     LabelPosition,
@@ -19,14 +20,14 @@ export const lineChartWithAnnotationLinesConfiguration: ChartConfiguration = {
     ],
     annotations: [
         {
-            type: 'line',
+            type: AnnotationType.line,
             value: 2.5,
             orientation: LineAnnotationOrientation.horizontal,
             border: {
                 color: 'rgb(0,0,0)',
             }
         }, {
-            type: 'line',
+            type: AnnotationType.line,
             value: 1.5,
             orientation: LineAnnotationOrientation.horizontal,
             border: {
@@ -40,7 +41,7 @@ export const lineChartWithAnnotationLinesConfiguration: ChartConfiguration = {
                 backgroundColor: 'rgb(229, 60, 41)',
             }
         }, {
-            type: 'line',
+            type: AnnotationType.line,
             value: 3.5,
             orientation: LineAnnotationOrientation.horizontal,
             border: {
@@ -54,7 +55,7 @@ export const lineChartWithAnnotationLinesConfiguration: ChartConfiguration = {
                 backgroundColor: 'rgb(229, 60, 41)',
             }
         }, {
-            type: 'line',
+            type: AnnotationType.line,
             value: 4.5,
             orientation: LineAnnotationOrientation.horizontal,
             border: {
@@ -71,7 +72,7 @@ export const lineChartWithAnnotationLinesConfiguration: ChartConfiguration = {
                 }
             }
         }, {
-            type: 'line',
+            type: AnnotationType.line,
             value: 0.5,
             orientation: LineAnnotationOrientation.horizontal,
             border: {

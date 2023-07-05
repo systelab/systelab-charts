@@ -7,15 +7,16 @@ export const radarChartConfiguration: ChartConfiguration = {
         {
             label: 'Only Line',
             data: [36, 41, 35, 21],
-            border: [{
+            border: {
                 width: 3,
-            }]
+            },
         }, {
             label: 'Line and Area',
+            fill: true,
             data: [37, 40, 21, 15],
-            border: [{
+            border: {
                 width: 3,
-            }]
+            },
         }
     ],
 };

@@ -7,15 +7,16 @@ export const barChartHorizontalConfiguration: ChartConfiguration = {
         {
             label: 'Only Line',
             data: [12, 41, 1, 21],
-            border: [{
+            border: {
                 width: 3,
-            }]
+            },
         }, {
             label: 'Line and Area',
+            fill: true,
             data: [13, 20, 21, 15],
-            border: [{
+            border: {
                 width: 3,
-            }]
+            },
         },
     ],
     axes: {

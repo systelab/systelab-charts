@@ -1,7 +1,7 @@
 interface Annotation {
-    type: string;
+    type: AnnotationType;
     axisID?: string;
-    drawTime?: LabelDrawTime; // default afterDatasetsDraw
+    drawTime?: LabelDrawTime;
 }
 
 export interface LineAnnotation extends Annotation {
@@ -31,9 +31,9 @@ export interface BoxAnnotation extends Annotation {
             max: number;
         };
     };
-    backgroundColor: string;
-    xAxisID: string;
-    yAxisID: string;
+    backgroundColor?: string;
+    xAxisID?: string;
+    yAxisID?: string;
     border?: {
         width?: number;
         radius?: number;
@@ -55,6 +55,11 @@ export interface AnnotationLabel {
         color?: string;
         radius?: number;
     };
+}
+
+export enum AnnotationType {
+    line = 'line',
+    box = 'box',
 }
 
 export enum LabelPosition {

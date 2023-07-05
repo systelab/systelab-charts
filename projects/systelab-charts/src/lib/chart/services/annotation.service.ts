@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
-    AnnotationType,
+    AnnotationTypes,
     BoxAnnotation,
     LabelDrawTime,
     LabelPosition,
@@ -40,7 +40,7 @@ const defaultLineAnnotationConfiguration: LineAnnotationDefaultConfiguration = {
 })
 export class AnnotationService {
 
-    public mapAnnotations(annotations: AnnotationType[]) {
+    public mapAnnotations(annotations: AnnotationTypes[]) {
         if (!annotations || annotations.length === 0) {
             return undefined;
         }
@@ -79,10 +79,10 @@ export class AnnotationService {
     private mapBoxAnnotation(annotation: BoxAnnotation) {
         return {
             type: 'box',
-            backgroundColor: annotation.backgroundColor,
-            borderColor: annotation.border.color,
-            borderRadius: annotation.border.radius,
-            borderWidth: annotation.border.width,
+            backgroundColor: annotation.backgroundColor ?? 'transparent',
+            borderColor: annotation.border?.color ?? undefined,
+            borderRadius: annotation.border?.radius ?? undefined,
+            borderWidth: annotation.border?.width ?? 2,
             xMax: annotation.limits.x.max,
             xMin: annotation.limits.x.min,
             yMax: annotation.limits.y.max,
@@ -93,6 +93,7 @@ export class AnnotationService {
     private mapLineAnnotation(annotation: LineAnnotation) {
         let computedLabel;
         const isVertical = annotation.orientation === LineAnnotationOrientation.vertical;
+        const endValue = annotation.endValue ?? annotation.value;
         const { label } = annotation;
         if (label) {
             computedLabel = {
@@ -114,7 +115,7 @@ export class AnnotationService {
             borderWidth: annotation.border?.width ?? 2,
             borderDash: annotation.border?.dash ? [5, 15] : undefined,
             value: isVertical ? annotation.value.toString() : Number(annotation.value),
-            endValue: annotation.endValue ?? annotation.value,
+            endValue: isVertical ? endValue.toString() : Number(endValue),
             label: computedLabel,
         };
     }

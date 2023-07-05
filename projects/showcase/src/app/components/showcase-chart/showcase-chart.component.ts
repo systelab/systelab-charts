@@ -14,6 +14,8 @@ import {
   radarChartConfiguration
 } from './chart-types';
 import { lineChartWithAnnotationLinesConfiguration } from './chart-types/line-chart-with-annotation-lines';
+import { bubbleChartWithAnnotationBoxConfiguration } from './chart-types/bubble-chart-with-annotation-box';
+import { bubbleChartWithAnnotationBoxLineConfiguration } from './chart-types/bubble-chart-with-annotation-box-line';
 
 @Component({
   selector: 'app-showcase-chart',
@@ -34,4 +36,6 @@ export class ShowcaseChartComponent {
   public polarAreaChartConfiguration: ChartConfiguration = polarAreaChartConfiguration;
   public lineBarChartConfiguration: ChartConfiguration = lineBarChartConfiguration;
   public lineChartWithAnnotationLinesConfiguration: ChartConfiguration = lineChartWithAnnotationLinesConfiguration;
+  public bubbleChartWithAnnotationBoxConfiguration: ChartConfiguration = bubbleChartWithAnnotationBoxConfiguration;
+  public bubbleChartWithAnnotationBoxLineConfiguration: ChartConfiguration = bubbleChartWithAnnotationBoxLineConfiguration;
 }
