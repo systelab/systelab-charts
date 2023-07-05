@@ -1,5 +1,5 @@
 import { Axes } from './axes';
-import { BarDataset, BubbleDataset, LineDataset, TimeDataset } from './dataset';
+import { Dataset } from './dataset';
 import { BoxAnnotation, LineAnnotation } from './annotation';
 import { Tooltip } from './tooltip';
 import { Legend } from './legend';
@@ -51,17 +51,9 @@ export interface ChartConfiguration {
 }
 
 export type AnnotationTypes = LineAnnotation | BoxAnnotation;
-export type Dataset = LineDataset | BarDataset | BubbleDataset | TimeDataset;
 export type ChartJSContext = Context;
 export type DatalabelsFormatterFunction = (value, context: ChartJSContext) => number | string;
 export type DatalabelsDisplayFunction = (context: ChartJSContext) => boolean;
-
-export interface BorderStyle {
-    width?: number;
-    color?: string | number[];
-    radius?: number;
-    dash?: number[];
-}
 
 export enum ChartType {
     line = 'line',

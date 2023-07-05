@@ -1,4 +1,6 @@
-import { BorderStyle, ChartType } from './chart-configuration';
+import { ChartType } from './chart-configuration';
+
+export type Dataset = LineDataset | BarDataset | BubbleDataset | TimeDataset;
 
 export interface BaseDataset {
     label?: string;
@@ -11,26 +13,38 @@ export interface BaseDataset {
         align: string;
         anchor: string;
     };
-    border?: BorderStyle | BorderStyle[] | null;
     pointRadius?: number;
 }
 
+
+// Line dataset
 export interface LineDataset extends BaseDataset {
     data: number[];
-    border?: BorderStyle | BorderStyle[];
+    border?: {
+        color?: string | number[];
+        width?: number;
+        dash?: number[];
+    };
 }
 
+
+// Bar dataset
 export interface BarDataset extends BaseDataset {
     data: number[];
-    border?: BorderStyle | BorderStyle[];
+    border?: BarDatasetBorderStyle | BarDatasetBorderStyle[];
 }
 
+export interface BarDatasetBorderStyle {
+    width?: number;
+    color?: string | number[];
+    radius?: number;
+}
+
+
+// Bubble dataset
 export interface BubbleDataset extends BaseDataset {
     data: BubblePoint[];
-}
-
-export interface TimeDataset extends BaseDataset {
-    data: TimePoint[];
+    border?: BubbleDatasetBorderStyle | BubbleDatasetBorderStyle[];
 }
 
 export interface BubblePoint {
@@ -39,7 +53,24 @@ export interface BubblePoint {
     r: number;
 }
 
+export interface BubbleDatasetBorderStyle {
+    width?: number;
+    color?: string | number[];
+}
+
+
+// Time dataset
+export interface TimeDataset extends BaseDataset {
+    data: TimePoint[];
+    border?: TimeDatasetBorderStyle | TimeDatasetBorderStyle[];
+}
+
 export interface TimePoint {
     x: string | Date;
     y: number;
+}
+
+export interface TimeDatasetBorderStyle {
+    width?: number;
+    color?: string | number[];
 }
