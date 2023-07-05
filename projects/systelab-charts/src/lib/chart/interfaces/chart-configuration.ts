@@ -10,7 +10,7 @@ export interface ChartConfiguration {
     labels?: (string | Date)[];
     datasets: Dataset[];
     annotations?: AnnotationTypes[];
-    tooltips?: Tooltip;
+    tooltip?: Tooltip;
     legend?: Legend;
     grid?: {
         enabled: boolean; // pie and doughnut

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BorderStyle, ChartType, Dataset } from '../interfaces';
+import { BorderStyle, ChartConfiguration, Dataset } from '../interfaces';
 
 @Injectable({
     providedIn: 'root',
@@ -21,11 +21,14 @@ export class DatasetService {
         [77, 83, 96]
     ];
 
-    public mapDatasets(chartType: ChartType, datasets: Dataset[], cx: CanvasRenderingContext2D): any[] {
+    public mapDatasets(chartConfiguration: ChartConfiguration, cx: CanvasRenderingContext2D): any[] {
         let borderColors: any;
         let backgroundColor: any;
         let colorNumber = 0;
         const outputDatasets: any[] = [];
+
+        const {type: chartType, datasets, legend} = chartConfiguration;
+        const { enabled: pointStyleEnabled, pointStyle} = legend?.labels ?? { enabled: false, pointStyle: undefined};
 
         for (let i = 0; i < datasets.length; i++) {
             colorNumber = i;
@@ -45,7 +48,11 @@ export class DatasetService {
                     borderColors = this.toRGBA(this.defaultColors[colorNumber], 1);
                 }
                 if (!datasets[i].backgroundColor) {
-                    backgroundColor = this.toRGBA(this.defaultColors[colorNumber], 0.8);
+                    if (datasets[i].fill) {
+                        backgroundColor = this.toRGBA(this.defaultColors[colorNumber], 0.8);
+                    } else {
+                        backgroundColor = 'transparent';
+                    }
                 }
             }
 
@@ -60,6 +67,7 @@ export class DatasetService {
                 borderColor: borderColors,
                 borderWidth: ('border' in datasets[i]) ? (datasets[i].border as BorderStyle).width : 2,
                 pointRadius: datasets[i]?.pointRadius ?? 5,
+                ...(pointStyleEnabled && pointStyle && {pointStyle}),
             };
             delete dataset.border;
 
