@@ -12,11 +12,8 @@ ChartJS.Chart.register(...ChartJS.registerables, ChartDataLabels, annotationPlug
   templateUrl: './chart.component.html',
 })
 export class ChartComponent implements OnInit, AfterViewInit {
-  @ViewChild('chartCanvas', {static: true}) chartCanvas: ElementRef;
-  @ViewChild('topLegend', {static: false}) topLegend: ElementRef;
-  @ViewChild('bottomLegend', {static: false}) bottomLegend: ElementRef;
-
   @Input() config: ChartConfiguration;
+  @ViewChild('chartCanvas', {static: true}) chartCanvas: ElementRef;
 
   public chart: ChartJS.Chart;
 
@@ -30,12 +27,12 @@ export class ChartComponent implements OnInit, AfterViewInit {
   public ngAfterViewInit(): void {
     if (this.chartCanvas.nativeElement) {
       const cx: CanvasRenderingContext2D = this.chartCanvas.nativeElement.getContext('2d');
-      const chartConfiguration = this.chartService.mapConfiguration(this.config, cx);
+      const chartConfiguration: ChartJS.ChartConfiguration = this.chartService.mapConfiguration(this.config, cx);
       this.drawChart(chartConfiguration, cx);
     }
   }
 
-  private drawChart(chartConfiguration, cx) {
+  private drawChart(chartConfiguration: ChartJS.ChartConfiguration, cx: CanvasRenderingContext2D): void {
     this.chart = new ChartJS.Chart(cx, chartConfiguration);
   }
 }
