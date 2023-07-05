@@ -1,5 +1,7 @@
 export * from './annotation';
-export * from './chart-configuration';
 export * from './axes';
-export * from './tooltip';
+export * from './chart-configuration';
+export * from './dataset';
 export * from './legend';
+export * from './tooltip';
+
