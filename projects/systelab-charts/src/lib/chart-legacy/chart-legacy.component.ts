@@ -258,6 +258,9 @@ export class ChartLegacyComponent implements AfterViewInit {
 		Chart.defaults.interaction.intersect = this.intersectionSettings.intersect;
 		// @ts-ignore
 		Chart.defaults.interaction.mode = this.intersectionSettings.mode;
+
+		console.warn(`❌ The selector <systelab-chart-legacy> is deprecated. Use the new <systelab-chart> 
+					implementation instead. <systelab-chart-legacy> will me removed in next versions.`);
 	}
 
 	@Input()
