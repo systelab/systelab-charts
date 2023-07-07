@@ -22,7 +22,7 @@ export class AxesService {
             scales.x.ticks.callback = (val, index): string => {
                 const skipItems = labels.skipItems ?? 0;
                 count = index % skipItems;
-                return skipItems ? (count === 0) ? val : '' : val;
+                return skipItems ? (count === 0) ? val : null : val;
             };
         }
         return scales as unknown as (LinearScale | LogarithmicScale | TimeScale | undefined);
