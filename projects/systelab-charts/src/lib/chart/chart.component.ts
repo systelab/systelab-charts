@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { ChartConfiguration, InteractionMode } from './interfaces';
 import * as ChartJS from 'chart.js';
 import { ChartService } from './services/chart.service';
@@ -22,7 +22,7 @@ ChartJS.Chart.register(...ChartJS.registerables, ChartDataLabels, annotationPlug
   selector: 'systelab-chart',
   templateUrl: './chart.component.html',
 })
-export class ChartComponent implements OnInit, AfterContentInit {
+export class ChartComponent implements AfterContentInit {
   @Input() config: ChartConfiguration;
   @ViewChild('chartCanvas', {static: true}) chartCanvas: ElementRef;
 
@@ -31,12 +31,9 @@ export class ChartComponent implements OnInit, AfterContentInit {
 
   constructor(private readonly chartService: ChartService) {}
 
-  ngOnInit() {
+  public ngAfterContentInit(): void {
     ChartJS.Chart.defaults.interaction.intersect = this.config.options?.interaction?.intersect ?? false;
     ChartJS.Chart.defaults.interaction.mode = this.config.options?.interaction?.mode ?? InteractionMode.index;
-  }
-
-  public ngAfterContentInit(): void {
     this.drawChart();
   }
 
@@ -59,7 +56,6 @@ export class ChartComponent implements OnInit, AfterContentInit {
           ...chartConfiguration.options.animation,
           onComplete: () => {
             this.drawing = false;
-            console.log('animation callback');
           },
         },
         plugins: {
@@ -79,7 +75,6 @@ export class ChartComponent implements OnInit, AfterContentInit {
         } as any,
       }
     };
-    console.log(chartConfiguration);
 
     this.chart = new ChartJS.Chart(cx, chartConfiguration);
   }
