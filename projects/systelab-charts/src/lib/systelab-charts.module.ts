@@ -12,7 +12,6 @@ import { ChartComponent } from './chart/chart.component';
 	declarations: [
 		ChartLegacyComponent,
 		ChartComponent,
-  ChartComponent,
 	],
 	exports: [
 		ChartLegacyComponent,
