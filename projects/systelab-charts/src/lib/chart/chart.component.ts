@@ -76,8 +76,7 @@ export class ChartComponent implements AfterContentInit {
         } as any,
       }
     };
-
-    console.log(chartConfiguration);
+    
     this.chart = new ChartJS.Chart(cx, chartConfiguration);
   }
 }
