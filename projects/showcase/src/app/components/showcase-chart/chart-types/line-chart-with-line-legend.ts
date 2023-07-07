@@ -3,7 +3,7 @@ import {
     ChartType,
     LegendPointStyle,
     LegendPosition
-} from '../../../../../../systelab-charts/src/lib/chart/interfaces';
+} from 'systelab-charts';
 
 export const lineChartWithLineLegendConfiguration: ChartConfiguration = {
     type: ChartType.line,

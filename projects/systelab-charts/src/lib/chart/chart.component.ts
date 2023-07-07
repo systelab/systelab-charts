@@ -38,12 +38,20 @@ export class ChartComponent implements AfterContentInit {
     this.drawChart();
   }
 
+  public refresh(): void {
+    this.drawChart();
+  }
+
   private drawChart(): void {
     if (!this.chartCanvas.nativeElement) {
       return;
     }
 
     this.drawing = true;
+
+    if (this.chart) {
+      this.chart.destroy();
+    }
 
     const cx: CanvasRenderingContext2D = this.chartCanvas.nativeElement.getContext('2d');
     let chartConfiguration: ChartJS.ChartConfiguration = this.chartService.mapConfiguration(this.config, cx);
@@ -77,7 +85,6 @@ export class ChartComponent implements AfterContentInit {
       }
     };
 
-    console.log(chartConfiguration);
     this.chart = new ChartJS.Chart(cx, chartConfiguration);
   }
 }

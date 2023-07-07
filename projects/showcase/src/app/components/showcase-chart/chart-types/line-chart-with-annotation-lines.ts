@@ -4,7 +4,7 @@ import {
     ChartConfiguration,
     ChartType,
     LineAnnotationOrientation
-} from '../../../../../../systelab-charts/src/lib/chart/interfaces';
+} from 'systelab-charts';
 
 export const lineChartWithAnnotationLinesConfiguration: ChartConfiguration = {
     type: ChartType.line,
