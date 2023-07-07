@@ -22,7 +22,7 @@ export class ChartService {
     public mapConfiguration(configuration: ChartConfiguration, cx: CanvasRenderingContext2D): ChartJS.ChartConfiguration {
         this._cx = cx;
         const outputConfiguration = this.mapBasicInformation(configuration);
-        const axes = this.axesService.mapConfiguration(configuration.axes);
+        const axes = this.axesService.mapConfiguration(configuration);
         const indexAxis: 'x' | 'y' = configuration.axes ? configuration.axes.mainAxis : 'x';
         return {
             ...outputConfiguration,
@@ -61,7 +61,7 @@ export class ChartService {
         return {
             type: chartConfiguration.type,
             data: {
-                labels: chartConfiguration.labels,
+                labels: chartConfiguration.labels?.data,
                 datasets,
             },
             options: {

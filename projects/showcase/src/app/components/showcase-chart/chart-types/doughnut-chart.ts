@@ -5,7 +5,9 @@ export const doughnutChartConfiguration: ChartConfiguration = {
     legend: {
         enabled: false,
     },
-    labels: ['January', 'February', 'March', 'April'],
+    labels: {
+        data: ['January', 'February', 'March', 'April'],
+    },
     datasets: [
         {
             data: [36, 23, 42, 52],

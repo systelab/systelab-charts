@@ -38,4 +38,5 @@ export interface Ticks {
     autoSkip?: boolean;
     initialTick?: boolean; // default true
     finalTick?: boolean; // default true
+    callback?: (val, index) => string;
 }

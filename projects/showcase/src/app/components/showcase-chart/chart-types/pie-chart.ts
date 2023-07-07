@@ -2,7 +2,9 @@ import { ChartConfiguration, ChartType } from '../../../../../../systelab-charts
 
 export const pieChartConfiguration: ChartConfiguration = {
     type: ChartType.pie,
-    labels: ['January', 'February', 'March', 'April'],
+    labels: {
+        data: ['January', 'February', 'March', 'April'],
+    },
     datasets: [
         {
             data: [36, 4, 42, 52],

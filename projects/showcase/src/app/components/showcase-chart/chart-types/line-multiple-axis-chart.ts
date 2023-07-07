@@ -6,7 +6,9 @@ import {
 
 export const lineMultipleAxisChartConfiguration: ChartConfiguration = {
     type: ChartType.line,
-    labels: ['1', '2', '3', '4'],
+    labels: {
+        data: ['1', '2', '3', '4'],
+    },
     datasets: [
         {
             label: 'Only Line',

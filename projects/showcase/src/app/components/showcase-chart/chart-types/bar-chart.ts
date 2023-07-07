@@ -2,7 +2,9 @@ import { ChartConfiguration, ChartType } from '../../../../../../systelab-charts
 
 export const barChartConfiguration: ChartConfiguration = {
     type: ChartType.bar,
-    labels: ['January', 'February', 'March', 'April'],
+    labels: {
+        data: ['January', 'February', 'March', 'April'],
+    },
     datasets: [
         {
             label: 'Only Line',

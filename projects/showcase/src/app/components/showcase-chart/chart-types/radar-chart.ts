@@ -2,7 +2,9 @@ import { ChartConfiguration, ChartType } from '../../../../../../systelab-charts
 
 export const radarChartConfiguration: ChartConfiguration = {
     type: ChartType.radar,
-    labels: ['January', 'February', 'March', 'April'],
+    labels: {
+        data: ['January', 'February', 'March', 'April']
+    },
     datasets: [
         {
             label: 'Only Line',

@@ -2,7 +2,9 @@ import { ChartConfiguration, ChartType } from '../../../../../../systelab-charts
 
 export const bubbleChartConfiguration: ChartConfiguration = {
     type: ChartType.bubble,
-    labels: ['January', 'February', 'March', 'April'],
+    labels: {
+        data: ['January', 'February', 'March', 'April'],
+    },
     datasets: [
         {
             label: 'Test 1',

@@ -2,7 +2,9 @@ import { ChartConfiguration, ChartType, InteractionMode } from './interfaces';
 
 export const chartDefaultConfiguration: ChartConfiguration = {
     type: ChartType.line,
-    labels: [],
+    labels: {
+        data: [],
+    },
     datasets: [],
     options: {
         interaction: {

@@ -13,7 +13,9 @@ const labelsTimeLine = [
 
 export const lineChartWithTimelineConfiguration: ChartConfiguration = {
     type: ChartType.line,
-    labels: labelsTimeLine,
+    labels: {
+        data: labelsTimeLine,
+    },
     datasets: [
         {
             label: 'Label',

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Axes } from '../interfaces';
+import { ChartConfiguration } from '../interfaces';
 import { LinearScale, LogarithmicScale, TimeScale } from 'chart.js';
 
 @Injectable({
@@ -7,11 +7,24 @@ import { LinearScale, LogarithmicScale, TimeScale } from 'chart.js';
 })
 export class AxesService {
 
-    public mapConfiguration(axes: Axes): (LinearScale | LogarithmicScale | TimeScale | undefined) {
-        if (!axes) {
-            return undefined;
+    public mapConfiguration(configuration: ChartConfiguration): (LinearScale | LogarithmicScale | TimeScale | undefined) {
+        const { labels, axes } = configuration;
+        const scales = axes?.dataAxes ?? {};
+
+        if (scales && !('x' in scales)) {
+            scales.x = {};
         }
-        const scales = axes.dataAxes;
+        if (scales && !('ticks' in scales.x)) {
+            scales.x.ticks = {};
+        }
+        if (scales && labels?.skipItems) {
+            let count = 0;
+            scales.x.ticks.callback = (val, index): string => {
+                const skipItems = labels.skipItems ?? 0;
+                count = index % skipItems;
+                return skipItems ? (count === 0) ? val : '' : val;
+            };
+        }
         return scales as unknown as (LinearScale | LogarithmicScale | TimeScale | undefined);
     }
 }

@@ -7,7 +7,11 @@ import { Context } from 'chartjs-plugin-datalabels';
 
 export interface ChartConfiguration {
     type: ChartType;
-    labels?: (string | Date)[];
+    labels?: {
+        data: (string | Date)[];
+        skipItems?: number; // number the items to be skipped between labels
+        showOnlyIntegers?: boolean; // only show labels if there are no decimals
+    };
     datasets: Dataset[];
     annotations?: AnnotationTypes[];
     tooltip?: Tooltip;
