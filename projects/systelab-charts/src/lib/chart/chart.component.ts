@@ -38,6 +38,10 @@ export class ChartComponent implements AfterContentInit {
     this.drawChart();
   }
 
+  public refresh(): void {
+    this.drawChart();
+  }
+
   private drawChart(): void {
     if (!this.chartCanvas.nativeElement) {
       return;
@@ -76,7 +80,7 @@ export class ChartComponent implements AfterContentInit {
         } as any,
       }
     };
-    
+
     this.chart = new ChartJS.Chart(cx, chartConfiguration);
   }
 }
