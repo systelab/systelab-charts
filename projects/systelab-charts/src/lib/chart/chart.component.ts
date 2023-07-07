@@ -21,6 +21,7 @@ ChartJS.Chart.register(...ChartJS.registerables, ChartDataLabels, annotationPlug
 @Component({
   selector: 'systelab-chart',
   templateUrl: './chart.component.html',
+  styleUrls: ['./chart.component.scss'],
 })
 export class ChartComponent implements AfterContentInit {
   @Input() config: ChartConfiguration;
@@ -76,6 +77,7 @@ export class ChartComponent implements AfterContentInit {
       }
     };
 
+    console.log(chartConfiguration);
     this.chart = new ChartJS.Chart(cx, chartConfiguration);
   }
 }

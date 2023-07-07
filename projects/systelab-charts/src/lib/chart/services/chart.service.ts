@@ -73,6 +73,8 @@ export class ChartService {
                 animation: {
                     duration: chartConfiguration.options.animations.duration,
                 },
+                responsive: chartConfiguration.options.responsive,
+                maintainAspectRatio: chartConfiguration.options.maintainAspectRatio,
                 interaction: chartConfiguration.options.interaction,
                 plugins: {
                     datalabels: {
