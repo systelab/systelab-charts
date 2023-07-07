@@ -4,7 +4,7 @@ import {
     ChartConfiguration,
     ChartType,
     LineAnnotationOrientation
-} from '../../../../../../systelab-charts/src/lib/chart/interfaces';
+} from 'systelab-charts';
 
 export const bubbleChartWithAnnotationBoxLineConfiguration: ChartConfiguration = {
     type: ChartType.bubble,

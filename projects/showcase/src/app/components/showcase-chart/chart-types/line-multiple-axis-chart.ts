@@ -2,7 +2,7 @@ import {
     AnnotationType,
     ChartConfiguration,
     ChartType
-} from '../../../../../../systelab-charts/src/lib/chart/interfaces';
+} from 'systelab-charts';
 
 export const lineMultipleAxisChartConfiguration: ChartConfiguration = {
     type: ChartType.line,

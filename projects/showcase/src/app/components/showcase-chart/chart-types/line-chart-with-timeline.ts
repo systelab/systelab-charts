@@ -1,4 +1,4 @@
-import { ChartConfiguration, ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
+import { ChartConfiguration, ChartType } from 'systelab-charts';
 
 
 const labelsTimeLine = [

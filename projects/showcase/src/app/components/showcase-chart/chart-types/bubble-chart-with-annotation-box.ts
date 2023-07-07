@@ -1,8 +1,4 @@
-import {
-    AnnotationType,
-    ChartConfiguration,
-    ChartType
-} from '../../../../../../systelab-charts/src/lib/chart/interfaces';
+import { AnnotationType, ChartConfiguration, ChartType } from 'systelab-charts';
 
 export const bubbleChartWithAnnotationBoxConfiguration: ChartConfiguration = {
     type: ChartType.bubble,

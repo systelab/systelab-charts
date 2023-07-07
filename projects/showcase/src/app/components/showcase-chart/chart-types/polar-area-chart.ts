@@ -1,4 +1,4 @@
-import { ChartConfiguration, ChartType } from '../../../../../../systelab-charts/src/lib/chart/interfaces';
+import { ChartConfiguration, ChartType } from 'systelab-charts';
 
 export const polarAreaChartConfiguration: ChartConfiguration = {
     type: ChartType.polarArea,
