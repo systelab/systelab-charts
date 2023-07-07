@@ -49,6 +49,10 @@ export class ChartComponent implements AfterContentInit {
 
     this.drawing = true;
 
+    if (this.chart) {
+      this.chart.destroy();
+    }
+
     const cx: CanvasRenderingContext2D = this.chartCanvas.nativeElement.getContext('2d');
     let chartConfiguration: ChartJS.ChartConfiguration = this.chartService.mapConfiguration(this.config, cx);
     const animationEnabled: boolean = (chartConfiguration.options.animation as any).duration > 0;
