@@ -36,7 +36,7 @@ export class ChartService {
 
     private mapBasicInformation(configuration: ChartConfiguration): ChartJS.ChartConfiguration {
         // Howto implement the fill flag
-        const chartConfiguration = {
+        const chartConfiguration: ChartConfiguration = {
             ...chartDefaultConfiguration,
             ...configuration,
             options: {
@@ -70,6 +70,10 @@ export class ChartService {
                         tension: line?.tension ?? 0,
                     }
                 },
+                animation: {
+                    duration: chartConfiguration.options.animations.duration,
+                },
+                interaction: chartConfiguration.options.interaction,
                 plugins: {
                     datalabels: {
                         display: datalabels?.display ?? false,

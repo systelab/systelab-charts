@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ChartConfiguration } from '../../../../../systelab-charts/src/lib/chart/interfaces';
+import { ChartConfiguration } from 'systelab-charts';
 import {
   barChartConfiguration,
   barChartHorizontalConfiguration,
