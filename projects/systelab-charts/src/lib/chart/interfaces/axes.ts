@@ -5,28 +5,30 @@ export interface Axes {
 }
 
 export interface Axis {
-    [id: string]: {
-        title?: {
-            display: boolean;
-            text: string;
-        };
-        type?: string; // enum
-        position?: string; // enum
-        distribution?: string; // time
-        time?: {
-            unit: string;
-            minUnit: string;
-        };
-        stacked?: boolean;
-        min?: number;
-        max?: number;
-        ticks?: Ticks;
-        border?: {
-            drawBorder?: boolean;
-        };
-        grid?: {
-            display: boolean;
-        };
+    [id: string]: AxisContent;
+}
+
+export interface AxisContent {
+    title?: {
+        display: boolean;
+        text: string;
+    };
+    type?: string; // enum
+    position?: string; // enum
+    distribution?: string; // time
+    time?: {
+        unit: string;
+        minUnit: string;
+    };
+    stacked?: boolean;
+    min?: number;
+    max?: number;
+    ticks?: Ticks;
+    border?: {
+        drawBorder?: boolean;
+    };
+    grid?: {
+        display: boolean;
     };
 }
 
