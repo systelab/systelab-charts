@@ -58,7 +58,7 @@ export class DatasetService {
         } else {
             borderColor = this.toRGBA(this.defaultColors[colorNumber], 1);
             if (!!inputDataset.border) {
-                if (!inputDataset.border[0]?.color) {
+                if (inputDataset.border[0]?.color) {
                     borderColor = inputDataset.border[0].color;
                 } else if ((inputDataset.border as any).color) {
                     borderColor = (inputDataset.border as any).color;
