@@ -79,7 +79,9 @@ export class DatasetService {
         const outputDataset = {
             type: inputDataset.type,
             label: inputDataset.label,
+            data: inputDataset.data,
             yAxisID: inputDataset.yAxisID,
+            fill: inputDataset.fill,
             backgroundColor,
             borderColor,
             borderWidth: ('border' in inputDataset && 'width' in inputDataset.border) ? (inputDataset.border as any).width : 2,
