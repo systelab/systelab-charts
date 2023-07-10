@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ChartConfiguration, Dataset } from '../interfaces';
+import { ChartConfiguration, ChartType, Dataset, Legend } from '../interfaces';
+import * as ChartJS from 'chart.js';
 
 @Injectable({
     providedIn: 'root',
@@ -22,58 +23,71 @@ export class DatasetService {
     ];
 
     public mapDatasets(chartConfiguration: ChartConfiguration, cx: CanvasRenderingContext2D): any[] {
-        let borderColors: any;
-        let backgroundColor: any;
         let colorNumber = 0;
         const outputDatasets: any[] = [];
 
-        const {type: chartType, datasets, legend} = chartConfiguration;
-        const { enabled: pointStyleEnabled, pointStyle} = legend?.labels ?? { enabled: false, pointStyle: undefined};
+        const { type: chartType, datasets, legend } = chartConfiguration;
+        const { enabled: pointStyleEnabled, pointStyle } = legend?.labels ?? { enabled: false, pointStyle: undefined };
 
-        for (let i = 0; i < datasets.length; i++) {
-            colorNumber = i;
-            if (datasets[i].isGradient) {
-                const gradientStroke = cx.createLinearGradient(500, 0, 100, 0);
-                gradientStroke.addColorStop(0, this.toRGBA(this.defaultColors[0], 1));
-                gradientStroke.addColorStop(1, this.toRGBA(this.defaultColors[1], 1));
-                borderColors = gradientStroke;
-                backgroundColor = gradientStroke;
-            } else if ((['pie','doughnut','polarArea'].includes(chartType)) && !datasets[i].type) {
-                const {borderColorList: computedBorderColorList,
-                    backgroundColorList: computedBackgroundColorList} = this.getPieDoughnutPolarAreaColors(datasets[i]);
-                borderColors = computedBorderColorList;
-                backgroundColor = computedBackgroundColorList;
-            } else {
-                if (!datasets[i].border[0]?.color) {
-                    borderColors = this.toRGBA(this.defaultColors[colorNumber], 1);
-                }
-                if (!datasets[i].backgroundColor) {
-                    if (datasets[i].fill) {
-                        backgroundColor = this.toRGBA(this.defaultColors[colorNumber], 0.8);
-                    } else {
-                        backgroundColor = 'transparent';
-                    }
-                }
-            }
-
+        for (const inputDataset of datasets) {
+            outputDatasets.push(this.mapDataset(chartType, inputDataset, colorNumber, legend, cx));
             colorNumber++;
             if (colorNumber > (this.defaultColors.length - 1)) {
                 colorNumber = 0;
             }
-
-            const dataset = {
-                ...datasets[i],
-                backgroundColor,
-                borderColor: borderColors,
-                borderWidth: ('border' in datasets[i] && 'width' in datasets[i].border) ? (datasets[i].border as any).width : 2,
-                pointRadius: datasets[i]?.pointRadius ?? 5,
-                ...(pointStyleEnabled && pointStyle && {pointStyle}),
-            };
-            delete dataset.border;
-
-            outputDatasets.push(dataset);
         }
+
         return outputDatasets;
+    }
+
+    private mapDataset(chartType: ChartType, inputDataset: Dataset, colorNumber: number,
+                       legend: Legend, cx: CanvasRenderingContext2D): object {
+        let borderColor: any;
+        let backgroundColor: any;
+        if (inputDataset.isGradient) {
+            const gradientStroke = cx.createLinearGradient(500, 0, 100, 0);
+            gradientStroke.addColorStop(0, this.toRGBA(this.defaultColors[0], 1));
+            gradientStroke.addColorStop(1, this.toRGBA(this.defaultColors[1], 1));
+            borderColor = gradientStroke;
+            backgroundColor = gradientStroke;
+        } else if ((['pie','doughnut','polarArea'].includes(chartType)) && !inputDataset.type) {
+            const { borderColorList: computedBorderColorList,
+                backgroundColorList: computedBackgroundColorList} = this.getPieDoughnutPolarAreaColors(inputDataset);
+            borderColor = computedBorderColorList;
+            backgroundColor = computedBackgroundColorList;
+        } else {
+            borderColor = this.toRGBA(this.defaultColors[colorNumber], 1);
+            if (!!inputDataset.border) {
+                if (!inputDataset.border[0]?.color) {
+                    borderColor = inputDataset.border[0].color;
+                } else if ((inputDataset.border as any).color) {
+                    borderColor = (inputDataset.border as any).color;
+                }
+            }
+
+            if (!inputDataset.backgroundColor) {
+                if (inputDataset.fill) {
+                    backgroundColor = this.toRGBA(this.defaultColors[colorNumber], 0.8);
+                } else {
+                    backgroundColor = 'transparent';
+                }
+            }
+        }
+
+        const { enabled: pointStyleEnabled, pointStyle } = legend?.labels ?? { enabled: false, pointStyle: undefined };
+
+        const outputDataset = {
+            type: inputDataset.type,
+            label: inputDataset.label,
+            yAxisID: inputDataset.yAxisID,
+            backgroundColor,
+            borderColor,
+            borderWidth: ('border' in inputDataset && 'width' in inputDataset.border) ? (inputDataset.border as any).width : 2,
+            pointRadius: inputDataset?.pointRadius ?? 5,
+            ...(pointStyleEnabled && pointStyle && { pointStyle }),
+            datalabels: inputDataset.datalabels,
+        };
+        return outputDataset;
     }
 
     // TODO: why to pass background colors similar to the legacy component
