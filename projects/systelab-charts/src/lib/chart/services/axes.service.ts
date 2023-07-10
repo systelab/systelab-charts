@@ -19,10 +19,11 @@ export class AxesService {
         }
         if (scales && labels?.skipItems) {
             let count = 0;
-            scales.x.ticks.callback = (val, index): string => {
+            scales.x.ticks.callback = (value, index): string => {
                 const skipItems = labels.skipItems ?? 0;
+                const labelValue = configuration.labels.data[index] ? configuration.labels.data[index] : value;
                 count = index % skipItems;
-                return skipItems ? (count === 0) ? val : null : val;
+                return skipItems ? (count === 0) ? labelValue : null : labelValue;
             };
         }
         return scales as unknown as (LinearScale | LogarithmicScale | TimeScale | undefined);
