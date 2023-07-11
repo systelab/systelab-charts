@@ -1,22 +1,34 @@
 import { Component, ViewChild } from '@angular/core';
 
 import {
-	Annotation, ChartBoxAnnotation, ChartComponent, ChartItem, ChartLabelAnnotation, ChartLabelColor,
-	ChartLabelFont, ChartLabelPadding, ChartLabelPosition, ChartLabelSettings, ChartLineAnnotation, ChartMultipleYAxisScales,
-	ChartTooltipItem, ChartTooltipSettings, ChartLine
+	Annotation,
+	ChartBoxAnnotation,
+	ChartItem,
+	ChartLabelAnnotation,
+	ChartLabelColor,
+	ChartLabelFont,
+	ChartLabelPadding,
+	ChartLabelPosition,
+	ChartLabelSettings,
+	ChartLegacyComponent,
+	ChartLine,
+	ChartLineAnnotation,
+	ChartMultipleYAxisScales,
+	ChartTooltipItem,
+	ChartTooltipSettings
 } from 'systelab-charts';
 
 @Component({
-	selector:    'app-showcase-chart',
-	templateUrl: './showcase-chart.component.html'
+	selector:    'app-showcase-chart-legacy',
+	templateUrl: './showcase-chart-legacy.component.html'
 })
-export class ShowcaseChartComponent {
+export class ShowcaseChartLegacyComponent {
 
-	@ViewChild('lineChart') lineChart: ChartComponent;
-	@ViewChild('timelineChart') timelineChart: ChartComponent;
-	@ViewChild('lineChartMultipleAxis') lineChartMultipleAxis: ChartComponent;
-	@ViewChild('lineChartLegend') lineChartLegend: ChartComponent;
-	@ViewChild('resizableCChart') resizableChart: ChartComponent;
+	@ViewChild('lineChart') lineChart: ChartLegacyComponent;
+	@ViewChild('timelineChart') timelineChart: ChartLegacyComponent;
+	@ViewChild('lineChartMultipleAxis') lineChartMultipleAxis: ChartLegacyComponent;
+	@ViewChild('lineChartLegend') lineChartLegend: ChartLegacyComponent;
+	@ViewChild('resizableCChart') resizableChart: ChartLegacyComponent;
 
 	public type: string;
 	public itemSelected: any;
@@ -68,7 +80,9 @@ export class ShowcaseChartComponent {
 		this.tooltipSettings.borderColor = '#0066ff';
 		this.tooltipSettings.borderWidth = 3;
 		this.tooltipSettings.bodyFontColor = '#6c757d';
+		this.tooltipSettings.bodyFontSize = 15;
 		this.tooltipSettings.titleFontColor = '#fd7e14';
+		this.tooltipSettings.titleFontSize = 20;
 
 		this.generateMultipleAxisExample();
 
@@ -226,14 +240,14 @@ export class ShowcaseChartComponent {
 
 	public doChange() {
 		this.dataLine = [];
-		const rnd = ShowcaseChartComponent.randomIntFromInterval(1, 4);
+		const rnd = ShowcaseChartLegacyComponent.randomIntFromInterval(1, 4);
 		for (let h = 1; h <= rnd; h++) {
 			const dataRnd: Array<number> = [];
 			for (let i = 1; i <= 4; i++) {
-				dataRnd.push(ShowcaseChartComponent.randomIntFromInterval(3, 35));
+				dataRnd.push(ShowcaseChartLegacyComponent.randomIntFromInterval(3, 35));
 			}
 			let fill = false;
-			if (ShowcaseChartComponent.randomIntFromInterval(0, 1) === 1) {
+			if (ShowcaseChartLegacyComponent.randomIntFromInterval(0, 1) === 1) {
 				fill = true;
 			}
 			this.dataLine.push(new ChartItem('Line ' + h, dataRnd, '', '', fill, true, false, 3));
@@ -243,20 +257,20 @@ export class ShowcaseChartComponent {
 
 	public randomizeTimeLineChart() {
 		this.dataTimeLine = [];
-		const rnd = ShowcaseChartComponent.randomIntFromInterval(1, 4);
+		const rnd = ShowcaseChartLegacyComponent.randomIntFromInterval(1, 4);
 		for (let h = 1; h <= rnd; h++) {
 			const dataRnd: Array<any> = [];
 			for (let i = 1; i <= 4; i++) {
 				const item = {
-					t: new Date(ShowcaseChartComponent.randomIntFromInterval(2020, 2022),
-						ShowcaseChartComponent.randomIntFromInterval(1, 11),
-						ShowcaseChartComponent.randomIntFromInterval(1, 20)),
-					y: ShowcaseChartComponent.randomIntFromInterval(1, 35)
+					t: new Date(ShowcaseChartLegacyComponent.randomIntFromInterval(2020, 2022),
+						ShowcaseChartLegacyComponent.randomIntFromInterval(1, 11),
+						ShowcaseChartLegacyComponent.randomIntFromInterval(1, 20)),
+					y: ShowcaseChartLegacyComponent.randomIntFromInterval(1, 35)
 				};
 				dataRnd.push(item);
 			}
 			let fill = false;
-			if (ShowcaseChartComponent.randomIntFromInterval(0, 1) === 1) {
+			if (ShowcaseChartLegacyComponent.randomIntFromInterval(0, 1) === 1) {
 				fill = true;
 			}
 			this.dataTimeLine.push(new ChartItem('Line ' + h, dataRnd, '', '', fill, true, false, 3));
@@ -279,7 +293,7 @@ export class ShowcaseChartComponent {
 		this.chartLineMultipleAxisAnnotations.push(new ChartLineAnnotation(new ChartLabelAnnotation('Label', 'top'), 3,
 			'vertical', 'afterDatasetsDraw', 'line', [], '#e53c29'));
 
-		const rndData = ShowcaseChartComponent.randomIntFromInterval(1, 3);
+		const rndData = ShowcaseChartLegacyComponent.randomIntFromInterval(1, 3);
 		this.generateRandomData(rndData, 30, 105, 'y-axis-0', 'left');
 		this.generateRandomData(rndData, 0, 10, 'y-axis-1', 'right');
 	}
@@ -298,14 +312,14 @@ export class ShowcaseChartComponent {
 		for (let h = 1; h <= rndNumberOfElements; h++) {
 			const dataRnd: Array<number> = [];
 			for (let i = 1; i <= 4; i++) {
-				dataRnd.push(ShowcaseChartComponent.randomIntFromInterval(min, max));
+				dataRnd.push(ShowcaseChartLegacyComponent.randomIntFromInterval(min, max));
 			}
 			let fill = false;
-			if (ShowcaseChartComponent.randomIntFromInterval(0, 1) === 1) {
+			if (ShowcaseChartLegacyComponent.randomIntFromInterval(0, 1) === 1) {
 				fill = true;
 			}
 			this.dataLineMultipleAxis.push(new ChartItem(`Line ${h} ${position} axis`, dataRnd, '', '', fill, true, false, 3,
-				'line', undefined, ShowcaseChartComponent.randomIntFromInterval(0, 3), yAxisID));
+				'line', undefined, ShowcaseChartLegacyComponent.randomIntFromInterval(0, 3), yAxisID));
 		}
 	}
 

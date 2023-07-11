@@ -6,8 +6,7 @@
     "./README.md",
     "./sass/**/*.scss",
     "./assets/fonts/**/*.otf",
-    "./assets/fonts/**/*.txt",
-    "./src/assets/js/**/*.js"
+    "./assets/fonts/**/*.txt"
   ],
   "lib": {
     "entryFile": "src/public-api.ts"
