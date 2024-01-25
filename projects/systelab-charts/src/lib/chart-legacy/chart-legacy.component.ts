@@ -58,7 +58,7 @@ export class ChartItem {
 
 export class Annotation {
 	constructor(public drawTime: string, public type: string, public borderColor?: string, public borderWidth?: number,
-				public scaleId = 'yAxis') {
+				public scaleId = 'y') {
 	}
 }
 
@@ -654,7 +654,7 @@ export class ChartLegacyComponent implements AfterViewInit {
 				...timeScale,
 				...xAxis,
 			},
-			yAxis: undefined,
+			y: undefined
 		};
 
 		if (this.multipleYAxisScales) {
@@ -662,12 +662,9 @@ export class ChartLegacyComponent implements AfterViewInit {
 				...scales,
 				...yAxisMultiple,
 			};
-			delete scales.yAxis;
+			delete scales.y
 		} else {
-			scales = {
-				...scales,
-				yAxis,
-			};
+			scales.y = yAxis;
 		}
 
 		return scales;
@@ -837,6 +834,8 @@ export class ChartLegacyComponent implements AfterViewInit {
 			lineAnnotation.borderWidth = 2;
 		}
 
+		lineAnnotation.endValue = lineAnnotation.endValue ?? lineAnnotation.value;
+
 		if (lineAnnotation.label) {
 			if (!lineAnnotation.label.backgroundColor) {
 				lineAnnotation.label.backgroundColor = defaultBackgroundColor;
@@ -855,8 +854,8 @@ export class ChartLegacyComponent implements AfterViewInit {
 			drawTime:    lineAnnotation.drawTime,
 			id: 		 'annotation' + (this._annotations.length + 1),
 			type:        lineAnnotation.type,
-			value:		 lineAnnotation.orientation === 'vertical' ? lineAnnotation.value.toString(): lineAnnotation.value,
-			endValue:    lineAnnotation.endValue,
+			value:		 lineAnnotation.value,
+			endValue:	 lineAnnotation.endValue,
 			borderColor: lineAnnotation.borderColor,
 			borderWidth: lineAnnotation.borderWidth,
 			borderDash:  lineAnnotation.borderDash,
@@ -868,7 +867,7 @@ export class ChartLegacyComponent implements AfterViewInit {
 			label = {
 				display:         true,
 					backgroundColor: lineAnnotation.label.backgroundColor,
-					position:        'start',
+					position:        lineAnnotation.label.position,
 					content:         lineAnnotation.label.text,
 					font: {
 					color: lineAnnotation.label.fontColor,

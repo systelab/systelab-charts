@@ -115,8 +115,8 @@ export class AnnotationService {
             borderColor: annotation.border?.color ?? undefined,
             borderWidth: annotation.border?.width ?? 2,
             borderDash: annotation.border?.dash ? [5, 15] : undefined,
-            value: isVertical ? annotation.value.toString() : Number(annotation.value),
-            endValue: isVertical ? endValue.toString() : Number(endValue),
+            value: annotation.value,
+            endValue: endValue,
             label: computedLabel,
         };
     }

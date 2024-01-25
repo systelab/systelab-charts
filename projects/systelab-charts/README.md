@@ -155,17 +155,17 @@ You can define two types of annotations, line or box type annotations.
 
 #### chartLineAnnotation
 
-| Name | Type | Default | Description |
-| ---- |:----:|:-------:| ----------- |
-| label | chartLabelAnnotation| | chartLabelAnnotation are the properties of the tooltip label |
-| value | number | | In this case will be 'box' |
-| orientation | string |  | Define the orientation can be 'vertical' or horizontal |
-| drawTime | string |  | Set to draw 'afterDatasetsDraw' or 'beforeDatasetsDraw' |
-| type | string |  | In this case will be 'line' |
-| borderDash | Array<number> |  | If you want a dashed line you will establish the dash properties in a number array |
-| borderColor | string | | Define the color of the box |
-| borderWidth | string |  | Define the width of the border |
-| endValue | number |  | Define a end value of the line, drawing a diagonal line |
+| Name |         Type         | Default | Description                                                                                                                                                 |
+| ---- |:--------------------:|:-------:|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| label | chartLabelAnnotation | | chartLabelAnnotation are the properties of the tooltip label                                                                                                |
+| value |    number/string     | | If the ticks are strings and we want an annotation relative to one of this label value should be string otherwise number relative to the total ticks number |
+| orientation |        string        |  | Define the orientation can be 'vertical' or horizontal                                                                                                      |
+| drawTime |        string        |  | Set to draw 'afterDatasetsDraw' or 'beforeDatasetsDraw'                                                                                                     |
+| type |        string        |  | In this case will be 'line'                                                                                                                                 |
+| borderDash |    Array<number>     |  | If you want a dashed line you will establish the dash properties in a number array                                                                          |
+| borderColor |        string        | | Define the color of the box                                                                                                                                 |
+| borderWidth |        string        |  | Define the width of the border                                                                                                                              |
+| endValue |        number        |  | Define a end value of the line, drawing a diagonal line                                                                                                     |
 
 #### chartLabelAnnotation
 

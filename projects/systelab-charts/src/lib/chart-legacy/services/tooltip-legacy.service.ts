@@ -91,7 +91,7 @@ export class TooltipLegacyService {
 
         if (item.chartTooltipItem) {
             const chartTooltipItem = item.chartTooltipItem instanceof Array ?
-                item.chartTooltipItem[tooltipItem.index] : item.chartTooltipItem;
+                item.chartTooltipItem[tooltipItem.dataIndex] : item.chartTooltipItem;
             if (chartTooltipItem.afterLabel) {
                 afterLabel = chartTooltipItem.afterLabel;
             }
