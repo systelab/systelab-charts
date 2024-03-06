@@ -409,13 +409,30 @@ export class ChartLegacyComponent implements AfterViewInit {
 	private buildCustomLegend() {
 		let legendItems = [];
 		if (this.legendPosition === 'top') {
+			this.topLegend.nativeElement.innerHTML = this.generateLegend();
 			legendItems = this.topLegend.nativeElement.getElementsByTagName('li');
 		} else {
+			this.bottomLegend.nativeElement.innerHTML = this.generateLegend();
 			legendItems = this.bottomLegend.nativeElement.getElementsByTagName('li');
 		}
 		for (let i = 0; i < legendItems.length; i += 1) {
 			legendItems[i].addEventListener('click', this.legendClickCallback.bind(this), false);
 		}
+	}
+
+	private generateLegend(): string {
+		let listHtml = '<ul>';
+		this.data.forEach(chartItem => {
+			listHtml += `
+				<li>
+				  <span class="${chartItem.legendType}" style="background-color: ${chartItem.backgroundColor !== 'transparent'? chartItem.backgroundColor : chartItem.borderColor}; border-color: ${chartItem.borderColor}">
+				  </span>
+				  ${chartItem.label}
+				</li>
+         	 `;
+		});
+		listHtml += '</ul>';
+		return listHtml;
 	}
 
 	private drawChart(cx: CanvasRenderingContext2D) {
@@ -649,7 +666,7 @@ export class ChartLegacyComponent implements AfterViewInit {
 			}
 		};
 
-		let scales = {
+		let axisScales = {
 			x: {
 				...timeScale,
 				...xAxis,
@@ -658,16 +675,16 @@ export class ChartLegacyComponent implements AfterViewInit {
 		};
 
 		if (this.multipleYAxisScales) {
-			scales = {
-				...scales,
+			axisScales = {
+				...axisScales,
 				...yAxisMultiple,
 			};
-			delete scales.y
+			delete axisScales.y
 		} else {
-			scales.y = yAxis;
+			axisScales.y = yAxis;
 		}
 
-		return scales;
+		return axisScales;
 	}
 
 	private initDatalabelsFontProperties(chartLabelText: ChartLabelFont): object {
