@@ -226,6 +226,8 @@ export class ChartLegacyComponent implements AfterViewInit {
 	@Input() hideInitialAndFinalTick = false;
 	@Input() hideFinalTick = false;
 	@Input() chartLine: ChartLine;
+	@Input() pointStyle: string | 'circle' | 'cross' | 'crossRot' | 'dash' | 'line' | 'rect' | 'rectRounded'
+		| 'rectRot' | 'star' | 'triangle' = 'circle';
 
 	@Output() itemSelectedChange = new EventEmitter();
 	@Output() action = new EventEmitter();
@@ -467,6 +469,10 @@ export class ChartLegacyComponent implements AfterViewInit {
 					elements:            {
 						line: {
 							tension: this.lineTension
+						},
+						point: {
+							pointStyle: this.pointStyle,
+							hoverRadius: 8,
 						}
 					},
 					display:             true,
