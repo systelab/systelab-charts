@@ -33,7 +33,7 @@ export class TooltipLegacyService {
 
         if (item.chartTooltipItem) {
             const chartTooltipItem = item.chartTooltipItem instanceof Array ?
-                item.chartTooltipItem[tooltipItems[0].index] : item.chartTooltipItem;
+                item.chartTooltipItem[tooltipItems[0].dataIndex] : item.chartTooltipItem;
             if (chartTooltipItem.title) {
                 return chartTooltipItem.title;
             }
