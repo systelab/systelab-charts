@@ -228,6 +228,7 @@ export class ChartLegacyComponent implements AfterViewInit {
 	@Input() chartLine: ChartLine;
 	@Input() pointStyle: string | 'circle' | 'cross' | 'crossRot' | 'dash' | 'line' | 'rect' | 'rectRounded'
 		| 'rectRot' | 'star' | 'triangle' = 'circle';
+	@Input() canvasBackground = '';
 
 	@Output() itemSelectedChange = new EventEmitter();
 	@Output() action = new EventEmitter();
@@ -513,6 +514,19 @@ export class ChartLegacyComponent implements AfterViewInit {
 						// legendCallback: (chart) => this.legendCallback(chart),
 					},
 				},
+				plugins: [
+					{
+						id:         'customCanvasBackgroundColor',
+						beforeDraw: (chart, args, options) => {
+							const {ctx} = chart;
+							ctx.save();
+							ctx.globalCompositeOperation = 'destination-over';
+							ctx.fillStyle = options.color || 'transparent';
+							ctx.fillRect(0, 0, chart.width, chart.height);
+							ctx.restore();
+						}
+					}
+				]
 			};
 
 			if (this.type === 'bar' && this.isHorizontal) {
@@ -568,6 +582,17 @@ export class ChartLegacyComponent implements AfterViewInit {
 						}
 					}
 				};
+			}
+			if (this.canvasBackground) {
+				definition.options = {
+					...definition.options,
+					plugins: {
+						...definition.options.plugins,
+						customCanvasBackgroundColor: {
+							color: this.canvasBackground
+						}
+					}
+				}
 			}
 			this.chart = new Chart(cx, definition);
 		}

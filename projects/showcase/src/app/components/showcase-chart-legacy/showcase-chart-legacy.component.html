@@ -1,8 +1,8 @@
 <div class="container-fluid">
     <div class="row mt-1">
         <div class="col-md-6  p-2">
-            <app-showcase-title [href]="'chart'">Line Chart with added manual line</app-showcase-title>
-            <systelab-chart-legacy #lineChart [labels]="labels" [data]="dataLine" [showLegend]="legend" [type]="'line'" [lineTension]="0.4"
+            <app-showcase-title [href]="'chart'">Line Chart with added manual line and background color</app-showcase-title>
+            <systelab-chart-legacy #lineChart [canvasBackground]="'orange'" [labels]="labels" [data]="dataLine" [showLegend]="legend" [type]="'line'" [lineTension]="0.4"
                             [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings" [chartLine]="chartLine"></systelab-chart-legacy>
             <button class="btn btn-primary btn-sm" (click)="doChange();">Random Line Chart Values</button>
         </div>
