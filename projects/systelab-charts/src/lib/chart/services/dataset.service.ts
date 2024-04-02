@@ -96,8 +96,11 @@ export class DatasetService {
     private getPieDoughnutPolarAreaColors(dataset: Dataset) {
         const backgroundColorList: Array<any> = [];
         const borderColorList: Array<any> = [];
+        let colorNumber = 0;
         for (let j = 0; j < dataset.data.length; j++) {
-            let colorNumber = j;
+            if (colorNumber > (this.defaultColors.length - 1)) {
+                colorNumber = 0;
+            }
             if (dataset.border && Array.isArray(dataset.border) &&  dataset.border[j] && 'color' in dataset.border[j]) {
                 borderColorList.push(this.toRGBA(dataset.border[j].color as number[], 1));
             } else {
@@ -109,10 +112,7 @@ export class DatasetService {
                 backgroundColorList.push(this.toRGBA(this.defaultColors[colorNumber], 1));
             }
 
-            colorNumber++;
-            if (colorNumber > (this.defaultColors.length - 1)) {
-                colorNumber = 0;
-            }
+            colorNumber++;           
         }
 
         return { backgroundColorList, borderColorList };
