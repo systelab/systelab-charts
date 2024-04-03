@@ -87,6 +87,7 @@ export class AnnotationService {
             xMin: annotation.limits.x.min,
             yMax: annotation.limits.y.max,
             yMin: annotation.limits.y.min,
+            drawTime: annotation.drawTime ?? AnnotationDrawTime.afterDatasetsDraw,
         };
     }
 
@@ -118,6 +119,7 @@ export class AnnotationService {
             value: annotation.value,
             endValue: endValue,
             label: computedLabel,
+            drawTime: annotation.drawTime ?? AnnotationDrawTime.afterDatasetsDraw,
         };
     }
 
