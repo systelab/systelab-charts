@@ -12,18 +12,20 @@ export const bubbleChartWithAnnotationBoxLineConfiguration: ChartConfiguration =
         data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'],
     },
     legend: {
-        enabled: false,
+        enabled: true,
     },
     datasets: [
         {
             label: 'Test 1',
             fill: true,
+            backgroundColor: 'rgb(52, 106, 182)',
             data: [{x: 13, y: 13, r: 2}, {x: 1, y: 2, r: 2}, {x: 15, y: 23, r: 2},
                 {x: -2, y: -2, r: 2}, {x: -10, y: 13, r: 2}, {x: 23, y: 12, r: 2}, {x: 4, y: 4, r: 2}, {x: 5, y: 6, r: 2},
                 {x: 2, y: 3, r: 2}, {x: 1, y: 2, r: 2}, {x: 3, y: 2, r: 2}],
-            border: [{
+            border: {
                 width: 2,
-            }]
+                color: 'rgb(52, 106, 182)'
+            }
         },
     ],
     annotations: [
