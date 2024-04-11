@@ -1,3 +1,4 @@
+import { AnnotationDrawTime } from '../../../../../../systelab-charts/src/lib/chart/interfaces/annotation';
 import {
     AnnotationLabelLabelPosition,
     AnnotationType,
@@ -59,7 +60,7 @@ export const bubbleChartWithAnnotationBoxLineConfiguration: ChartConfiguration =
                 backgroundColor: 'rgb(40, 122, 229)',
                 border: {
                     color: 'rgb(40, 122, 229)',
-                }
+                },
             },
             border: {
                 color: 'rgb(40, 122, 229)',
@@ -99,6 +100,8 @@ export const bubbleChartWithAnnotationBoxLineConfiguration: ChartConfiguration =
             border: {
                 color: 'rgb(204, 204, 204)',
             },
+            backgroundColor: "rgb(204, 204, 204)",
+            drawTime: AnnotationDrawTime.beforeDatasetsDraw,
         }, {
             type: AnnotationType.box,
             limits: {
