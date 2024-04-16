@@ -6,7 +6,8 @@ import {
     BoxAnnotation,
     LineAnnotation,
     LineAnnotationDefaultConfiguration,
-    LineAnnotationOrientation
+    LineAnnotationOrientation,
+    PointAnnotation
 } from '../interfaces';
 
 const defaultAnnotationColor = 'rgb(229, 60, 41)';
@@ -44,10 +45,13 @@ export class AnnotationService {
         if (!annotations || annotations.length === 0) {
             return undefined;
         }
+
         const computedAnnotations = [];
         for( const annotation of annotations) {
             if (this.isBoxAnnotation(annotation)) {
                 computedAnnotations.push(this.mapBoxAnnotation(annotation));
+            } else if(this.isPointAnnotation(annotation)) {
+                computedAnnotations.push(this.mapPointAnnotation(annotation));
             } else if (this.isLineAnnotation(annotation)) {
                 computedAnnotations.push(this.mapLineAnnotation({
                     ...defaultLineAnnotationConfiguration,
@@ -73,6 +77,7 @@ export class AnnotationService {
                 // error
             }
         }
+
         return computedAnnotations;
     }
 
@@ -87,6 +92,21 @@ export class AnnotationService {
             xMin: annotation.limits.x.min,
             yMax: annotation.limits.y.max,
             yMin: annotation.limits.y.min,
+            drawTime: annotation.drawTime ?? AnnotationDrawTime.afterDatasetsDraw,
+        };
+    }
+
+    private mapPointAnnotation(annotation: PointAnnotation) {
+        return {
+            type: 'point',
+            xValue: annotation.x,
+            yValue: annotation.y,
+            xScaleID: annotation.xAxisID,
+            yScaleID: annotation.yAxisID,
+            radius: annotation.radius ?? 2,
+            backgroundColor: annotation.backgroundColor ?? 'transparent',
+            borderWidth: annotation.border?.width ?? 2,
+            borderColor: annotation.border?.color ?? undefined,
             drawTime: annotation.drawTime ?? AnnotationDrawTime.afterDatasetsDraw,
         };
     }
@@ -125,6 +145,10 @@ export class AnnotationService {
 
     private isBoxAnnotation(object: any): object is BoxAnnotation {
         return 'limits' in object;
+    }
+
+    private isPointAnnotation(object: any): object is PointAnnotation {
+        return 'type' in object && object.type === 'point';
     }
 
     private isLineAnnotation(object: any): object is LineAnnotation {
