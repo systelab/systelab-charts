@@ -1,4 +1,4 @@
-export type AnnotationTypes = LineAnnotation | BoxAnnotation;
+export type AnnotationTypes = LineAnnotation | BoxAnnotation | PointAnnotation;
 
 interface Annotation {
     type: AnnotationType;
@@ -7,6 +7,21 @@ interface Annotation {
     backgroundColor?: string;
 }
 
+export enum AnnotationType {
+    line = 'line',
+    box = 'box',
+    point = 'point',
+}
+
+export enum AnnotationDrawTime {
+    afterDraw = 'afterDraw',
+    afterDatasetsDraw = 'afterDatasetsDraw',
+    beforeDraw = 'beforeDraw',
+    beforeDatasetsDraw = 'beforeDatasetsDraw',
+}
+
+
+// Line annotations
 export interface LineAnnotation extends Annotation {
     label?: AnnotationLabel;
     value: number | string;
@@ -19,10 +34,39 @@ export interface LineAnnotation extends Annotation {
     };
 }
 
+export enum LineAnnotationOrientation {
+    vertical = 'vertical',
+    horizontal = 'horizontal',
+}
+
 export interface LineAnnotationDefaultConfiguration extends Omit<LineAnnotation, 'value' | 'type' | 'label'> {
     label?: Omit<AnnotationLabel, 'display' | 'text'>;
 }
 
+export interface AnnotationLabel {
+    display: boolean;
+    text: string; // content
+    position?: AnnotationLabelLabelPosition;
+    backgroundColor?: string;
+    font?: {
+        style: string;
+        color: string;
+    };
+    border?: {
+        width?: number;
+        color?: string;
+        radius?: number;
+    };
+}
+
+export enum AnnotationLabelLabelPosition {
+    start = 'start',
+    center = 'center',
+    end = 'end',
+}
+
+
+// Box annotations
 export interface BoxAnnotation extends Annotation {
     limits: {
         x: {
@@ -43,41 +87,20 @@ export interface BoxAnnotation extends Annotation {
     };
 }
 
-export interface AnnotationLabel {
-    display: boolean;
-    text: string; // content
-    position?: AnnotationLabelLabelPosition;
-    backgroundColor?: string;
-    font?: {
-        style: string;
-        color: string;
-    };
+
+// Point annotations
+export interface PointAnnotation extends Annotation {
+    x: number;
+    y: number;
+    xAxisID?: string;
+    yAxisID?: string;
+    radius?: number;
     border?: {
         width?: number;
         color?: string;
-        radius?: number;
     };
 }
 
-export enum AnnotationType {
-    line = 'line',
-    box = 'box',
-}
 
-export enum AnnotationLabelLabelPosition {
-    start = 'start',
-    center = 'center',
-    end = 'end',
-}
 
-export enum AnnotationDrawTime {
-    afterDraw = 'afterDraw',
-    afterDatasetsDraw = 'afterDatasetsDraw',
-    beforeDraw = 'beforeDraw',
-    beforeDatasetsDraw = 'beforeDatasetsDraw',
-}
 
-export enum LineAnnotationOrientation {
-    vertical = 'vertical',
-    horizontal = 'horizontal',
-}
