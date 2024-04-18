@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import {
     AnnotationDrawTime,
     AnnotationLabelLabelPosition,
+    AnnotationType,
     AnnotationTypes,
     BoxAnnotation,
     LineAnnotation,
     LineAnnotationDefaultConfiguration,
-    LineAnnotationOrientation
+    LineAnnotationOrientation,
+    PointAnnotation
 } from '../interfaces';
 
 const defaultAnnotationColor = 'rgb(229, 60, 41)';
@@ -44,10 +46,13 @@ export class AnnotationService {
         if (!annotations || annotations.length === 0) {
             return undefined;
         }
+
         const computedAnnotations = [];
-        for( const annotation of annotations) {
+        for (const annotation of annotations) {
             if (this.isBoxAnnotation(annotation)) {
                 computedAnnotations.push(this.mapBoxAnnotation(annotation));
+            } else if(this.isPointAnnotation(annotation)) {
+                computedAnnotations.push(this.mapPointAnnotation(annotation));
             } else if (this.isLineAnnotation(annotation)) {
                 computedAnnotations.push(this.mapLineAnnotation({
                     ...defaultLineAnnotationConfiguration,
@@ -73,12 +78,13 @@ export class AnnotationService {
                 // error
             }
         }
+
         return computedAnnotations;
     }
 
     private mapBoxAnnotation(annotation: BoxAnnotation) {
         return {
-            type: 'box',
+            type: AnnotationType.box,
             backgroundColor: annotation.backgroundColor ?? 'transparent',
             borderColor: annotation.border?.color ?? undefined,
             borderRadius: annotation.border?.radius ?? undefined,
@@ -87,6 +93,21 @@ export class AnnotationService {
             xMin: annotation.limits.x.min,
             yMax: annotation.limits.y.max,
             yMin: annotation.limits.y.min,
+            drawTime: annotation.drawTime ?? AnnotationDrawTime.afterDatasetsDraw,
+        };
+    }
+
+    private mapPointAnnotation(annotation: PointAnnotation) {
+        return {
+            type: AnnotationType.point,
+            xValue: annotation.x,
+            yValue: annotation.y,
+            xScaleID: annotation.xAxisID,
+            yScaleID: annotation.yAxisID,
+            radius: annotation.radius ?? 2,
+            backgroundColor: annotation.backgroundColor ?? 'transparent',
+            borderWidth: annotation.border?.width ?? 2,
+            borderColor: annotation.border?.color ?? undefined,
             drawTime: annotation.drawTime ?? AnnotationDrawTime.afterDatasetsDraw,
         };
     }
@@ -110,7 +131,7 @@ export class AnnotationService {
             };
         }
         return {
-            type: 'line',
+            type: AnnotationType.line,
             scaleID: isVertical ? 'x' : annotation.axisID,
             backgroundColor: annotation.backgroundColor ?? undefined,
             borderColor: annotation.border?.color ?? undefined,
@@ -123,11 +144,15 @@ export class AnnotationService {
         };
     }
 
-    private isBoxAnnotation(object: any): object is BoxAnnotation {
-        return 'limits' in object;
+    private isBoxAnnotation(annotation: AnnotationTypes): annotation is BoxAnnotation {
+        return 'limits' in annotation;
     }
 
-    private isLineAnnotation(object: any): object is LineAnnotation {
-        return 'type' in object && object.type === 'line';
+    private isPointAnnotation(annotation: AnnotationTypes): annotation is PointAnnotation {
+        return 'type' in annotation && annotation.type === AnnotationType.point;
+    }
+
+    private isLineAnnotation(annotation: AnnotationTypes): annotation is LineAnnotation {
+        return 'type' in annotation && annotation.type === AnnotationType.line;
     }
 }
