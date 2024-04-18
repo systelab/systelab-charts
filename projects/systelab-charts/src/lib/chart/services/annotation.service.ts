@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
     AnnotationDrawTime,
     AnnotationLabelLabelPosition,
+    AnnotationType,
     AnnotationTypes,
     BoxAnnotation,
     LineAnnotation,
@@ -47,7 +48,7 @@ export class AnnotationService {
         }
 
         const computedAnnotations = [];
-        for( const annotation of annotations) {
+        for (const annotation of annotations) {
             if (this.isBoxAnnotation(annotation)) {
                 computedAnnotations.push(this.mapBoxAnnotation(annotation));
             } else if(this.isPointAnnotation(annotation)) {
@@ -83,7 +84,7 @@ export class AnnotationService {
 
     private mapBoxAnnotation(annotation: BoxAnnotation) {
         return {
-            type: 'box',
+            type: AnnotationType.box,
             backgroundColor: annotation.backgroundColor ?? 'transparent',
             borderColor: annotation.border?.color ?? undefined,
             borderRadius: annotation.border?.radius ?? undefined,
@@ -98,7 +99,7 @@ export class AnnotationService {
 
     private mapPointAnnotation(annotation: PointAnnotation) {
         return {
-            type: 'point',
+            type: AnnotationType.point,
             xValue: annotation.x,
             yValue: annotation.y,
             xScaleID: annotation.xAxisID,
@@ -130,7 +131,7 @@ export class AnnotationService {
             };
         }
         return {
-            type: 'line',
+            type: AnnotationType.line,
             scaleID: isVertical ? 'x' : annotation.axisID,
             backgroundColor: annotation.backgroundColor ?? undefined,
             borderColor: annotation.border?.color ?? undefined,
@@ -143,15 +144,15 @@ export class AnnotationService {
         };
     }
 
-    private isBoxAnnotation(object: any): object is BoxAnnotation {
-        return 'limits' in object;
+    private isBoxAnnotation(annotation: AnnotationTypes): annotation is BoxAnnotation {
+        return 'limits' in annotation;
     }
 
-    private isPointAnnotation(object: any): object is PointAnnotation {
-        return 'type' in object && object.type === 'point';
+    private isPointAnnotation(annotation: AnnotationTypes): annotation is PointAnnotation {
+        return 'type' in annotation && annotation.type === AnnotationType.point;
     }
 
-    private isLineAnnotation(object: any): object is LineAnnotation {
-        return 'type' in object && object.type === 'line';
+    private isLineAnnotation(annotation: AnnotationTypes): annotation is LineAnnotation {
+        return 'type' in annotation && annotation.type === AnnotationType.line;
     }
 }
