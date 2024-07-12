@@ -1,3 +1,5 @@
+import { Locale } from "date-fns";
+
 export interface Axes {
     isHorizontal?: boolean;
     mainAxis?: 'x' | 'y'; // default x
@@ -30,6 +32,11 @@ export interface AxisContent {
     grid?: {
         display: boolean;
     };
+    adapters?:{
+        date: {
+            locale: Locale;
+        }
+    }
 }
 
 export interface Ticks {
