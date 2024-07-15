@@ -1,5 +1,11 @@
-<showcase-title [href]="'chart'">Charts</showcase-title>
-<showcase-chart></showcase-chart>
+<app-showcase-title [href]="'chart'">Charts</app-showcase-title>
+
+<button (click)="selectView('legacy')">Legacy</button>
+<button (click)="selectView('new')">New</button>
+<button (click)="selectView('both')">Both</button>
+
+<app-showcase-chart *ngIf="selectedView === 'new' || selectedView === 'both'"></app-showcase-chart>
+<app-showcase-chart-legacy *ngIf="selectedView === 'legacy' || selectedView === 'both'"></app-showcase-chart-legacy>
 
 
 

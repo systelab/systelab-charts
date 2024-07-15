@@ -1,0 +1,116 @@
+<div class="container-fluid">
+    <div class="row mt-1">
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Line Chart with added manual line</app-showcase-title>
+            <systelab-chart-legacy #lineChart [labels]="labels" [data]="dataLine" [showLegend]="legend" [type]="'line'" [lineTension]="0.4"
+                            [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings" [chartLine]="chartLine"></systelab-chart-legacy>
+            <button class="btn btn-primary btn-sm" (click)="doChange();">Random Line Chart Values</button>
+        </div>
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Line Chart - Multiple Axis</app-showcase-title>
+            <systelab-chart-legacy #lineChartMultipleAxis [labels]="labelsMultipleAxis" [data]="dataLineMultipleAxis" [showLegend]="legend"
+                            [legendPosition]="'bottom'"
+                            [type]="'line'" [lineTension]="0.4" [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis"
+                            [multipleYAxisScales]="multipleYAxisScales" [tooltipSettings]="tooltipSettings"
+                            [annotations]="chartLineMultipleAxisAnnotations"></systelab-chart-legacy>
+            <button class="btn btn-primary btn-sm" (click)="updateMultipleAxisExample();">Random Line Chart Values</button>
+        </div>
+
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Line Chart with timeline</app-showcase-title>
+            <systelab-chart-legacy #timelineChart [labels]="labelsTimeLine" [timeScale]="true" [data]="dataTimeLine" [showLegend]="legend" [type]="'line'"
+                            [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings" [timeUnit]="'month'" [tooltipTimeFormat]="'d, MMMM yyyy'"></systelab-chart-legacy>
+            <button class="btn btn-primary btn-sm" (click)="randomizeTimeLineChart();">Random TimeLine Chart Values</button>
+        </div>
+
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Bar Chart</app-showcase-title>
+            <systelab-chart-legacy [labels]="labels" [data]="dataBar" [showLegend]="legend" [type]="'bar'"></systelab-chart-legacy>
+        </div>
+        <div class="col-md-6 p-2">
+            <app-showcase-title [href]="'chart'">Horizontal Bar Chart</app-showcase-title>
+            <systelab-chart-legacy [labels]="labels" [data]="dataBar" [isHorizontal]="true" [showLegend]="legend"
+                            [type]="'bar'"></systelab-chart-legacy>
+        </div>
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Radar Chart</app-showcase-title>
+            <systelab-chart-legacy [labels]="labels" [data]="dataRadar" [showLegend]="legend" [type]="'radar'"
+                            [isBackgroundGrid]="isBackgroundGrid"></systelab-chart-legacy>
+        </div>
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Pie Chart</app-showcase-title>
+            <systelab-chart-legacy [labels]="labels" [data]="dataPie" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="'pie'"
+                            (action)="doAction()"
+                            [isBackgroundGrid]="isBackgroundGrid" [chartLabelSettings]="pieChartLabelSettings"></systelab-chart-legacy>
+        </div>
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Doughnut Chart</app-showcase-title>
+            <systelab-chart-legacy [labels]="labels" [data]="dataDoughnut" [showLegend]="legendOff" [type]="'doughnut'"
+                            [isBackgroundGrid]="isBackgroundGrid"></systelab-chart-legacy>
+        </div>
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Bubble Chart</app-showcase-title>
+            <systelab-chart-legacy [labels]="labels" [data]="dataBubble" [showLegend]="legend" [type]="'bubble'"></systelab-chart-legacy>
+        </div>
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Polar Area Chart</app-showcase-title>
+            <systelab-chart-legacy [labels]="labels" [data]="dataPolarArea" [showLegend]="legend" [type]="'polarArea'"
+                            [isBackgroundGrid]="isBackgroundGrid"></systelab-chart-legacy>
+        </div>
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Mixed Line Chart and Bar Chart</app-showcase-title>
+            <systelab-chart-legacy [labels]="labels" [data]="dataLineBar" [showLegend]="legend" [type]="'bar'"
+                            [lineTension]="0.4"></systelab-chart-legacy>
+        </div>
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Line Chart with Annotation (Lines) Legend without color box</app-showcase-title>
+            <systelab-chart-legacy [labels]="labelLineAnnotations" [data]="dataLineAnnotation" [showLegend]="legend" [type]="'line'"
+                            [yMaxValue]="yMaxValue" [legendWithoutBox]="true"
+                            [yMinValue]="yMinValue" [annotations]="chartLineAnnotations" [xAutoSkip]="false"></systelab-chart-legacy>
+        </div>
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Bubble Chart with Annotation (Box)</app-showcase-title>
+            <systelab-chart-legacy [labels]="labelLineAnnotations" [data]="dataBubbleAnnotations" [showLegend]="legendOff" [type]="'bubble'"
+                            [annotations]="chartBubbleAnnotations"></systelab-chart-legacy>
+        </div>
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Bubble Chart with Annotation (Box-Lines)</app-showcase-title>
+            <systelab-chart-legacy [labels]="labelLineAnnotations" [data]="dataBubbleAnnotations" [showLegend]="legendOff" [type]="'bubble'"
+                            [annotations]="chartMultipleAnnotations"></systelab-chart-legacy>
+        </div>
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Stacked Bar Chart</app-showcase-title>
+            <systelab-chart-legacy [labels]="labels" [data]="dataBar" [isStacked]="isStacked" [showLegend]="legend"
+                            [type]="'bar'"></systelab-chart-legacy>
+        </div>
+        <div class="col-md-6  p-2">
+            <app-showcase-title [href]="'chart'">Line Chart Custom Legend</app-showcase-title>
+            <systelab-chart-legacy #lineChartLegend [labels]="labels" [data]="dataLineCustomLegend" [showLegend]="legend" [type]="'line'"
+                            [lineTension]="0.4"
+                            [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings" [customLegend]="true"
+                            [legendPosition]="'bottom'"></systelab-chart-legacy>
+        </div>
+        <div class="col-md-12 p-2 flex-column">
+            <app-showcase-title [href]="'chart'">Resizable Chart</app-showcase-title>
+            <div class="col-md-6 row">
+                <label for="defaultResizeWidth" class="col-form-label mr-2 col-md-1">Width: </label>
+                <input type="text" class="form-control rounded ml-4 col-md-1" id="defaultResizeWidth" [(ngModel)]="defaultResizeWidth"
+                       name="defaultResizeWidth">
+                <label for="defaultResizeHeight" class="col-form-label mr-2 col-md-1">Height: </label>
+                <input type="text" class="form-control rounded ml-4 col-md-1" id="defaultResizeHeight" [(ngModel)]="defaultResizeHeight"
+                       name="defaultResizeHeight">
+                <button class="btn btn-primary btn-sm ml-4 m-2" (click)="doResizeChart();">Resize Chart</button>
+                <button class="btn btn-primary btn-sm m-2" (click)="doUpdateChart();">Update Chart</button>
+            </div>
+            <div class="col-md-4">
+                <systelab-chart-legacy #resizableCChart [labels]="labels" [data]="dataLine" [showLegend]="legend" [type]="'line'"
+                                [lineTension]="0.4"
+                                [xLabelAxis]="xLabelAxis" [yLabelAxis]="yLabelAxis" [tooltipSettings]="tooltipSettings"
+                                [maintainAspectRatio]="false" [responsive]="true"></systelab-chart-legacy>
+                <div class="col-md-6">
+                    <img [src]="resizedImage" alt="Resized Image"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,7 +1,7 @@
-import {async, TestBed} from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { ShowcaseComponent } from './showcase.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ShowcaseChartComponent } from './components/chart/showcase-chart.component';
+import { ShowcaseChartLegacyComponent } from './components/showcase-chart-legacy/showcase-chart-legacy.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { SystelabChartsModule } from 'systelab-charts';
 import { FormsModule } from '@angular/forms';
@@ -24,7 +24,7 @@ describe('ShowCaseComponent', () => {
 			declarations: [
 				ShowcaseComponent,
 				ShowcaseTitleComponent,
-				ShowcaseChartComponent,
+				ShowcaseChartLegacyComponent,
 				ShowcaseChartsComponent
 			]
 		}).compileComponents();

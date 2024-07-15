@@ -5,4 +5,8 @@ import { Component } from '@angular/core';
 	templateUrl: 'showcase-charts.component.html'
 })
 export class ShowcaseChartsComponent {
+	public selectedView: string;
+	public selectView(view: string) {
+		this.selectedView = view;
+	}
 }
