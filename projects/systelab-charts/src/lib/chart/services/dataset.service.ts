@@ -90,10 +90,7 @@ export class DatasetService {
             datalabels: inputDataset.datalabels,
         };
 
-        if (chartType === ChartType.scatter || inputDataset.type === 'scatter') {
-            const scatterInputDataset: ScatterDataset = inputDataset as ScatterDataset;
-            outputDataset['showLine'] = scatterInputDataset.showLine;
-        }
+        this.fillForScatterChart(chartType, inputDataset, outputDataset);
 
         return outputDataset;
     }
@@ -126,5 +123,14 @@ export class DatasetService {
 
     private toRGBA(colour: number[], alpha: number = 1): string {
         return `rgba(${colour.concat(alpha).join(',')})`;
+    }
+
+    private fillForScatterChart(chartType: ChartType, inputDataset: Dataset, outputDataset: object) {
+        if (chartType !== ChartType.scatter && inputDataset.type !== 'scatter') {
+            return;
+        }
+
+        const scatterInputDataset: ScatterDataset = inputDataset as ScatterDataset;
+        outputDataset['showLine'] = scatterInputDataset.showLine;
     }
 }

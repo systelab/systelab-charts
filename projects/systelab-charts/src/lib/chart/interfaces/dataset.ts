@@ -82,10 +82,16 @@ export interface TimeDatasetBorderStyle {
 export interface ScatterDataset extends BaseDataset {
     data: ScatterPoint[];
     showLine: boolean;
-    border?: LineDatasetBorderStyle | LineDatasetBorderStyle[];
+    border?: ScatterDatasetBorderStyle | ScatterDatasetBorderStyle[];
 }
 
 export interface ScatterPoint {
     x: number;
     y: number;
+}
+
+export interface ScatterDatasetBorderStyle {
+    color?: string | number[];
+    width?: number;
+    dash?: number[];
 }
