@@ -20,11 +20,13 @@ export interface BaseDataset {
 // Line dataset
 export interface LineDataset extends BaseDataset {
     data: number[];
-    border?: {
-        color?: string | number[];
-        width?: number;
-        dash?: number[];
-    };
+    border?: LineDatasetBorderStyle | LineDatasetBorderStyle[];
+}
+
+export interface LineDatasetBorderStyle {
+    color?: string | number[];
+    width?: number;
+    dash?: number[];
 }
 
 
@@ -80,6 +82,7 @@ export interface TimeDatasetBorderStyle {
 export interface ScatterDataset extends BaseDataset {
     data: ScatterPoint[];
     showLine: boolean;
+    border?: LineDatasetBorderStyle | LineDatasetBorderStyle[];
 }
 
 export interface ScatterPoint {
