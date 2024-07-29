@@ -90,8 +90,8 @@ export class DatasetService {
             datalabels: inputDataset.datalabels,
         };
 
-        if (inputDataset.type === 'scatter') {
-            const scatterInputDataset = outputDataset as any as ScatterDataset;
+        if (chartType === ChartType.scatter || inputDataset.type === 'scatter') {
+            const scatterInputDataset: ScatterDataset = inputDataset as ScatterDataset;
             outputDataset['showLine'] = scatterInputDataset.showLine;
         }
 
