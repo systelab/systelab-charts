@@ -9,3 +9,5 @@ export * from './line-multiple-axis-chart';
 export * from './pie-chart';
 export * from './polar-area-chart';
 export * from './radar-chart';
+export * from './scatter-chart';
+export * from './scatter-chart-with-show-line';
