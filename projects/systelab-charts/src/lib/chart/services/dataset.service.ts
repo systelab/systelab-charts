@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ChartConfiguration, ChartType, Dataset, Legend } from '../interfaces';
+import { ChartConfiguration, ChartType, Dataset, Legend, ScatterDataset } from '../interfaces';
 import * as ChartJS from 'chart.js';
 
 @Injectable({
@@ -89,6 +89,12 @@ export class DatasetService {
             ...(pointStyleEnabled && pointStyle && { pointStyle }),
             datalabels: inputDataset.datalabels,
         };
+
+        if (inputDataset.type === 'scatter') {
+            const scatterInputDataset = outputDataset as any as ScatterDataset;
+            outputDataset['showLine'] = scatterInputDataset.showLine;
+        }
+
         return outputDataset;
     }
 
