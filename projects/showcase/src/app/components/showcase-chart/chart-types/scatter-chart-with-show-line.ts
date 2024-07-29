@@ -4,7 +4,7 @@ export const scatterChartShowingLineConfiguration: ChartConfiguration = {
     type: ChartType.scatter,
     datasets: [
         {
-            label: 'Only Points',
+            label: 'Line',
             data: [{
                 x: -10,
                 y: 0
@@ -19,10 +19,8 @@ export const scatterChartShowingLineConfiguration: ChartConfiguration = {
                 y: 5.5
               }
             ],
-            border: {
-                width: 3,
-            },
             showLine: true,
+            pointRadius: 0
         },
     ],
 };

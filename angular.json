@@ -57,7 +57,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/showcase",
+            "outputPath": {
+              "base": "dist/showcase"
+            },
             "index": "projects/showcase/src/index.html",
             "main": "projects/showcase/src/main.ts",
             "polyfills": "projects/showcase/src/polyfills.ts",
