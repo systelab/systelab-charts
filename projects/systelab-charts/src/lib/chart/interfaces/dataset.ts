@@ -1,6 +1,6 @@
 import { ChartType } from './chart-configuration';
 
-export type Dataset = LineDataset | BarDataset | BubbleDataset | TimeDataset;
+export type Dataset = LineDataset | BarDataset | BubbleDataset | TimeDataset | ScatterDataset;
 
 export interface BaseDataset {
     label?: string;
@@ -20,11 +20,13 @@ export interface BaseDataset {
 // Line dataset
 export interface LineDataset extends BaseDataset {
     data: number[];
-    border?: {
-        color?: string | number[];
-        width?: number;
-        dash?: number[];
-    };
+    border?: LineDatasetBorderStyle | LineDatasetBorderStyle[];
+}
+
+export interface LineDatasetBorderStyle {
+    color?: string | number[];
+    width?: number;
+    dash?: number[];
 }
 
 
@@ -73,4 +75,23 @@ export interface TimePoint {
 export interface TimeDatasetBorderStyle {
     width?: number;
     color?: string | number[];
+}
+
+
+// Scatter dataset
+export interface ScatterDataset extends BaseDataset {
+    data: ScatterPoint[];
+    showLine: boolean;
+    border?: ScatterDatasetBorderStyle | ScatterDatasetBorderStyle[];
+}
+
+export interface ScatterPoint {
+    x: number;
+    y: number;
+}
+
+export interface ScatterDatasetBorderStyle {
+    color?: string | number[];
+    width?: number;
+    dash?: number[];
 }

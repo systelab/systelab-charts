@@ -11,7 +11,9 @@ import {
   lineMultipleAxisChartConfiguration,
   pieChartConfiguration,
   polarAreaChartConfiguration,
-  radarChartConfiguration
+  radarChartConfiguration,
+  scatterChartConfiguration,
+  scatterChartShowingLineConfiguration, 
 } from './chart-types';
 import { lineChartWithAnnotationLinesConfiguration } from './chart-types/line-chart-with-annotation-lines';
 import { bubbleChartWithAnnotationBoxConfiguration } from './chart-types/bubble-chart-with-annotation-box';
@@ -40,4 +42,6 @@ export class ShowcaseChartComponent {
   public bubbleChartWithAnnotationBoxConfiguration: ChartConfiguration = bubbleChartWithAnnotationBoxConfiguration;
   public bubbleChartWithAnnotationBoxLineConfiguration: ChartConfiguration = bubbleChartWithAnnotationBoxLineConfiguration;
   public lineChartWithLineLegendConfiguration: ChartConfiguration = lineChartWithLineLegendConfiguration;
+  public scatterChartConfiguration: ChartConfiguration = scatterChartConfiguration;
+  public scatterChartShowingLineConfiguration: ChartConfiguration = scatterChartShowingLineConfiguration;
 }
