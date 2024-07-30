@@ -51,6 +51,7 @@ export const lineChartWithLineLegendConfiguration: ChartConfiguration = {
     tooltip: {
         enabled: true,
         title: {
+            enabled: true,
             prefix: 'Time: ',
         }
     },
