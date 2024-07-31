@@ -15,8 +15,8 @@ export class TooltipService {
             usePointStyle: pointStyleEnabled,
             callbacks: {
                 title: (tooltipItems) => {
-                    let titleEnabled = tooltip?.title?.enabled ?? false;
-                    if (!titleEnabled) {
+                    const enabled = tooltip?.title?.enabled ?? false;
+                    if (!enabled) {
                         return null;
                     }
 
