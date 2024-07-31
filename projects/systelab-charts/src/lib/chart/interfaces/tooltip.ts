@@ -3,6 +3,7 @@ export interface Tooltip {
     position?: string;
     backgroundColor?: string;
     title?: {
+        enabled?: boolean; // default false
         text?: string; // If undefined we use the X axis value
         prefix?: string;
         fontSize?: string;
