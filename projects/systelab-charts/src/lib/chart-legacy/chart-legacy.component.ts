@@ -183,8 +183,9 @@ export class ChartIntersectionSettings {
 }
 
 @Component({
-	selector:    'systelab-chart-legacy',
-	templateUrl: './chart-legacy.component.html'
+    selector: 'systelab-chart-legacy',
+    templateUrl: './chart-legacy.component.html',
+    standalone: false
 })
 export class ChartLegacyComponent implements AfterViewInit {
 

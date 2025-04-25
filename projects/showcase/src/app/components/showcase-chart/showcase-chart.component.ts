@@ -21,8 +21,9 @@ import { bubbleChartWithAnnotationBoxLineConfiguration } from './chart-types/bub
 import { lineChartWithLineLegendConfiguration } from './chart-types/line-chart-with-line-legend';
 
 @Component({
-  selector: 'app-showcase-chart',
-  templateUrl: './showcase-chart.component.html',
+    selector: 'app-showcase-chart',
+    templateUrl: './showcase-chart.component.html',
+    standalone: false
 })
 export class ShowcaseChartComponent {
 
