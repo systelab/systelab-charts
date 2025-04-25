@@ -19,8 +19,9 @@ import {
 } from 'systelab-charts';
 
 @Component({
-	selector:    'app-showcase-chart-legacy',
-	templateUrl: './showcase-chart-legacy.component.html'
+    selector: 'app-showcase-chart-legacy',
+    templateUrl: './showcase-chart-legacy.component.html',
+    standalone: false
 })
 export class ShowcaseChartLegacyComponent {
 
