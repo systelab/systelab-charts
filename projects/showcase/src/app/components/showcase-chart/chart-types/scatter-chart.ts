@@ -3,7 +3,7 @@ import { ActiveElement, Chart, ChartEvent } from 'chart.js';
 
 //Custom image to be displayed in all points of the chart - this is just an example
 let checkMark: HTMLImageElement = new Image(16, 16);
-checkMark.src = 'https://banner2.cleanpng.com/20180703/oxt/aaxcwnq10.webp';
+checkMark.src = './assets/check.webp';
 
 export const scatterChartConfiguration: ChartConfiguration = {
     type: ChartType.scatter,
