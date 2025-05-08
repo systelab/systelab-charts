@@ -49,7 +49,8 @@ export class ChartService {
                 animations: {
                     ...chartDefaultConfiguration.options.animations,
                     ...configuration.options?.animations ?? undefined,
-                }
+                },
+                onClick: configuration.options?.onClick ?? undefined,
             }
         };
 
@@ -87,6 +88,7 @@ export class ChartService {
                     legend,
                     tooltip,
                 } as any,
+                onClick: chartConfiguration.options.onClick,
             },
         };
     }

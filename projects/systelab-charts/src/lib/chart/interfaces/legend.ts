@@ -12,7 +12,7 @@ export interface Legend {
     };
     labels?: {
         enabled: boolean; // usePointStyle
-        pointStyle: LegendPointStyle;
+        pointStyle: LegendPointStyle | HTMLImageElement;
     };
     position?: LegendPosition;
     align?: LegendAlign;
