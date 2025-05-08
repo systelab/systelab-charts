@@ -1,9 +1,10 @@
 import { Axes } from './axes';
-import { Dataset } from './dataset';
+import { BubblePoint, Dataset, ScatterPoint, TimePoint } from './dataset';
 import { AnnotationTypes } from './annotation';
 import { Tooltip } from './tooltip';
 import { Legend } from './legend';
 import { Context } from 'chartjs-plugin-datalabels';
+import { ActiveElement, Chart, ChartEvent } from 'chart.js/dist/types';
 
 export interface ChartConfiguration {
     type: ChartType;
@@ -51,6 +52,8 @@ export interface ChartConfiguration {
                 weight: string;
             };
         };
+        onClick?: (event: ChartEvent, elements: ActiveElement[], chart: Chart)
+                    => number | BubblePoint | ScatterPoint | TimePoint;
     };
 }
 
