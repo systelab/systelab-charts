@@ -31,7 +31,7 @@ export class ChartService {
             options: {
                 ...outputConfiguration.options,
                 indexAxis,
-                scales: axes as any
+                scales: axes as any,
             } as any,
         };
     }
