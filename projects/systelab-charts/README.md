@@ -27,6 +27,7 @@ Set **type** with the chart type that you want to display. You can choose betwee
 - Bubble
 - Radar
 - Polar Area
+- Scatter
 
 Also, you can show together different chart types; for example a Bar chart with Line chart. In order to do this, you should define the chart type in the properties of the data that you provide to the component.
 
@@ -430,10 +431,11 @@ Levels = {
 
 ## Events
 
-| Name | Parameters | Description |
-| ---- |:----------:| ------------|
-| doUpdate | | Reset the chart with the new data.|
-|action| |Is going to emit the event when you clicked in a item in the chart|
+| Name     | Parameters | Description                                                                                    |
+|----------|:----------:|------------------------------------------------------------------------------------------------|
+| doUpdate | | Reset the chart with the new data.                                                             |
+| action   | | Is going to emit the event when you clicked in a item in the chart                             |
+| onClick  | | Is going to return X, Y position of the clicked item in the chart |
 
 ## Functions
 

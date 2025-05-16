@@ -4,6 +4,8 @@ import { AnnotationTypes } from './annotation';
 import { Tooltip } from './tooltip';
 import { Legend } from './legend';
 import { Context } from 'chartjs-plugin-datalabels';
+import { ClickPoint } from "./click";
+
 
 export interface ChartConfiguration {
     type: ChartType;
@@ -51,13 +53,14 @@ export interface ChartConfiguration {
                 weight: string;
             };
         };
+        onClick?: OnClickCallbackFunction
     };
 }
-
 
 export type ChartJSContext = Context;
 export type DatalabelsFormatterFunction = (value, context: ChartJSContext) => number | string;
 export type DatalabelsDisplayFunction = (context: ChartJSContext) => boolean;
+export type OnClickCallbackFunction = (data: ClickPoint) => void;
 
 export enum ChartType {
     line = 'line',
