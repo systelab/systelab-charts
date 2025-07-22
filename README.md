@@ -34,6 +34,52 @@ Read the [provided documentation](https://github.com/systelab/systelab-charts/bl
 
 # Breaking changes
 
+## Version 19.x.x - Angular 19
+
+[Angular 19 news](https://blog.angular.dev/meet-angular-v19-7b29dfd05b84)
+
+-   SSR improvements
+-   Enhanced Reactivity (resource, linkedSignal, renderEffect)
+-   Standalone by default
+-   Zoneless support
+-   Developer Experience Improvements (new material components like as time picker, HMR styles, detection of unused imports)
+-   New Reactive handler for HTTP requests (httpResource and rxResource)
+
+## Version 18.x.x - Angular 18
+
+[Angular 18 news](https://blog.angular.dev/angular-v18-is-now-available-e79d5ac0affe)
+
+-   Experimental zoneless support
+-   Material 3 deferrable views
+-   SSR improvements
+-   Deferrable views are now stable
+-   Control flow is stable
+
+## Version 17.x.x - Angular 17
+
+[Angular 17 news](https://blog.angular.dev/introducing-angular-v17-4d7033312e4b)
+
+-   Deferrable views
+-   Faster runtime
+-   Faster builds
+-   Built-in control flow
+-   New lifecycle hooks ( afterRender and afterNextRender )
+-   Default Vite + esbuild for new projects
+-   Signals
+
+## Version 16.x.x - Angular 16
+
+-   Datepicker has been ranamed to DatepickerComponent
+
+[Angular 16 news](https://blog.angular.io/angular-v16-is-here-4d7a28ec680d)
+
+-   Angular Signals
+-   RxJS interoperability
+-   Server-side rendering and hydration
+-   Improved tooling for standalone components, directives and pipes
+-   Advancing developer tooling
+-   Autocomplete imports in templates
+
 ## Version 15.3.x - Interface-based configuration
 
 - Rebump of the library based on a totally new `systelab-chart` component:
