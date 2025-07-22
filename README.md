@@ -34,6 +34,17 @@ Read the [provided documentation](https://github.com/systelab/systelab-charts/bl
 
 # Breaking changes
 
+## Version 19.x.x - Angular 19
+
+[Angular 19 news](https://blog.angular.dev/meet-angular-v19-7b29dfd05b84)
+
+-   SSR improvements
+-   Enhanced Reactivity (resource, linkedSignal, renderEffect)
+-   Standalone by default
+-   Zoneless support
+-   Developer Experience Improvements (new material components like as time picker, HMR styles, detection of unused imports)
+-   New Reactive handler for HTTP requests (httpResource and rxResource)
+
 ## Version 15.3.x - Interface-based configuration
 
 - Rebump of the library based on a totally new `systelab-chart` component:
