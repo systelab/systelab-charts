@@ -68,7 +68,8 @@
             "aot": true,
             "assets": [
               "projects/showcase/src/favicon.png",
-              "projects/showcase/src/gh.ico"
+              "projects/showcase/src/gh.ico",
+              "projects/showcase/src/assets"
             ],
             "styles": [
               "projects/systelab-charts/sass/systelab-charts.scss",

@@ -7,6 +7,7 @@ import { DatasetService } from './dataset.service';
 import { AnnotationService } from './annotation.service';
 import { LegendService } from './legend.service';
 import { TooltipService } from './tooltip.service';
+import { ClickService } from './click.service';
 
 @Injectable({
     providedIn: 'root',
@@ -16,11 +17,12 @@ export class ChartService {
 
     constructor(private readonly axesService: AxesService, private readonly datasetService: DatasetService,
                 private readonly annotationService: AnnotationService, private readonly legendService: LegendService,
-                private readonly tooltipService: TooltipService) {
+                private readonly tooltipService: TooltipService, private readonly clickService: ClickService) {
     }
 
     public mapConfiguration(configuration: ChartConfiguration, cx: CanvasRenderingContext2D): ChartJS.ChartConfiguration {
         this._cx = cx;
+
         const outputConfiguration = this.mapBasicInformation(configuration);
         const axes = this.axesService.mapConfiguration(configuration);
         const indexAxis: 'x' | 'y' = configuration.axes ? configuration.axes.mainAxis : 'x';
@@ -49,7 +51,7 @@ export class ChartService {
                 animations: {
                     ...chartDefaultConfiguration.options.animations,
                     ...configuration.options?.animations ?? undefined,
-                }
+                },
             }
         };
 
@@ -58,6 +60,8 @@ export class ChartService {
         const annotations = this.annotationService.mapAnnotations(chartConfiguration.annotations);
         const legend = this.legendService.mapLegend(chartConfiguration.legend);
         const tooltip = this.tooltipService.mapTooltip(chartConfiguration);
+        const onClick = this.clickService.map(chartConfiguration.options.onClick);
+
         return {
             type: chartConfiguration.type,
             data: {
@@ -87,6 +91,7 @@ export class ChartService {
                     legend,
                     tooltip,
                 } as any,
+                onClick,
             },
         };
     }
