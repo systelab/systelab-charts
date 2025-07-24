@@ -4,8 +4,12 @@
 <button (click)="selectView('new')">New</button>
 <button (click)="selectView('both')">Both</button>
 
-<app-showcase-chart *ngIf="selectedView === 'new' || selectedView === 'both'"></app-showcase-chart>
-<app-showcase-chart-legacy *ngIf="selectedView === 'legacy' || selectedView === 'both'"></app-showcase-chart-legacy>
+@if (selectedView === 'new' || selectedView === 'both') {
+  <app-showcase-chart></app-showcase-chart>
+}
+@if (selectedView === 'legacy' || selectedView === 'both') {
+  <app-showcase-chart-legacy></app-showcase-chart-legacy>
+}
 
 
 

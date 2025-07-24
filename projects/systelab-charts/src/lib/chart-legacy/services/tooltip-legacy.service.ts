@@ -1,5 +1,5 @@
 import { DecimalFormatService } from './decimal-format.service';
-import { format } from 'date-fns/esm';
+import { format } from 'date-fns';
 import { Injectable } from '@angular/core';
 
 export class ChartTooltipItem {
