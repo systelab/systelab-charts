@@ -7,7 +7,7 @@ import { ChartConfiguration } from '../interfaces';
 export class TooltipService {
 
     public mapTooltip(chartConfiguration: ChartConfiguration) {
-        const { tooltip } = chartConfiguration;
+        const { tooltip, customTooltip } = chartConfiguration;
         const { enabled: pointStyleEnabled} = chartConfiguration.legend?.labels ?? { enabled: false};
 
         return {
@@ -26,8 +26,9 @@ export class TooltipService {
                         title = tooltipItems[0].label;
                     }
                     return prefix ? `${prefix.trim()} ${title.trim()}` : title.trim();
-                }
-            }
+                },
+            },
+            external: customTooltip ?? null,
         };
     }
 }

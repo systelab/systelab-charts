@@ -17,6 +17,7 @@ export interface ChartConfiguration {
     datasets: Dataset[];
     annotations?: AnnotationTypes[];
     tooltip?: Tooltip;
+    customTooltip?: CustomTooltipFn
     legend?: Legend;
     grid?: {
         enabled: boolean; // pie and doughnut
@@ -61,6 +62,7 @@ export type ChartJSContext = Context;
 export type DatalabelsFormatterFunction = (value, context: ChartJSContext) => number | string;
 export type DatalabelsDisplayFunction = (context: ChartJSContext) => boolean;
 export type OnClickCallbackFunction = (data: ClickPoint) => void;
+export type CustomTooltipFn = (context: ChartJSContext) => void;
 
 export enum ChartType {
     line = 'line',
