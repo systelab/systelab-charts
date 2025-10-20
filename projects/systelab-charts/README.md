@@ -231,7 +231,7 @@ There is the option to display the label that you want instead of the coordinate
 
 There is the option to manage the tooltip content by yourself. You have to define a function that will return the content of the tooltip as you defined in your own function.
 
-**IMPORTANT:** It's mandatory to define Tooltip object as false to avoid showing the default tooltip.
+**IMPORTANT:** It's mandatory to define Tooltip object "enable" parameter as 'false' to avoid showing the default tooltip.
 
 ### Chart labels
 
