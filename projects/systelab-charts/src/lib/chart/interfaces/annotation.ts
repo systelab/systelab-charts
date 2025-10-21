@@ -1,4 +1,4 @@
-export type AnnotationTypes = LineAnnotation | BoxAnnotation | PointAnnotation;
+export type AnnotationTypes = LineAnnotation | BoxAnnotation | PointAnnotation | EllipseAnnotation;
 
 interface Annotation {
     type: AnnotationType;
@@ -11,6 +11,7 @@ export enum AnnotationType {
     line = 'line',
     box = 'box',
     point = 'point',
+    ellipse = 'ellipse',
 }
 
 export enum AnnotationDrawTime {
@@ -95,6 +96,23 @@ export interface PointAnnotation extends Annotation {
     xAxisID?: string;
     yAxisID?: string;
     radius?: number;
+    border?: {
+        width?: number;
+        color?: string;
+    };
+}
+
+
+// Ellipse annotations
+export interface EllipseAnnotation extends Annotation {
+    xMax: number;
+    xMin: number;
+    yMax: number;
+    yMin: number;
+    xAxisID?: string;
+    yAxisID?: string;
+    rotation: number;
+    backgroundColor?: string;
     border?: {
         width?: number;
         color?: string;

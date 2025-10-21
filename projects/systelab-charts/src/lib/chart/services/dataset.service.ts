@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
-import { ChartConfiguration, ChartType, Dataset, Legend, ScatterDataset } from '../interfaces';
-import * as ChartJS from 'chart.js';
+import { ChartConfiguration, ChartPointStyle, ChartType, Dataset, Legend, LegendPointStyle, ScatterDataset } from '../interfaces';
+
+
+type ChartStyleAllowedType = ChartPointStyle | LegendPointStyle | HTMLImageElement | undefined;
 
 @Injectable({
     providedIn: 'root',
 })
 export class DatasetService {
 
-    private defaultColors: Array<number[]> = [
+    private readonly defaultColors: Array<number[]> = [
         [255, 99, 132],
         [54, 162, 235],
         [255, 206, 86],
@@ -22,12 +24,12 @@ export class DatasetService {
         [77, 83, 96]
     ];
 
+
     public mapDatasets(chartConfiguration: ChartConfiguration, cx: CanvasRenderingContext2D): any[] {
         let colorNumber = 0;
         const outputDatasets: any[] = [];
 
         const { type: chartType, datasets, legend } = chartConfiguration;
-        const { enabled: pointStyleEnabled, pointStyle } = legend?.labels ?? { enabled: false, pointStyle: undefined };
 
         for (const inputDataset of datasets) {
             outputDatasets.push(this.mapDataset(chartType, inputDataset, colorNumber, legend, cx));
@@ -74,9 +76,17 @@ export class DatasetService {
             }
         }
 
-        const { enabled: pointStyleEnabled, pointStyle } = legend?.labels ?? { enabled: false, pointStyle: undefined };
+        let pointStyle = this.setPointStyle(legend, inputDataset);
 
-        const outputDataset = {
+        const outputDataset = this.buildOutputDataset(inputDataset, backgroundColor, borderColor, pointStyle);
+
+        this.fillForScatterChart(chartType, inputDataset, outputDataset);
+
+        return outputDataset;
+    }
+
+    private buildOutputDataset(inputDataset: Dataset, backgroundColor: any, borderColor: any, pointStyle: ChartStyleAllowedType) {
+        return {
             type: inputDataset.type,
             label: inputDataset.label,
             data: inputDataset.data,
@@ -86,13 +96,24 @@ export class DatasetService {
             borderColor: ('border' in inputDataset && 'color' in inputDataset.border) ? (inputDataset.border as any).color : borderColor,
             borderWidth: ('border' in inputDataset && 'width' in inputDataset.border) ? (inputDataset.border as any).width : 2,
             pointRadius: inputDataset?.pointRadius ?? 5,
-            ...(pointStyleEnabled && pointStyle && { pointStyle }),
+            pointStyle: pointStyle,
             datalabels: inputDataset.datalabels,
         };
+    }
 
-        this.fillForScatterChart(chartType, inputDataset, outputDataset);
+    private setPointStyle(legend: Legend, inputDataset: Dataset):  ChartStyleAllowedType 
+    {
+        let legendPointStyle = legend?.labels?.pointStyle;
 
-        return outputDataset;
+        let pointStyle: ChartStyleAllowedType = undefined;
+
+        if (inputDataset.pointStyle != null) {
+            pointStyle = inputDataset.pointStyle;
+        } else if (legendPointStyle != null) {
+            pointStyle = legendPointStyle;
+        }
+
+        return pointStyle;
     }
 
     // TODO: why to pass background colors similar to the legacy component

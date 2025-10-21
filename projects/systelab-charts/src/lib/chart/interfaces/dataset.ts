@@ -1,4 +1,4 @@
-import { ChartType } from './chart-configuration';
+import { ChartPointStyle, ChartType } from './chart-configuration';
 
 export type Dataset = LineDataset | BarDataset | BubbleDataset | TimeDataset | ScatterDataset;
 
@@ -6,6 +6,7 @@ export interface BaseDataset {
     label?: string;
     type?: ChartType;
     backgroundColor?: string | number[][];
+    pointStyle?: ChartPointStyle;
     isGradient?: boolean;
     fill?: boolean;
     yAxisID?: string;
