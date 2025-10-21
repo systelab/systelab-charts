@@ -6,7 +6,7 @@ import {
     ChartType,
 } from 'systelab-charts';
 
-export const lineChartWithAnnotationEllipseConfiguration: ChartConfiguration = {
+export const bubbleChartWithAnnotationEllipseConfiguration: ChartConfiguration = {
     type: ChartType.bubble,
     legend: {
         enabled: false,
