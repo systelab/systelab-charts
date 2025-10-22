@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ChartConfiguration, ChartPointStyle, ChartType, Dataset, Legend, LegendPointStyle, ScatterDataset } from '../interfaces';
+import { ChartConfiguration, ChartPointStyleAllowedType, ChartType, Dataset, Legend, ScatterDataset } from '../interfaces';
 
 
-type ChartStyleAllowedType = ChartPointStyle | LegendPointStyle | HTMLImageElement | undefined;
 
 @Injectable({
     providedIn: 'root',
@@ -85,7 +84,7 @@ export class DatasetService {
         return outputDataset;
     }
 
-    private buildOutputDataset(inputDataset: Dataset, backgroundColor: any, borderColor: any, pointStyle: ChartStyleAllowedType) {
+    private buildOutputDataset(inputDataset: Dataset, backgroundColor: any, borderColor: any, pointStyle: ChartPointStyleAllowedType) {
         return {
             type: inputDataset.type,
             label: inputDataset.label,
@@ -101,11 +100,11 @@ export class DatasetService {
         };
     }
 
-    private setPointStyle(legend: Legend, inputDataset: Dataset):  ChartStyleAllowedType 
+    private setPointStyle(legend: Legend, inputDataset: Dataset):  ChartPointStyleAllowedType 
     {
         const legendPointStyle = legend?.labels?.pointStyle;
 
-        let pointStyle: ChartStyleAllowedType = undefined;
+        let pointStyle: ChartPointStyleAllowedType = undefined;
 
         if (inputDataset.pointStyle != null) {
             pointStyle = inputDataset.pointStyle;
