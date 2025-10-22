@@ -103,7 +103,7 @@ export class DatasetService {
 
     private setPointStyle(legend: Legend, inputDataset: Dataset):  ChartStyleAllowedType 
     {
-        let legendPointStyle = legend?.labels?.pointStyle;
+        const legendPointStyle = legend?.labels?.pointStyle;
 
         let pointStyle: ChartStyleAllowedType = undefined;
 
