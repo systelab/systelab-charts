@@ -11,3 +11,4 @@ export * from './polar-area-chart';
 export * from './radar-chart';
 export * from './scatter-chart';
 export * from './scatter-chart-with-show-line';
+export * from './bubble-chart-with-annotation-ellipse';

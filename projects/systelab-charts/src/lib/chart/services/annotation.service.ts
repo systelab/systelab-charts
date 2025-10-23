@@ -5,6 +5,7 @@ import {
     AnnotationType,
     AnnotationTypes,
     BoxAnnotation,
+    EllipseAnnotation,
     LineAnnotation,
     LineAnnotationDefaultConfiguration,
     LineAnnotationOrientation,
@@ -74,6 +75,8 @@ export class AnnotationService {
                         }
                     }
                 }));
+            } else if (this.isEllipseAnnotation(annotation)) {
+                computedAnnotations.push(this.mapEllipseAnnotation(annotation));
             } else {
                 // error
             }
@@ -144,6 +147,23 @@ export class AnnotationService {
         };
     }
 
+    private mapEllipseAnnotation(annotation: EllipseAnnotation) {
+        return {
+            type: AnnotationType.ellipse,
+            xMin: annotation.xMin,
+            xMax: annotation.xMax,
+            yMin: annotation.yMin,
+            yMax: annotation.yMax,
+            xScaleID: annotation.xAxisID,
+            yScaleID: annotation.yAxisID,
+            rotation: annotation.rotation ?? 0,
+            backgroundColor: annotation.backgroundColor ?? 'transparent',
+            borderWidth: annotation.border?.width ?? 2,
+            borderColor: annotation.border?.color ?? undefined,
+            drawTime: annotation.drawTime ?? AnnotationDrawTime.afterDatasetsDraw,
+        };
+    }
+
     private isBoxAnnotation(annotation: AnnotationTypes): annotation is BoxAnnotation {
         return 'limits' in annotation;
     }
@@ -154,5 +174,9 @@ export class AnnotationService {
 
     private isLineAnnotation(annotation: AnnotationTypes): annotation is LineAnnotation {
         return 'type' in annotation && annotation.type === AnnotationType.line;
+    }
+
+    private isEllipseAnnotation(annotation: AnnotationTypes): annotation is EllipseAnnotation {
+        return 'type' in annotation && annotation.type === AnnotationType.ellipse;
     }
 }

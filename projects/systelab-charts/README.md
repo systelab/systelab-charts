@@ -14,6 +14,7 @@ Component to show a Chart
                 [timeUnit]="'month'"
                 [tooltipTimeFormat]="'d, MMMM yyyy'"
 ></systelab-chart>
+
 ```
 
 This component use the **Chart.js** library, and is able to display different chart types in an easy way.
@@ -35,12 +36,14 @@ Single example:
 
 ```javascript
     this.dataLine.push(new chartItem('Only Line', [13, 20, 21, 15], '', '', false, true, false, 3));
+
 ```
 
 Multiple charts example:
 
 ```javascript
     this.dataLineBar.push(new chartItem('Line', [13, 20, 21, 15], '', '', false, true, true, 3, 'line'));
+
 ```
 
 ## Properties
@@ -51,7 +54,7 @@ Multiple charts example:
 | **itemSelected** | any | | is used to notify which item is clicked |
 | showLegend | boolean | true | Define the visibility of the legend |
 | legendPosition | string | 'top' | Define the position of the legend |
- | intersectionSettings | ChartIntersectionSettings | | Define the intersection behaviour |
+| intersectionSettings | ChartIntersectionSettings | | Define the intersection behaviour |
 | isBackgroundGrid | boolean | true | Define if you want a grid background or not |
 | lineTension | number | 0 | Define the tension of the line |
 | yMinValue | any | 0 | Min value of the axis Y |
@@ -104,12 +107,12 @@ Multiple charts example:
 | scaleLabel | ScaleLabel | | Show an axis label |
 | ticks | Ticks | | Define the values and steps for the axis |
 
-
 ### ChartIntersectionSettings
+
 | Name |  Type   | Default | Description                                                           |
 | ---- |:-------:|:-------:|-----------------------------------------------------------------------|
 | intersect | boolean |  false  | Enable show tooltip only when pointer is exactly over an intersection |
- | mode | string | index | The mode for showing information |
+| mode | string | index | The mode for showing information |
 
 ### GridLine
 
@@ -139,6 +142,21 @@ Multiple charts example:
 You can define two types of annotations, line or box type annotations.
 
 **annotations** is an array of annotations. Depending on the annotations that you want you show, use the **chartBoxAnnotation** structure or **chartLineAnnotation**.
+
+#### chartEllipseAnnotation
+
+| Name | Type | Default | Description |
+| ---- |:----:|:-------:| ----------- |
+| drawTime | string| | Set to draw 'afterDatasetsDraw' or 'beforeDatasetsDraw' |
+| type | string | | In this case will be 'ellipse' |
+| xMin | number |  | Min value in the axis X |
+| xMax | number |  | Max value in the axis X |
+| yMin | number |  | Min value in the axis Y |
+| yMax | number |  | Max value in the axis Y |
+| backgroundColor | string | | Define the color of the ellipse area |
+| borderColor | string |  | Define the color of the ellipse border |
+| borderWidth | number |  | Define the width of the border |
+| rotation | number | 0 | Define the rotation angle of the ellipse in degrees |
 
 #### chartBoxAnnotation
 
@@ -178,8 +196,8 @@ You can define two types of annotations, line or box type annotations.
 | fontStyle | string |  | Define the styles of the text |
 | fontColor | string |  | Define the color of the label |
 
-
 #### ChartLine
+
 Draw a simple line
 
 | Name | Type | Default | Description |
@@ -217,6 +235,7 @@ You can configure the content of the tooltips and the style.
 ```javascript
 this.dataLine.push(new ChartItem('Only Line', [13, 20, 21, 15], '', '', false, true, false, 3, '',
 	new ChartTooltipItem('title', 'label', 'afterlabel', true)));
+
 ```
 
 #### Tooltips for the Bubble charts
@@ -225,6 +244,7 @@ There is the option to display the label that you want instead of the coordinate
 
 ```javascript
 [{x: 13, y: 13, r: 4, t: 'Tooltip label'}, {x: 1, y: 2, r: 3}]
+
 ```
 
 #### Custom tooltips
@@ -274,12 +294,14 @@ string => {
 }
 
 this.pieChartLabelSettings.formatter = myPieLabelFormatter;
+
 ```
 
 Then we can use systelab-chart with the "chartLabelSettings" attribute among others:
 
             <systelab-chart [labels]="labels" [data]="dataPie" [showLegend]="legend" [(itemSelected)]="itemSelected" [type]="'pie'" (action)="doAction($event)"
                             [isBackgroundGrid]="isBackgroundGrid" [chartLabelSettings]="pieChartLabelSettings"></systelab-chart>
+    
 
 The auxiliary classes (ChartLabelPosition, ChartLabelColor, etc) constructors are defined as follows:
 
@@ -328,6 +350,7 @@ boolean => {
 	return currentPercentage >= 5;
 }
 this.pieChartLabelSettings.position.display = displayFunction;
+
 ```
 
 ##### ChartLabelColor
@@ -363,6 +386,7 @@ Font = {
 	style     ? : 'normal' | 'italic' | 'oblique',
 	weight    ? : 'normal' | 'bold' | 'bolder' | 'lighter' | number
 };
+
 ```
 
 ##### ChartLabelPadding
@@ -385,6 +409,7 @@ Padding = number | {
 	bottom?: number,
 	left?: number
 };
+
 ```
 
 ##### ChartLabelText
@@ -433,6 +458,7 @@ Levels = {
 	minValue:   number,
 	maxValue:   number
 };
+
 ```
 
 ## Events
@@ -450,4 +476,4 @@ Levels = {
 | getResizedBase64Image | number?, number? | Get the base64 png string image scaled based on the height and width parameters (if provided).|
 | doResizeChart | string, string | Perform a chart resize based on the height and width parameters (in pixels).|
 
-**Note**: _responsive_ and _maintainAspectRatio_ parameters must be set to _**false**_.
+__Note__: _responsive_ and _maintainAspectRatio_ parameters must be set to ___false___.

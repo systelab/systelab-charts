@@ -75,6 +75,18 @@ export enum ChartType {
     bubble = 'bubble',
 }
 
+export enum ChartPointStyle {
+    Circle = "circle",
+    Cross = "cross",
+    CrossRotated = "crossRot",
+    Line = "line",
+    Rectangle = "rect",
+    RectangleRounded = "rectRounded",
+    RectangleRotated = "rectRot",
+    Star = "star",
+    Triangle = "triangle"
+}
+
 export enum InteractionMode {
     point = 'point',
     nearest = 'nearest',

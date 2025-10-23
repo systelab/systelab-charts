@@ -14,6 +14,7 @@ import {
   radarChartConfiguration,
   scatterChartConfiguration,
   scatterChartShowingLineConfiguration, 
+  bubbleChartWithAnnotationEllipseConfiguration
 } from './chart-types';
 import { lineChartWithAnnotationLinesConfiguration } from './chart-types/line-chart-with-annotation-lines';
 import { bubbleChartWithAnnotationBoxConfiguration } from './chart-types/bubble-chart-with-annotation-box';
@@ -45,4 +46,5 @@ export class ShowcaseChartComponent {
   public lineChartWithLineLegendConfiguration: ChartConfiguration = lineChartWithLineLegendConfiguration;
   public scatterChartConfiguration: ChartConfiguration = scatterChartConfiguration;
   public scatterChartShowingLineConfiguration: ChartConfiguration = scatterChartShowingLineConfiguration;
+  public bubbleChartWithAnnotationEllipseConfiguration: ChartConfiguration = bubbleChartWithAnnotationEllipseConfiguration;
 }
