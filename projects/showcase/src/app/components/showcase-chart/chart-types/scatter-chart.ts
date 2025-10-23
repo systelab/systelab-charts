@@ -1,4 +1,5 @@
 import { ChartConfiguration, ChartType, ClickPoint, InteractionMode } from 'systelab-charts';
+import { CustomTooltipService } from '../../../custom-tooltip.service';
 
 //Custom image to be displayed in all points of the chart - this is just an example
 let checkMark: HTMLImageElement = new Image(16, 16);
@@ -35,6 +36,10 @@ export const scatterChartConfiguration: ChartConfiguration = {
             pointStyle: checkMark
         }
     },
+    tooltip: {
+          enabled: false,
+    },
+    customTooltip: CustomTooltipService.getCustomTooltip,
     options: {
         responsive: true,
         interaction: {
