@@ -1,11 +1,15 @@
-import { ChartType } from './chart-configuration';
+import { ChartPointStyle, ChartType } from './chart-configuration';
+import { LegendPointStyle } from './legend';
 
 export type Dataset = LineDataset | BarDataset | BubbleDataset | TimeDataset | ScatterDataset;
+
+export type ChartPointStyleAllowedType = ChartPointStyle | LegendPointStyle | HTMLImageElement | undefined;
 
 export interface BaseDataset {
     label?: string;
     type?: ChartType;
     backgroundColor?: string | number[][];
+    pointStyle?: ChartPointStyleAllowedType;
     isGradient?: boolean;
     fill?: boolean;
     yAxisID?: string;
