@@ -8,6 +8,7 @@ import { AnnotationService } from './annotation.service';
 import { LegendService } from './legend.service';
 import { TooltipService } from './tooltip.service';
 import { ClickService } from './click.service';
+import { ZoomService } from './zoom.service';
 
 @Injectable({
     providedIn: 'root',
@@ -17,7 +18,8 @@ export class ChartService {
 
     constructor(private readonly axesService: AxesService, private readonly datasetService: DatasetService,
                 private readonly annotationService: AnnotationService, private readonly legendService: LegendService,
-                private readonly tooltipService: TooltipService, private readonly clickService: ClickService) {
+                private readonly tooltipService: TooltipService, private readonly clickService: ClickService,
+                private readonly zoomService: ZoomService) {
     }
 
     public mapConfiguration(configuration: ChartConfiguration, cx: CanvasRenderingContext2D): ChartJS.ChartConfiguration {
@@ -61,6 +63,7 @@ export class ChartService {
         const legend = this.legendService.mapLegend(chartConfiguration.legend);
         const tooltip = this.tooltipService.mapTooltip(chartConfiguration);
         const onClick = this.clickService.map(chartConfiguration.options.onClick);
+        const zoom = this.zoomService.mapZoom(chartConfiguration);
 
         return {
             type: chartConfiguration.type,
@@ -90,6 +93,7 @@ export class ChartService {
                     },
                     legend,
                     tooltip,
+                    zoom,
                 } as any,
                 onClick,
             },

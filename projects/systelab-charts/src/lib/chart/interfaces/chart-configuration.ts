@@ -4,8 +4,8 @@ import { AnnotationTypes } from './annotation';
 import { Tooltip } from './tooltip';
 import { Legend } from './legend';
 import { Context } from 'chartjs-plugin-datalabels';
-import { ClickPoint } from "./click";
-
+import { ClickPoint } from './click';
+import { Zoom } from './zoom';
 
 export interface ChartConfiguration {
     type: ChartType;
@@ -54,7 +54,8 @@ export interface ChartConfiguration {
                 weight: string;
             };
         };
-        onClick?: OnClickCallbackFunction
+        onClick?: OnClickCallbackFunction,
+        zoom?: Zoom
     };
 }
 

@@ -48,7 +48,22 @@ export const scatterChartConfiguration: ChartConfiguration = {
         },
         onClick: (data: ClickPoint): void => {
             console.log('Clicked on point', data);
-        }
+        },
+        zoom: {
+          zoom: {
+            wheel: {
+              enabled: true,
+            },
+            pinch: {
+              enabled: true
+            },
+            mode: 'xy',
+          },
+          pan: {
+            enabled: true,
+            mode: 'xy',
+          }
+        },
     }
 };
 
