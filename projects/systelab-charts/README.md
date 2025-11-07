@@ -476,4 +476,8 @@ Levels = {
 | getResizedBase64Image | number?, number? | Get the base64 png string image scaled based on the height and width parameters (if provided).|
 | doResizeChart | string, string | Perform a chart resize based on the height and width parameters (in pixels).|
 
+## Zoom & Pan plugin
+
+Please, refer to [Chart.js Zoom & Pan plugin documentation](https://www.chartjs.org/chartjs-plugin-zoom/latest/) for more details about how to use zoom and pan features in the systelab-chart component.
+
 __Note__: _responsive_ and _maintainAspectRatio_ parameters must be set to ___false___.
