@@ -4,6 +4,7 @@ import * as ChartJS from 'chart.js';
 import { ChartService } from './services/chart.service';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import annotationPlugin from 'chartjs-plugin-annotation';
+import zoomPlugin from 'chartjs-plugin-zoom';
 
 const afterRenderingDetectorPlugin = {
   id: 'afterRenderingDetector',
@@ -15,7 +16,7 @@ const afterRenderingDetectorPlugin = {
   }
 };
 
-ChartJS.Chart.register(...ChartJS.registerables, ChartDataLabels, annotationPlugin, afterRenderingDetectorPlugin);
+ChartJS.Chart.register(...ChartJS.registerables, ChartDataLabels, annotationPlugin, afterRenderingDetectorPlugin, zoomPlugin);
 
 
 @Component({
