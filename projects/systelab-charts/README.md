@@ -130,12 +130,13 @@ Multiple charts example:
 
 ### Ticks
 
-| Name | Type | Default | Description |
-| ---- |:----:|:------: | --------- |
-| min | number | | Min value for the axis |
-| max | number | | Max value for the axis |
-| stepSize | number | | Set the steps between axis values |
-| display | boolean | true | Set to false if you do not want to see the ticks on the axis |
+| Name     |        Type        | Default | Description                                                       |
+|----------|:------------------:|:------: |-------------------------------------------------------------------|
+| min      |       number       | | Min value for the axis                                            |
+| max      |       number       | | Max value for the axis                                            |
+| stepSize |       number       | | Set the steps between axis values                                 |
+| display  |      boolean       | true | Set to false if you do not want to see the ticks on the axis      |
+| callback | string or string[] | | configure a callback function to return custom string or string[] |
 
 ### Annotations
 
