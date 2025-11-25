@@ -2,6 +2,8 @@
 
 Component to show a Chart
 
+__IMPORTANT__: It is required to install chartjs-plugin-zoom to integrate the library in your project with no errors.
+
 ## Using the component
 
 ```html
@@ -478,6 +480,8 @@ Levels = {
 | doResizeChart | string, string | Perform a chart resize based on the height and width parameters (in pixels).|
 
 ## Zoom & Pan plugin
+
+__IMPORTANT__: It is required to install this plugin to integrate the library in your project with no errors.
 
 Please, refer to [Chart.js Zoom & Pan plugin documentation](https://www.chartjs.org/chartjs-plugin-zoom/latest/) for more details about how to use zoom and pan features in the systelab-chart component.
 
