@@ -9,14 +9,10 @@
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "module": "es2020",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "importHelpers": true,
-    "target": "ES2022",
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "target": "ESNext",
     "paths": {
       "systelab-charts": [
         "dist/systelab-charts"
@@ -26,6 +22,7 @@
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
+    "strictInjectionParameters": true,
+    "typeCheckHostBindings": false
   }
 }
