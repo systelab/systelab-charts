@@ -226,6 +226,19 @@ You can configure the content of the tooltips and the style.
 | borderColor | string | 'rgba(0,0,0,0)' | Tooltip border color |
 | borderWidth | number | 0 | Tooltip border width |
 
+### Datalabel
+
+You can configure the content of datalabel plugin.
+
+| Name      |    Type    | Default | Description                            |
+|-----------|:----------:|:-------:|----------------------------------------|
+| display   | boolean / DatalabelsDisplayFunction |  false  | Activate to show datalabels            |
+| formatter |   DatalabelsFormatterFunction   |  null   | return a number or a string            |
+| align     |   string   |  null   | Align property to display a datalabel  |
+| anchor    |   string   |  null   | Anchor property to display a datalabel |
+
+More information about datalabels plugin configuration in [Chart.js datalabels plugin documentation](https://chartjs-plugin-datalabels.netlify.app/guide/).
+
 #### ChartTooltipItem
 
 | Name | Type | Default | Description |
