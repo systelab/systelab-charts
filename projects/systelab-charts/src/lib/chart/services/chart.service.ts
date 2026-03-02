@@ -87,6 +87,9 @@ export class ChartService {
                     datalabels: {
                         display: datalabels?.display ?? false,
                         formatter: datalabels?.formatter ?? null,
+                        align: datalabels?.align ?? null,
+                        anchor: datalabels?.anchor ?? null,
+                        font: datalabels?.font,
                     },
                     annotation: {
                         annotations,

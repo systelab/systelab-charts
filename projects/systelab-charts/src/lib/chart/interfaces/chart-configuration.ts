@@ -6,6 +6,7 @@ import { Legend } from './legend';
 import { Context } from 'chartjs-plugin-datalabels';
 import { ClickPoint } from './click';
 import { Zoom } from './zoom';
+import { Datalabels } from "./datalabel";
 
 export interface ChartConfiguration {
     type: ChartType;
@@ -46,22 +47,13 @@ export interface ChartConfiguration {
             intersect: boolean;
             mode: InteractionMode; // default index
         };
-        datalabels?: {
-            display: boolean | DatalabelsDisplayFunction;
-            formatter: DatalabelsFormatterFunction;
-            font?: {
-                color: string;
-                weight: string;
-            };
-        };
+        datalabels?: Datalabels;
         onClick?: OnClickCallbackFunction,
         zoom?: Zoom
     };
 }
 
 export type ChartJSContext = Context;
-export type DatalabelsFormatterFunction = (value, context: ChartJSContext) => number | string;
-export type DatalabelsDisplayFunction = (context: ChartJSContext) => boolean;
 export type OnClickCallbackFunction = (data: ClickPoint) => void;
 export type CustomTooltipFn = (context: ChartJSContext) => void;
 
