@@ -49,6 +49,14 @@ export const scatterChartConfiguration: ChartConfiguration = {
         onClick: (data: ClickPoint): void => {
             console.log('Clicked on point', data);
         },
+        datalabels: {
+          display: true,
+          formatter: (value, context): string => {
+            return `(${value.x} - ${value.y})`;
+          },
+          align: 'top',
+          anchor: 'center'
+        },
         zoom: {
           zoom: {
             wheel: {
