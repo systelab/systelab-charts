@@ -32,8 +32,8 @@ export interface AxisContent {
     position?: string; // enum
     distribution?: string; // time
     time?: {
-        unit: TimeUnit;
-        minUnit: TimeUnit;
+        unit?: TimeUnit;
+        minUnit?: TimeUnit;
         displayFormats?: TimeDisplayFormats;
     };
     stacked?: boolean;
