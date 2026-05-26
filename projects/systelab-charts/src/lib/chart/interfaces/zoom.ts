@@ -17,13 +17,15 @@ export interface Zoom {
         overScaleMode?: 'x' | 'y' | 'xy';
     },
     limits?: {
-        x: {
-            min: number;
-            max: number;
+        x?: {
+            min?: number;
+            max?: number;
+            minRange?: number;
         };
-        y: {
-            min: number;
-            max: number;
+        y?: {
+            min?: number;
+            max?: number;
+            minRange?: number;
         };
     }
 }

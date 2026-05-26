@@ -10,6 +10,19 @@ export interface Axis {
     [id: string]: AxisContent;
 }
 
+type TimeUnit =
+    | "millisecond"
+    | "second"
+    | "minute"
+    | "hour"
+    | "day"
+    | "week"
+    | "month"
+    | "quarter"
+    | "year";
+
+type TimeDisplayFormats = Partial<Record<TimeUnit, string>>;
+
 export interface AxisContent {
     title?: {
         display: boolean;
@@ -19,8 +32,9 @@ export interface AxisContent {
     position?: string; // enum
     distribution?: string; // time
     time?: {
-        unit: string;
-        minUnit: string;
+        unit?: TimeUnit;
+        minUnit?: TimeUnit;
+        displayFormats?: TimeDisplayFormats;
     };
     stacked?: boolean;
     min?: number;
@@ -47,5 +61,10 @@ export interface Ticks {
     autoSkip?: boolean;
     initialTick?: boolean; // default true
     finalTick?: boolean; // default true
+    maxTickLimit?: number;
+    source?: 'auto' | 'data' | 'labels';
+    minRotation?: number;
+    maxRotation?: number;
+    includeBounds?: boolean;
     callback?: (val, index) => string | string[];
 }
