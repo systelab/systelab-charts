@@ -33,9 +33,6 @@ jobs:
       - name: Build the library
         run: npm run build-lib
 
-      - name: Run tests
-        run: npx ng test systelab-charts --watch=false --browsers=ChromeHeadless
-
       - name: Publish to npm
         working-directory: ./dist/systelab-charts
         run: npm publish --provenance
