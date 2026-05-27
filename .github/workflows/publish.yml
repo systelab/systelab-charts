@@ -30,11 +30,11 @@ jobs:
           npm install -g makeshift && makeshift -s @systelab-technologies -r https://registry.npmjs.org
           npm ci
 
-      - name: Run tests
-        run: npm test
-
       - name: Build the library
         run: npm run build-lib
+
+      - name: Run tests
+        run: npm test
 
       - name: Publish to npm
         working-directory: ./dist/systelab-charts
