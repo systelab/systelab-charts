@@ -34,7 +34,7 @@ jobs:
         run: npm run build-lib
 
       - name: Run tests
-        run: npm test
+        run: npx ng test systelab-charts --watch=false --browsers=ChromeHeadless
 
       - name: Publish to npm
         working-directory: ./dist/systelab-charts
