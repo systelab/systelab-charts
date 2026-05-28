@@ -61,7 +61,7 @@ export interface Ticks {
     autoSkip?: boolean;
     initialTick?: boolean; // default true
     finalTick?: boolean; // default true
-    maxTickLimit?: number;
+    maxTicksLimit?: number;
     source?: 'auto' | 'data' | 'labels';
     minRotation?: number;
     maxRotation?: number;
