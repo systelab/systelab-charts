@@ -35,6 +35,7 @@ export interface AxisContent {
         unit?: TimeUnit;
         minUnit?: TimeUnit;
         displayFormats?: TimeDisplayFormats;
+        finalTick?: boolean;
     };
     stacked?: boolean;
     min?: number;
