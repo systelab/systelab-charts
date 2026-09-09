@@ -1,4 +1,4 @@
-import { Locale } from "date-fns";
+import { Locale } from 'date-fns';
 
 export interface Axes {
     isHorizontal?: boolean;
@@ -68,3 +68,28 @@ export interface Ticks {
     includeBounds?: boolean;
     callback?: (val, index) => string | string[];
 }
+
+export interface TickItem {
+    value: number;
+    label?: string | string[];
+    major?: boolean;
+}
+
+export interface FinalTickScale {
+    ticks?: TickItem[];
+    max: number;
+    _gridLineItems?: unknown;
+    options?: {
+        reverse?: boolean;
+        afterFit?: (scale: FinalTickScale) => void;
+        beforeBuildTicks?: (scale: FinalTickScale) => void;
+        ticks?: {
+            maxTicksLimit?: number;
+        };
+    };
+}
+
+export type AxisWithFitHook = AxisContent & {
+    afterFit?: (scale: FinalTickScale) => void;
+    beforeBuildTicks?: (scale: FinalTickScale) => void;
+};

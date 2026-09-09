@@ -65,7 +65,13 @@ export const lineChartWithTimelineConfiguration: ChartConfiguration = {
                   unit: 'month',
                   minUnit: 'minute',
                 }
-            }
+            },
+            ticks: {
+                finalTick: true,
+                autoSkip: true,
+                source: 'auto',
+                maxTicksLimit: 3,
+            },
       }
     },
     options: {
