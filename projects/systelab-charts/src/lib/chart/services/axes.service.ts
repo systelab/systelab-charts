@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ChartConfiguration } from '../interfaces';
+import { Axis, AxisWithFitHook, ChartConfiguration, FinalTickScale, TickItem } from '../interfaces';
 import { LinearScale, LogarithmicScale, TimeScale } from 'chart.js';
 
 @Injectable({
@@ -26,6 +26,63 @@ export class AxesService {
                 return skipItems ? (count === 0) ? labelValue : null : labelValue;
             };
         }
+
+        this.applyFinalTick(scales);
+
         return scales as unknown as (LinearScale | LogarithmicScale | TimeScale | undefined);
+    }
+
+    private applyFinalTick(scales: Axis): void {
+        Object.keys(scales).forEach((axisId) => {
+            const axis = scales[axisId] as AxisWithFitHook;
+            if (axis?.ticks?.finalTick !== true) {
+                return;
+            }
+            const labeledTicksLimit = axis.ticks.maxTicksLimit;
+            const previousAfterFit = axis.afterFit;
+            const previousBeforeBuildTicks = axis.beforeBuildTicks;
+
+            axis.beforeBuildTicks = (scale: FinalTickScale) => {
+                previousBeforeBuildTicks?.(scale);
+                if (labeledTicksLimit != null && scale.options?.ticks) {
+                    scale.options.ticks.maxTicksLimit = labeledTicksLimit;
+                }
+            };
+
+            axis.afterFit = (scale: FinalTickScale) => {
+                previousAfterFit?.(scale);
+                this.pinLastTickToScaleMax(scale);
+                if (
+                    labeledTicksLimit != null &&
+                    scale.options?.ticks &&
+                    scale.ticks?.length
+                ) {
+                    scale.options.ticks.maxTicksLimit = scale.ticks.length;
+                }
+                scale._gridLineItems = undefined;
+            };
+        });
+    }
+
+    private pinLastTickToScaleMax(scale: FinalTickScale): void {
+        const ticks = scale?.ticks;
+        const reversed = scale.options?.reverse === true;
+
+        if (!ticks?.length) return;
+
+        const edgeIndex = reversed ? 0 : ticks.length - 1;
+
+        if (ticks[edgeIndex].value === scale.max) return;
+
+        const unlabeledTick: TickItem = {
+            value: scale.max,
+            label: '',
+        };
+
+        if (reversed) {
+            ticks.unshift(unlabeledTick);
+        } else {
+            ticks.push(unlabeledTick);
+        }
     }
 }

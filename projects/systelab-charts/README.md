@@ -143,6 +143,7 @@ Multiple charts example:
 | minRotation   |           number           |         | Set min degrees to rotate axes label                              |
 | maxRotation   |           number           |         | Set max degrees to rotate axes label                              |
 | includeBounds |          boolean           |         | Set if bounds shall be included or not                            |
+| finalTick     |          boolean           |         | Set if the final tick on the axis should be displayed             |
 | callback      |     string or string[]     |         | configure a callback function to return custom string or string[] |
 
 ### Annotations
