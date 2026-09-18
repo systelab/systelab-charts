@@ -77,8 +77,11 @@ export interface TickItem {
 
 export interface FinalTickScale {
     ticks?: TickItem[];
+    min: number;
     max: number;
     _gridLineItems?: unknown;
+    _tickFormatFunction?: (value: number, index: number, ticks: TickItem[]) => string | string[];
+    format?: (value: number, format?: string) => string;
     options?: {
         reverse?: boolean;
         afterFit?: (scale: FinalTickScale) => void;
