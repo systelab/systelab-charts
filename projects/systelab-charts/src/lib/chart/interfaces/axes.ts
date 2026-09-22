@@ -76,6 +76,7 @@ export interface TickItem {
 }
 
 export interface FinalTickScale {
+    type?: string;
     ticks?: TickItem[];
     min: number;
     max: number;
@@ -84,12 +85,23 @@ export interface FinalTickScale {
     format?: (value: number, format?: string) => string;
     options?: {
         reverse?: boolean;
+        time?: {
+            unit?: TimeUnit;
+            minUnit?: TimeUnit;
+            displayFormats?: TimeDisplayFormats;
+        };
         afterFit?: (scale: FinalTickScale) => void;
         beforeBuildTicks?: (scale: FinalTickScale) => void;
         ticks?: {
             maxTicksLimit?: number;
         };
     };
+    _adapter?: {
+        format?: (timestamp: number, format: string) => string;
+        startOf?: (timestamp: number, unit: TimeUnit) => number;
+        endOf?: (timestamp: number, unit: TimeUnit) => number;
+    };
+    _unit?: TimeUnit;
 }
 
 export type AxisWithFitHook = AxisContent & {
