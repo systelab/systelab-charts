@@ -75,13 +75,25 @@ export interface TickItem {
     major?: boolean;
 }
 
-export interface FinalTickScale {
-    type?: string;
+interface ChartJsInternalScaleOptions {
+    _gridLineItems?: unknown;
+}
+
+interface ChartJsTimeScaleOptions {
+    _adapter?: {
+        format?: (timestamp: number, format: string) => string;
+        startOf?: (timestamp: number, unit: TimeUnit) => number;
+        endOf?: (timestamp: number, unit: TimeUnit) => number;
+    };
+    _unit?: TimeUnit;
+}
+
+export interface FinalTickScale
+    extends ChartJsInternalScaleOptions, ChartJsTimeScaleOptions {
+    type?: 'linear' | 'logarithmic' | 'category' | 'time' | 'timeseries';
     ticks?: TickItem[];
     min: number;
     max: number;
-    _gridLineItems?: unknown;
-    _tickFormatFunction?: (value: number, index: number, ticks: TickItem[]) => string | string[];
     format?: (value: number, format?: string) => string;
     options?: {
         reverse?: boolean;
@@ -96,12 +108,6 @@ export interface FinalTickScale {
             maxTicksLimit?: number;
         };
     };
-    _adapter?: {
-        format?: (timestamp: number, format: string) => string;
-        startOf?: (timestamp: number, unit: TimeUnit) => number;
-        endOf?: (timestamp: number, unit: TimeUnit) => number;
-    };
-    _unit?: TimeUnit;
 }
 
 export type AxisWithFitHook = AxisContent & {
