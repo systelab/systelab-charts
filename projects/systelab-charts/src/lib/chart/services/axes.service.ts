@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Axis, AxisWithFitHook, ChartConfiguration, FinalTickScale, TickItem } from '../interfaces';
+import {Axis, AxisWithFitHook, ChartConfiguration, FinalTickScale, SCALE_TYPE, TickItem} from '../interfaces';
 import { LinearScale, LogarithmicScale, TimeScale } from 'chart.js';
 
 const INITIAL_TICK_REPLACE_THRESHOLD = 0.08;
@@ -90,7 +90,7 @@ export class AxesService {
             (range > 0 && gapToMin / range < INITIAL_TICK_REPLACE_THRESHOLD);
 
         let initialTickValue: number = scale.min;
-        if (scale.type === 'time' &&
+        if (scale.type === SCALE_TYPE.TIME &&
             scale._unit &&
             typeof scale._adapter?.startOf === 'function') {
             initialTickValue = scale._adapter.startOf(scale.min, scale._unit);

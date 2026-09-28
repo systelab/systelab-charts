@@ -75,8 +75,29 @@ export interface TickItem {
     major?: boolean;
 }
 
+export const SCALE_TYPE = {
+    LINEAR: 'linear',
+    LOGARITHMIC: 'logarithmic',
+    CATEGORY: 'category',
+    TIME: 'time',
+    TIMESERIES: 'timeseries',
+} as const;
+
+export type TickScaleType = (typeof SCALE_TYPE)[keyof typeof SCALE_TYPE];
+
+interface GridLineItem {
+    tx1: number;
+    ty1: number;
+    tx2: number;
+    ty2: number;
+    width: number;
+    color: string;
+    borderDash?: number[];
+    borderDashOffset?: number;
+}
+
 interface ChartJsInternalScaleOptions {
-    _gridLineItems?: unknown;
+    _gridLineItems?: GridLineItem[];
 }
 
 interface ChartJsTimeScaleOptions {
@@ -90,7 +111,7 @@ interface ChartJsTimeScaleOptions {
 
 export interface FinalTickScale
     extends ChartJsInternalScaleOptions, ChartJsTimeScaleOptions {
-    type?: 'linear' | 'logarithmic' | 'category' | 'time' | 'timeseries';
+    type?: TickScaleType;
     ticks?: TickItem[];
     min: number;
     max: number;
