@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Axis, AxisWithFitHook, ChartConfiguration, FinalTickScale, TickItem } from '../interfaces';
+import {Axis, AxisWithFitHook, ChartConfiguration, FinalTickScale, SCALE_TYPE, TickItem} from '../interfaces';
 import { LinearScale, LogarithmicScale, TimeScale } from 'chart.js';
 
 const INITIAL_TICK_REPLACE_THRESHOLD = 0.08;
@@ -89,25 +89,22 @@ export class AxesService {
             ticks[edgeIndex].value === scale.min ||
             (range > 0 && gapToMin / range < INITIAL_TICK_REPLACE_THRESHOLD);
 
+        let initialTickValue: number = scale.min;
+        if (scale.type === SCALE_TYPE.TIME &&
+            scale._unit &&
+            typeof scale._adapter?.startOf === 'function') {
+            initialTickValue = scale._adapter.startOf(scale.min, scale._unit);
+        }
+
         if (shouldReplace) {
             ticks[edgeIndex].value = scale.min;
-            ticks[edgeIndex].label = this.formatInitialTickLabel(
-                scale,
-                scale.min,
-                edgeIndex,
-                ticks,
-            );
+            ticks[edgeIndex].label = this.formatInitialTickLabel(scale, initialTickValue);
             return;
         }
 
         const labeledTick: TickItem = {
             value: scale.min,
-            label: this.formatInitialTickLabel(
-                scale,
-                scale.min,
-                reversed ? ticks.length : 0,
-                ticks,
-            ),
+            label: this.formatInitialTickLabel(scale, initialTickValue),
         };
 
         if (reversed) {
@@ -117,17 +114,17 @@ export class AxesService {
         }
     }
 
-    private formatInitialTickLabel(
-        scale: FinalTickScale,
-        value: number,
-        index: number,
-        ticks: TickItem[],
-    ): string {
-        if (typeof scale._tickFormatFunction === "function") {
-            const formatted = scale._tickFormatFunction(value, index, ticks);
-            return Array.isArray(formatted) ? formatted.join("\n") : formatted;
+    private formatInitialTickLabel(scale: FinalTickScale,value: number): string {
+        const time = scale.options?.time;
+        if (time) {
+            const unit = scale._unit;
+            if (unit && time.displayFormats?.[unit] && typeof scale._adapter?.format === 'function'
+            ) {
+                return scale._adapter.format(value, time.displayFormats[unit]);
+            }
         }
-        if (typeof scale.format === "function") {
+
+        if (typeof scale.format === 'function') {
             return scale.format(value);
         }
         return String(value);

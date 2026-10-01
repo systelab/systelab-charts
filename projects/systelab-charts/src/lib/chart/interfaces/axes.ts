@@ -75,15 +75,54 @@ export interface TickItem {
     major?: boolean;
 }
 
-export interface FinalTickScale {
+export const SCALE_TYPE = {
+    LINEAR: 'linear',
+    LOGARITHMIC: 'logarithmic',
+    CATEGORY: 'category',
+    TIME: 'time',
+    TIMESERIES: 'timeseries',
+} as const;
+
+export type TickScaleType = (typeof SCALE_TYPE)[keyof typeof SCALE_TYPE];
+
+interface GridLineItem {
+    tx1: number;
+    ty1: number;
+    tx2: number;
+    ty2: number;
+    width: number;
+    color: string;
+    borderDash?: number[];
+    borderDashOffset?: number;
+}
+
+interface ChartJsInternalScaleOptions {
+    _gridLineItems?: GridLineItem[];
+}
+
+interface ChartJsTimeScaleOptions {
+    _adapter?: {
+        format?: (timestamp: number, format: string) => string;
+        startOf?: (timestamp: number, unit: TimeUnit) => number;
+        endOf?: (timestamp: number, unit: TimeUnit) => number;
+    };
+    _unit?: TimeUnit;
+}
+
+export interface FinalTickScale
+    extends ChartJsInternalScaleOptions, ChartJsTimeScaleOptions {
+    type?: TickScaleType;
     ticks?: TickItem[];
     min: number;
     max: number;
-    _gridLineItems?: unknown;
-    _tickFormatFunction?: (value: number, index: number, ticks: TickItem[]) => string | string[];
     format?: (value: number, format?: string) => string;
     options?: {
         reverse?: boolean;
+        time?: {
+            unit?: TimeUnit;
+            minUnit?: TimeUnit;
+            displayFormats?: TimeDisplayFormats;
+        };
         afterFit?: (scale: FinalTickScale) => void;
         beforeBuildTicks?: (scale: FinalTickScale) => void;
         ticks?: {
